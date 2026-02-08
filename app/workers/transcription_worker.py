@@ -2,6 +2,7 @@ from arq import create_pool
 from arq.connections import RedisSettings
 from app.core.config import settings
 from app.utils.logging import logger
+from typing import Optional
 import os
 import json
 
@@ -24,8 +25,9 @@ async def process_video_task(ctx, job_id: str, video_path: str):
     # LAZY IMPORT
     from app.tools.transcriber import transcriber
 
+
     # Progress update helper
-    async def update_progress(progress: int, status: str = None):
+    async def update_progress(progress: int, status: Optional[str] = None):
         """Helper untuk update progress dan optional status di Redis."""
         await ctx['redis'].set(f"job:{job_id}:progress", str(progress))
         if status:
