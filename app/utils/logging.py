@@ -13,7 +13,8 @@ def setup_logger(name: str = "coclip"):
         handlers=[
             RichHandler(
                 rich_tracebacks=True,
-                show_path=True,      # Ini yang bikin nama file muncul
+                show_path=True,          # Tampilkan nama file + line number
+                enable_link_path=True,   # Bikin path Ctrl+clickable di terminal
                 show_time=True,
                 show_level=True,
                 markup=True
@@ -24,7 +25,7 @@ def setup_logger(name: str = "coclip"):
     # Buat logger instance
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
-    
+
     return logger
 
 # Singleton logger instance yang bisa di-import di mana saja

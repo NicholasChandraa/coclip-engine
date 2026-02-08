@@ -2,8 +2,9 @@ import os
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
-# Load .env dengan explicit UTF-8 encoding untuk fix Windows encoding issues
-load_dotenv()
+# Load .env dengan explicit encoding
+# utf-8-sig handles BOM (Byte Order Mark) dari file yang pernah disave sebagai UTF-16
+load_dotenv(encoding="utf-8-sig")
 
 class Settings(BaseModel):
     # App
@@ -15,6 +16,9 @@ class Settings(BaseModel):
     WHISPER_MODEL: str = os.getenv("WHISPER_MODEL", "deepdml/faster-whisper-large-v3-turbo-ct2")
     WHISPER_DEVICE: str = os.getenv("WHISPER_DEVICE", "cuda") # ganti 'cpu' jika tidak ada GPU
     WHISPER_COMPUTE_TYPE: str = os.getenv("WHISPER_COMPUTE_TYPE", "float16") # ganti 'int8' jika CPU usage
+
+    # WhisperX Settings
+    ENABLE_DIARIZATION: bool = os.getenv("ENABLE_DIARIZATION", "true").lower() == "true"  # Enable/disable speaker detection
 
     # Gemini
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")

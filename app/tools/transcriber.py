@@ -1,5 +1,29 @@
 import sys
 import os
+import gc
+
+# --- PyTorch 2.6+ Workaround ---
+# PyTorch 2.6 mengubah default weights_only=True yang memblokir load_model pyannote
+# Patch torch.load agar default weights_only=False
+import torch
+import torch.serialization
+
+_original_torch_load = torch.load
+def _patched_torch_load(*args, **kwargs):
+    # FORCE weights_only=False
+    kwargs['weights_only'] = False
+
+    # Add safe globals for omegaconf (dipakai pyannote)
+    try:
+        from omegaconf import DictConfig, ListConfig
+        torch.serialization.add_safe_globals([DictConfig, ListConfig])
+    except:
+        pass
+
+    return _original_torch_load(*args, **kwargs)
+
+torch.load = _patched_torch_load
+# -------------------------------
 
 # Fix untuk ctranslate2 ROCm DLL path error di Windows
 if sys.platform == "win32":
@@ -18,161 +42,305 @@ if sys.platform == "win32":
             pass
     os.add_dll_directory = _patched_add_dll_directory
 
-from faster_whisper import WhisperModel
+# --- Patch huggingface_hub deprecated 'use_auth_token' ---
+# HARUS sebelum import whisperx/pyannote agar patch kena
+# Newer huggingface_hub hapus 'use_auth_token', ganti 'token'
+# Tapi whisperx & pyannote masih pakai 'use_auth_token'
+import huggingface_hub
+_original_hf_hub_download = huggingface_hub.hf_hub_download
+def _patched_hf_hub_download(*args, **kwargs):
+    if 'use_auth_token' in kwargs:
+        kwargs['token'] = kwargs.pop('use_auth_token')
+    return _original_hf_hub_download(*args, **kwargs)
+huggingface_hub.hf_hub_download = _patched_hf_hub_download
+# ----------------------------------------------------------
+
+import whisperx
 from app.core.config import settings
 from app.utils.logging import logger
 import time
-from typing import Optional, TypedDict, List
+from typing import Optional, List, Any
 from threading import Lock
+from app.schemas.transcription import TranscriptionResultDetailed, TranscriptionSegment
 
 
-class TranscriptionSegment(TypedDict):
+
+
+
+class WhisperXTranscriber:
     """
-    Struktur data untuk satu segment hasil transcription.
-    Setiap segment berisi timing dan text dari audio.
+    Singleton class untuk WhisperX transcription.
+
+    WhisperX advantages over faster-whisper:
+    1. More accurate word-level timestamps (phoneme-based alignment)
+    2. Speaker diarization (detect who is speaking when)
+    3. Batch processing support
+
+    Perfect untuk auto-clipper karena:
+    - Presisi timestamp = clip boundaries lebih bagus
+    - Speaker detection = bisa highlight viral moments dari speaker tertentu
+
+    Thread-safe dengan Lock pattern.
     """
-    start: float
-    end: float
-    text: str
+    _instance: Optional['WhisperXTranscriber'] = None
+    _model: Optional[Any] = None
+    _align_model: Optional[Any] = None
+    _align_metadata: Optional[dict] = None
+    _diarize_model: Optional[Any] = None
+    _last_language: Optional[str] = None
+    _lock: Lock = Lock()
 
-
-class TranscriptionResult(TypedDict):
-    """
-    Struktur data lengkap hasil transcription.
-    Berisi metadata (language, duration) dan list of segments.
-    """
-    language: str
-    duration: float
-    segments: List[TranscriptionSegment]
-
-
-class WhisperTranscriber:
-    """
-    Singleton class untuk Whisper model transcription.
-
-    Pattern singleton digunakan karena:
-    1. Whisper model besar (ratusan MB - beberapa GB di memory/VRAM)
-    2. Loading model lambat (2-10 detik tergantung device)
-    3. Hanya perlu 1 instance untuk handle multiple requests
-
-    Thread-safe menggunakan Lock untuk prevent race condition saat
-    multiple threads mencoba load model secara bersamaan.
-    """
-    _instance: Optional['WhisperTranscriber'] = None
-    _model: Optional[WhisperModel] = None
-    _lock: Lock = Lock()  # Thread safety untuk singleton pattern
+    # Config
+    _device: str = settings.WHISPER_DEVICE
+    _compute_type: str = settings.WHISPER_COMPUTE_TYPE
+    _batch_size: int = 16  # Adjust based on GPU memory
 
     def __new__(cls):
-        """
-        Override __new__ untuk implement singleton pattern.
-        Memastikan hanya ada 1 instance WhisperTranscriber di seluruh aplikasi.
-        """
+        """Singleton pattern."""
         if cls._instance is None:
             with cls._lock:
-                # Double-check locking pattern untuk thread safety
                 if cls._instance is None:
-                    cls._instance = super(WhisperTranscriber, cls).__new__(cls)
+                    cls._instance = super(WhisperXTranscriber, cls).__new__(cls)
         return cls._instance
 
     def load_model(self) -> None:
         """
-        Load Whisper model ke memory/GPU.
+        Load WhisperX model untuk transcription.
 
-        Dipanggil saat:
-        1. Startup aplikasi (preload untuk response cepat)
-        2. First transcription request (lazy loading)
-
-        Model di-load dengan parameter:
-        - device: CPU/CUDA/MPS tergantung hardware
-        - compute_type: Precision (float32/float16/int8) untuk balance accuracy vs speed
+        Model di-load sekali dan di-reuse untuk semua requests.
+        Alignment model dan diarization model di-load on-demand.
         """
         if self._model is None:
             with self._lock:
-                # Double-check untuk prevent multiple model loads
                 if self._model is None:
-                    logger.info(f"📥 Loading Whisper Model: {settings.WHISPER_MODEL} on {settings.WHISPER_DEVICE}...")
+                    logger.info(f"📥 Loading WhisperX Model: {settings.WHISPER_MODEL} on {self._device}...")
                     start_time = time.time()
 
                     try:
-                        # Initialize Whisper model dengan config dari settings
-                        self._model = WhisperModel(
-                            settings.WHISPER_MODEL,  # Model size: tiny/base/small/medium/large-v3
-                            device=settings.WHISPER_DEVICE,  # cpu/cuda/mps
-                            compute_type=settings.WHISPER_COMPUTE_TYPE  # float32/float16/int8
+                        self._model = whisperx.load_model(
+                            settings.WHISPER_MODEL,
+                            self._device,
+                            compute_type=self._compute_type
                         )
                         duration = time.time() - start_time
-                        logger.info(f"✅ Model loaded successfully in {duration:.2f}s")
+                        logger.info(f"✅ WhisperX model loaded in {duration:.2f}s")
                     except Exception as e:
-                        logger.error(f"❌ Failed to load model: {e}")
+                        import traceback
+                        logger.error(f"❌ Failed to load WhisperX model: {e}")
+                        logger.error(traceback.format_exc())
                         raise e
 
-    def transcribe(self, audio_path: str) -> TranscriptionResult:
+    def _load_align_model(self, language_code: str) -> None:
         """
-        Transcribe audio file menjadi text dengan timestamps.
+        Load alignment model untuk language tertentu.
+
+        Alignment model dipakai untuk:
+        - Word-level timestamps yang lebih presisi
+        - Phoneme-based alignment (lebih akurat dari Whisper native)
+
+        Model di-cache per language untuk efficiency.
+        """
+        # Kalau language sama dengan sebelumnya, skip reload
+        if self._align_model is not None and self._last_language == language_code:
+            return
+
+        with self._lock:
+            logger.info(f"📥 Loading alignment model for language: {language_code}")
+            start_time = time.time()
+
+            try:
+                # Cleanup previous alignment model
+                if self._align_model is not None:
+                    del self._align_model
+                    gc.collect()
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+
+                # Handle Indonesian-specific model
+                align_model_name = None
+                if language_code == "id":
+                    align_model_name = "indonesian-nlp/wav2vec2-large-xlsr-indonesian"
+                    logger.info(f"🇮🇩 Using Indonesian alignment model: {align_model_name}")
+
+                # Load alignment model
+                if align_model_name:
+                    self._align_model, self._align_metadata = whisperx.load_align_model(
+                        language_code=language_code,
+                        device=self._device,
+                        model_name=align_model_name
+                    )
+                else:
+                    self._align_model, self._align_metadata = whisperx.load_align_model(
+                        language_code=language_code,
+                        device=self._device
+                    )
+
+                self._last_language = language_code
+                duration = time.time() - start_time
+                logger.info(f"✅ Alignment model loaded in {duration:.2f}s")
+
+            except Exception as e:
+                logger.error(f"❌ Failed to load alignment model: {e}")
+                raise e
+
+    def _load_diarize_model(self) -> None:
+        """
+        Load speaker diarization model via WhisperX built-in.
+
+        Requires HF_TOKEN di .env untuk download pyannote model.
+        """
+        if self._diarize_model is None:
+            with self._lock:
+                if self._diarize_model is None:
+                    hf_token = os.getenv("HF_TOKEN")
+
+                    if not hf_token:
+                        logger.warning("⚠️ HF_TOKEN not found. Diarization disabled.")
+                        return
+
+                    logger.info("📥 Loading diarization model...")
+                    start_time = time.time()
+
+                    try:
+                        # WhisperX built-in diarization
+                        # huggingface_hub patch sudah di-apply di top-level
+                        from whisperx.diarize import DiarizationPipeline
+                        self._diarize_model = DiarizationPipeline(
+                            use_auth_token=hf_token,
+                            device=torch.device(self._device)
+                        )
+
+                        duration = time.time() - start_time
+                        logger.info(f"✅ Diarization model loaded in {duration:.2f}s")
+                    except Exception as e:
+                        logger.error(f"❌ Failed to load diarization model: {e}")
+                        logger.info("📌 Continuing without diarization...")
+
+    def load_audio(self, audio_path: str):
+        """Load audio file into numpy array."""
+        logger.info(f"🎙️ Loading audio: {audio_path}")
+        return whisperx.load_audio(audio_path)
+
+    def step_transcribe(self, audio) -> dict:
+        """
+        Step 1: Transcription - Convert audio to text.
 
         Args:
-            audio_path: Path ke file audio/video yang akan di-transcribe
+            audio: Numpy array dari load_audio()
 
         Returns:
-            TranscriptionResult dengan language, duration, dan segments
-
-        Proses:
-        1. Load model kalau belum ready (lazy loading)
-        2. Panggil faster-whisper transcribe dengan:
-           - beam_size=5: Beam search untuk akurasi lebih baik (trade-off: lebih lambat)
-           - word_timestamps=True: Generate timestamp per-word (penting untuk auto-clipping!)
-        3. Convert generator segments ke list (blocking operation - perlu refactor)
-
-        PERHATIAN: Ini adalah BLOCKING operation yang CPU/GPU intensive.
-        Untuk production, wrap dengan asyncio.to_thread() atau background task.
+            Raw transcription result (segments + language)
         """
-        # Auto-load model kalau belum siap
         if self._model is None:
             self.load_model()
 
-        # Type guard: Setelah load_model(), _model pasti tidak None
-        # Kalau load_model() gagal, akan raise exception
-        assert self._model is not None, "Model should be loaded at this point"
+        assert self._model is not None, "Model should be loaded"
 
-        logger.info(f"🎙️ Transcribing: {audio_path}")
-        start_time = time.time()
+        logger.info("📝 Step 1/3: Transcribing audio...")
+        start = time.time()
 
-        # Panggil faster-whisper transcribe
-        # Return value adalah tuple (segments_generator, info_object)
-        segments, info = self._model.transcribe(
-            audio_path,
-            beam_size=5,  # Beam search width: lebih tinggi = lebih akurat tapi lambat
-            word_timestamps=True  # Generate timestamp per word (bukan per segment)
-                                  # CRITICAL untuk fitur auto-clipping berdasarkan kata kunci!
+        result = self._model.transcribe(audio, batch_size=self._batch_size)
+
+        duration = time.time() - start
+        logger.info(f"✅ Transcription done in {duration:.2f}s. Language: {result['language']}")
+
+        return result
+
+    def step_align(self, segments: list, audio, language: str) -> dict:
+        """
+        Step 2: Alignment - Get precise word-level timestamps.
+
+        Args:
+            segments: Raw segments dari step_transcribe()
+            audio: Numpy array dari load_audio()
+            language: Detected language code
+
+        Returns:
+            Aligned result dengan word-level timestamps
+        """
+        logger.info("🎯 Step 2/3: Aligning for word-level timestamps...")
+        start = time.time()
+
+        self._load_align_model(language)
+
+        result = whisperx.align(
+            segments,
+            self._align_model,
+            self._align_metadata,
+            audio,
+            self._device,
+            return_char_alignments=False
         )
 
-        # Convert generator to list menggunakan list comprehension
-        # Untuk auto-clipper: full transcript HARUS di-collect karena LLM perlu analyze
-        # keseluruhan context untuk decide clipping points
-        # List comprehension ~20-30% lebih cepat dari for-loop + append
-        result_segments: List[TranscriptionSegment] = [
-            {
-                "start": seg.start,
-                "end": seg.end,
-                "text": seg.text.strip()
-            }
-            for seg in segments
+        duration = time.time() - start
+        logger.info(f"✅ Alignment done in {duration:.2f}s")
+
+        return result
+
+    def step_diarize(self, audio, result: dict) -> dict:
+        """
+        Step 3: Diarization - Detect speakers.
+
+        Args:
+            audio: Numpy array dari load_audio()
+            result: Aligned result dari step_align()
+
+        Returns:
+            Result dengan speaker labels assigned
+        """
+        logger.info("👥 Step 3/3: Detecting speakers...")
+        start = time.time()
+
+        self._load_diarize_model()
+
+        if self._diarize_model is None:
+            logger.info("⏭️ Diarization skipped (no HF_TOKEN)")
+            return result
+
+        try:
+            diarize_segments = self._diarize_model(audio)
+            result = whisperx.assign_word_speakers(diarize_segments, result)
+
+            speakers = set(seg.get("speaker", "Unknown") for seg in result["segments"])
+            duration = time.time() - start
+            logger.info(f"✅ Diarization done in {duration:.2f}s. Speakers: {speakers}")
+        except Exception as e:
+            logger.warning(f"⚠️ Diarization failed: {e}")
+
+        return result
+
+    def format_result(self, result: dict, language: str) -> TranscriptionResultDetailed:
+        """
+        Format raw WhisperX result ke TranscriptionResultDetailed.
+
+        Args:
+            result: Raw result dari step_align() atau step_diarize()
+            language: Detected language code
+
+        Returns:
+            Formatted TranscriptionResultDetailed (Pydantic Model)
+        """
+        segments = [
+            TranscriptionSegment(
+                start=seg["start"],
+                end=seg["end"],
+                text=seg["text"].strip(),
+                words=seg.get("words"),
+                speaker=seg.get("speaker")
+            )
+            for seg in result["segments"]
         ]
 
-        duration = time.time() - start_time
-        logger.info(
-            f"✅ Transcription done in {duration:.2f}s. "
-            f"Detected language: {info.language}, "
-            f"Segments: {len(result_segments)}"
-        )
+        duration = segments[-1].end if segments else 0.0
 
-        return {
-            "language": info.language,  # Auto-detected language (en/id/etc)
-            "duration": info.duration,  # Total audio duration in seconds
-            "segments": result_segments  # List of transcribed segments dengan timestamps
-        }
+        return TranscriptionResultDetailed(
+            language=language,
+            duration=duration,
+            total_segments=len(segments),
+            segments=segments
+        )
 
 
 # Global singleton instance
 # Import dan pakai instance ini di seluruh aplikasi
-transcriber = WhisperTranscriber()
+transcriber = WhisperXTranscriber()

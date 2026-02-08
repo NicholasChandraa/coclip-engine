@@ -1,56 +1,32 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from pydantic import BaseModel
 from app.core.config import settings
 from app.utils.logging import logger
+from app.schemas.transcription import (
+    SegmentPreview,
+    TranscribeAsyncResponse,
+    JobStatusResponse,
+    TranscriptionResult
+)
 from arq import create_pool
 from arq.connections import RedisSettings
 from redis import asyncio as aioredis
 import os
 import uuid
 import json
-from typing import List, Optional
-
-# Pydantic Model untuk Type Safety
-class SegmentPreview(BaseModel):
-    """
-    Model untuk preview segment hasil transcription.
-    Berisi timing (start/end) dan text dari satu segment audio.
-    """
-    start: float  # Waktu mulai segment dalam detik
-    end: float # waktu akhir segment dalam detik
-    text: str # text hasil transcribe untuk segment ini
-
-class TranscribeAsyncResponse(BaseModel):
-    """Response untuk async transcription endpoint."""
-    job_id: str
-    status: str
-    message: str
-
-class JobStatusResponse(BaseModel):
-    """Response untuk job status check."""
-    job_id: str
-    status: str  # queued/processing/completed/failed
-    progress: int  # 0-100
-    result: Optional[dict] = None
-    error: Optional[str] = None
-
-class TranscriptionResult(BaseModel):
-    """Full transcription result with all segments."""
-    language: str
-    duration: float
-    total_segments: int
-    segments: List[SegmentPreview]
 
 
-# Router Setup
+# ============= Router Setup =============
 router = APIRouter()
 
 
 # Helper Function
 async def get_redis_connection():
-    """Create Redis connection."""
+    """Create Redis connection with retry settings."""
     return await aioredis.from_url(
-        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
+        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}",
+        socket_timeout=10,
+        socket_keepalive=True,
+        retry_on_timeout=True,
     )
 
 
@@ -124,7 +100,7 @@ async def transcribe_async(file: UploadFile = File(...)):
 
         # Enqueue job to ARQ
         job = await redis_pool.enqueue_job(
-            'transcribe_video_task', # Function name di worker
+            'process_video_task',  # Function name di worker
             job_id,
             temp_path
         )
