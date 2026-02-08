@@ -1,0 +1,30 @@
+import os
+from pydantic import BaseModel
+from dotenv import load_dotenv
+
+# Load .env dengan explicit UTF-8 encoding untuk fix Windows encoding issues
+load_dotenv()
+
+class Settings(BaseModel):
+    # App
+    PROJECT_NAME: str = "CoClip Engine"
+    API_V1_STR: str = "/api/v1"
+
+    # Whisper Settings
+    # Menggunakan model Turbo
+    WHISPER_MODEL: str = os.getenv("WHISPER_MODEL", "deepdml/faster-whisper-large-v3-turbo-ct2")
+    WHISPER_DEVICE: str = os.getenv("WHISPER_DEVICE", "cuda") # ganti 'cpu' jika tidak ada GPU
+    WHISPER_COMPUTE_TYPE: str = os.getenv("WHISPER_COMPUTE_TYPE", "float16") # ganti 'int8' jika CPU usage
+
+    # Gemini
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+
+    # Redis Configuration (untuk ARQ job queue)
+    REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT", "6379"))
+    REDIS_DB: int = int(os.getenv("REDIS_DB", "0"))
+
+    # Storage
+    TEMP_DIR: str = os.path.join(os.getcwd(), "temp")
+
+settings = Settings()
