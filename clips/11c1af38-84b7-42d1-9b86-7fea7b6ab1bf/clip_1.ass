@@ -1,0 +1,28 @@
+[Script Info]
+Title: CoClip Subtitles
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,72,&H00FFFFFF,&H0000FFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,4,2,2,40,40,80,1
+Style: Highlight,Arial,72,&H0000FFFF,&H00FFFFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,4,2,2,40,40,80,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.49,0:00:02.41,Default,,0,0,0,,{\kf9}And {\kf18}they're {\kf25}asking {\kf46}themselves, {\kf20}will
+Dialogue: 0,0:00:02.45,0:00:03.93,Default,,0,0,0,,{\kf14}that {\kf46}career {\kf8}I'm {\kf32}looking {\kf6}at
+Dialogue: 0,0:00:03.97,0:00:05.53,Default,,0,0,0,,{\kf46}even {\kf12}be {\kf37}around {\kf6}in {\kf29}10
+Dialogue: 0,0:00:05.59,0:00:07.78,Default,,0,0,0,,{\kf30}years? {\kf15}Will {\kf34}humans {\kf21}still {\kf9}be
+Dialogue: 0,0:00:07.84,0:00:09.66,Default,,0,0,0,,{\kf34}writing {\kf44}computer {\kf52}software? {\kf14}Will {\kf6}we
+Dialogue: 0,0:00:09.78,0:00:10.86,Default,,0,0,0,,{\kf19}even {\kf8}be {\kf28}writing {\kf36}books?
+Dialogue: 0,0:00:12.66,0:00:13.97,Default,,0,0,0,,{\kf8}And {\kf1}I {\kf14}think {\kf13}one {\kf54}reason
+Dialogue: 0,0:00:14.01,0:00:15.77,Default,,0,0,0,,{\kf42}why {\kf3}it {\kf25}feels {\kf34}different {\kf15}this
+Dialogue: 0,0:00:15.83,0:00:17.77,Default,,0,0,0,,{\kf28}time {\kf6}is {\kf28}because {\kf28}AI, {\kf60}unlike
+Dialogue: 0,0:00:17.79,0:00:19.31,Default,,0,0,0,,{\kf12}the {\kf33}iPhone, {\kf6}is {\kf9}the {\kf25}first
+Dialogue: 0,0:00:19.84,0:00:21.94,Default,,0,0,0,,{\kf34}tool {\kf12}that {\kf21}we've {\kf30}built {\kf18}that's
+Dialogue: 0,0:00:21.98,0:00:23.32,Default,,0,0,0,,{\kf36}capable {\kf6}of {\kf21}leaving {\kf6}the {\kf46}toolbox,
+Dialogue: 0,0:00:23.36,0:00:24.60,Default,,0,0,0,,{\kf6}and {\kf7}we {\kf22}don't {\kf21}yet {\kf15}know
+Dialogue: 0,0:00:24.68,0:00:25.00,Default,,0,0,0,,{\kf7}its {\kf13}limits.

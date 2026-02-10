@@ -9,133 +9,66 @@ import json
 
 async def process_video_task(ctx, job_id: str, video_path: str):
     """
-    Background task untuk full pipeline processing.
+    Background task for full pipeline processing using LangGraph.
+
+    This is now a thin wrapper around LangGraph orchestration.
+    The actual pipeline logic is in app.graphs.video_processing_graph.
 
     Full Pipeline Progress:
       Phase 1: Transcription (WhisperX)  →  0% - 25%
       Phase 2: Content Analysis (Gemini) → 25% - 50%  [TODO]
       Phase 3: Video Editing (FFmpeg)    → 50% - 80%  [TODO]
-      Phase 4: Finalization              → 80% - 100% [TODO]
+      Phase 4: Finalization              → 80% - 100%
 
     Args:
-        ctx: ARQ context (bisa akses Redis connection)
+        ctx: ARQ context (can access Redis connection)
         job_id: Unique job identifier
-        video_path: Path ke file video yang akan di-process
+        video_path: Path to video file to process
     """
-    # LAZY IMPORT
-    from app.tools.transcriber import transcriber
-
-
-    # Progress update helper
-    async def update_progress(progress: int, status: Optional[str] = None):
-        """Helper untuk update progress dan optional status di Redis."""
-        await ctx['redis'].set(f"job:{job_id}:progress", str(progress))
-        if status:
-            await ctx['redis'].set(f"job:{job_id}:status", status)
+    # Import LangGraph pipeline
+    from app.graphs import run_video_processing_pipeline
 
     try:
-        logger.info(f"🎬 [Job {job_id}] Starting pipeline: {video_path}")
+        logger.info(f"🎬 [Job {job_id}] Starting LangGraph pipeline: {video_path}")
 
-        # ================================================================
-        # PHASE 1: TRANSCRIPTION (WhisperX) — 0% → 25%
-        # ================================================================
-        await update_progress(0, "transcribing")
-        logger.info(f"📊 [Job {job_id}] Progress: 0% — Phase 1: Transcription started")
+        # Execute LangGraph pipeline
+        # Use non-streaming mode (ainvoke) for simplicity
+        # For real-time updates, switch to use_streaming=True
+        final_state = await run_video_processing_pipeline(
+            redis=ctx["redis"],
+            job_id=job_id,
+            video_path=video_path,
+            use_streaming=False,  # Can be set to True for real-time progress
+        )
 
-        # Load audio
-        audio = transcriber.load_audio(video_path)
-        await update_progress(2)
-        logger.info(f"📊 [Job {job_id}] Progress: 2% — Audio loaded")
+        # Check final status
+        final_status = final_state.get("status", "unknown")
+        errors = final_state.get("errors", [])
 
-        # WhisperX Step 1: Transcription
-        raw_result = transcriber.step_transcribe(audio)
-        language = raw_result["language"]
-        await update_progress(10)
-        logger.info(f"📊 [Job {job_id}] Progress: 10% — Transcription done (lang: {language})")
-
-        # WhisperX Step 2: Alignment
-        aligned_result = transcriber.step_align(raw_result["segments"], audio, language)
-        await update_progress(18)
-        logger.info(f"📊 [Job {job_id}] Progress: 18% — Alignment done")
-
-        # WhisperX Step 3: Diarization
-        if settings.ENABLE_DIARIZATION:
-            final_result = transcriber.step_diarize(audio, aligned_result)
-            await update_progress(23)
-            logger.info(f"📊 [Job {job_id}] Progress: 23% — Diarization done")
+        if final_status == "failed" or errors:
+            error_msg = errors[0] if errors else "Pipeline failed with unknown error"
+            logger.error(f"❌ [Job {job_id}] Pipeline failed: {error_msg}")
+            raise Exception(error_msg)
         else:
-            final_result = aligned_result
-            await update_progress(23)
-            logger.info(f"📊 [Job {job_id}] Progress: 23% — Diarization skipped (disabled)")
-
-        # Format & save transcription result
-        transcription_result = transcriber.format_result(final_result, language)
-        await ctx['redis'].set(
-            f"job:{job_id}:transcription",
-            transcription_result.model_dump_json(),
-            ex=3600
-        )
-        await update_progress(25)
-        logger.info(
-            f"📊 [Job {job_id}] Progress: 25% — Phase 1 COMPLETE! "
-            f"Language: {language}, Segments: {len(transcription_result.segments)}"
-        )
-
-        # ================================================================
-        # PHASE 2: CONTENT ANALYSIS (Gemini) — 25% → 50%  [TODO]
-        # ================================================================
-        await update_progress(25, "analyzing")
-        logger.info(f"📊 [Job {job_id}] Progress: 25% — Phase 2: Content Analysis [TODO]")
-
-        # TODO: Implement Gemini content analysis
-        # clips = analyzer.analyze(transcription_result)
-        await update_progress(50)
-        logger.info(f"📊 [Job {job_id}] Progress: 50% — Phase 2 SKIPPED (not implemented)")
-
-        # ================================================================
-        # PHASE 3: VIDEO EDITING (FFmpeg) — 50% → 80%  [TODO]
-        # ================================================================
-        await update_progress(50, "editing")
-        logger.info(f"📊 [Job {job_id}] Progress: 50% — Phase 3: Video Editing [TODO]")
-
-        # TODO: Implement FFmpeg video editing
-        # editor.cut_clips(video_path, clips)
-        # editor.burn_subtitles(clips, transcription_result)
-        await update_progress(80)
-        logger.info(f"📊 [Job {job_id}] Progress: 80% — Phase 3 SKIPPED (not implemented)")
-
-        # ================================================================
-        # PHASE 4: FINALIZATION — 80% → 100%  [TODO]
-        # ================================================================
-        await update_progress(80, "finalizing")
-        logger.info(f"📊 [Job {job_id}] Progress: 80% — Phase 4: Finalization")
-
-        # Save final result (untuk sekarang = transcription result saja)
-        await ctx['redis'].set(
-            f"job:{job_id}:result",
-            transcription_result.model_dump_json(),
-            ex=3600
-        )
-
-        # TODO: Generate thumbnails
-        # TODO: Save clip metadata to DB
-        # TODO: Notify Golang (webhook/callback)
-
-        await update_progress(100, "completed")
-        logger.info(f"📊 [Job {job_id}] Progress: 100% — Pipeline COMPLETE!")
+            logger.info(f"✅ [Job {job_id}] Pipeline completed successfully!")
 
     except Exception as e:
-        logger.error(f"❌ [Job {job_id}] Pipeline failed: {e}")
-        await ctx['redis'].set(f"job:{job_id}:status", "failed")
-        await ctx['redis'].set(f"job:{job_id}:error", str(e))
+        logger.error(f"❌ [Job {job_id}] Pipeline failed: {e}", exc_info=True)
+        await ctx["redis"].set(f"job:{job_id}:status", "failed")
+        await ctx["redis"].set(f"job:{job_id}:error", str(e))
         raise
 
     finally:
         # Cleanup temp file
+        # Note: finalization_node also does cleanup, but we keep this as fallback
         if os.path.exists(video_path):
             try:
-                os.remove(video_path)
-                logger.info(f"🗑️ [Job {job_id}] Cleaned up temp file: {video_path}")
+                # Only delete if it's in temp directory
+                if "temp" in video_path.lower() or "tmp" in video_path.lower():
+                    os.remove(video_path)
+                    logger.info(f"🗑️ [Job {job_id}] Cleaned up temp file: {video_path}")
+                else:
+                    logger.info(f"⏭️ [Job {job_id}] Skipping cleanup (not a temp file)")
             except Exception as cleanup_error:
                 logger.warning(f"⚠️ [Job {job_id}] Failed to cleanup: {cleanup_error}")
 
@@ -166,6 +99,7 @@ class WorkerSettings:
 
     Dipakai saat run command: arq app.workers.transcription_worker.WorkerSettings
     """
+
     # List of tasks yang bisa di-run oleh worker
     functions = [process_video_task]
 
@@ -177,9 +111,9 @@ class WorkerSettings:
         host=settings.REDIS_HOST,
         port=settings.REDIS_PORT,
         database=settings.REDIS_DB,
-        conn_timeout=30,       # Connection timeout (seconds)
-        conn_retries=5,        # Retry connect on failure
-        conn_retry_delay=1,    # Delay between retries (seconds)
+        conn_timeout=30,  # Connection timeout (seconds)
+        conn_retries=5,  # Retry connect on failure
+        conn_retry_delay=1,  # Delay between retries (seconds)
     )
 
     # Worker performance settings

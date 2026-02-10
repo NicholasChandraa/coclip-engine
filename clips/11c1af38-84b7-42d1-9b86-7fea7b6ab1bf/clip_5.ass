@@ -1,0 +1,26 @@
+[Script Info]
+Title: CoClip Subtitles
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,72,&H00FFFFFF,&H0000FFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,4,2,2,40,40,80,1
+Style: Highlight,Arial,72,&H0000FFFF,&H00FFFFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,4,2,2,40,40,80,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.26,0:00:02.14,Default,,0,0,0,,{\kf38}Around {\kf10}the {\kf22}same {\kf36}time, {\kf60}if
+Dialogue: 0,0:00:02.16,0:00:04.95,Default,,0,0,0,,{\kf10}you {\kf22}guys {\kf36}remember, {\kf41}1997, {\kf96}Deep
+Dialogue: 0,0:00:05.05,0:00:06.81,Default,,0,0,0,,{\kf32}Blue {\kf18}beat {\kf26}Garry {\kf56}Kasparov {\kf8}in
+Dialogue: 0,0:00:06.85,0:00:09.14,Default,,0,0,0,,{\kf146}chess. {\kf10}That {\kf10}was {\kf8}the {\kf27}first
+Dialogue: 0,0:00:09.22,0:00:10.80,Default,,0,0,0,,{\kf28}time {\kf3}an {\kf48}AI {\kf54}succeeded {\kf3}in
+Dialogue: 0,0:00:10.84,0:00:12.48,Default,,0,0,0,,{\kf9}what {\kf7}was {\kf46}considered {\kf1}a {\kf34}solely
+Dialogue: 0,0:00:12.56,0:00:15.23,Default,,0,0,0,,{\kf40}human {\kf76}intellectual {\kf27}affair. {\kf8}But {\kf22}now,
+Dialogue: 0,0:00:15.75,0:00:16.95,Default,,0,0,0,,{\kf8}the {\kf21}chess {\kf34}industry {\kf5}is {\kf31}booming
+Dialogue: 0,0:00:17.11,0:00:19.63,Default,,0,0,0,,{\kf25}bigger {\kf12}than {\kf16}ever. {\kf20}So, {\kf15}even
+Dialogue: 0,0:00:19.69,0:00:21.62,Default,,0,0,0,,{\kf14}where {\kf3}it {\kf27}seems {\kf52}obvious, {\kf50}sometimes
+Dialogue: 0,0:00:21.68,0:00:22.90,Default,,0,0,0,,{\kf8}our {\kf46}predictions {\kf3}of {\kf8}the {\kf34}future
+Dialogue: 0,0:00:22.94,0:00:25.00,Default,,0,0,0,,{\kf37}end {\kf6}up {\kf24}being {\kf46}completely {\kf37}off.

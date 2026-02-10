@@ -9,15 +9,17 @@ Build an automated video clipper application that takes YouTube links or video f
 ## 🛠️ Tech Stack
 
 | Layer | Technology | Purpose |
-|-------|-----------|---------|
+|-------|-----------|---------| 
 | **Frontend** | Next.js 14+ (App Router) | User Interface |
 | **Backend (Orchestrator)** | Golang (Gin) | API Gateway, Auth, File Management, Job Queueing |
 | **AI Engine** | Python (FastAPI) | Video Processing, Transcription, Content Analysis, Video Editing |
+| **Pipeline** | LangGraph | DAG-based pipeline orchestration with state management |
 | **Job Queue** | ARQ + Redis | Async background job processing untuk video panjang |
 | **Transcription** | WhisperX (Faster-Whisper + Alignment + Diarization) | Speech-to-text dengan word-level timestamps + speaker detection |
-| **Content Analysis** | Gemini (LLM) | AI untuk detect viral clips |
-| **Video Processing** | FFmpeg | Video cutting & subtitle burning |
+| **Content Analysis** | Gemini (LangChain) | AI untuk detect viral clips |
+| **Video Processing** | FFmpeg | Video cutting, subtitle burning, portrait cropping |
 | **Video Download** | yt-dlp | Download video dari YouTube |
+| **Database** | SQLite (dev) / PostgreSQL (prod) | Persistent job & clip storage |
 
 ---
 
@@ -31,9 +33,9 @@ Build an automated video clipper application that takes YouTube links or video f
          │ HTTP Request
          ↓
 ┌─────────────────┐
-│   Golang (Gin)  │  - Save metadata to DB
-│   (Orchestrator)│  - Create job entry
-│                 │  - Trigger Python processing
+│   Golang (Gin)  │  - Auth & user management
+│   (Orchestrator)│  - Proxy to Engine API
+│                 │  - File management
 └────────┬────────┘
          │ HTTP Call
          ↓
@@ -45,238 +47,109 @@ Build an automated video clipper application that takes YouTube links or video f
          │
          ↓
 ┌─────────────────┐
-│  Redis Queue    │  Job queue storage
+│  Redis Queue    │  Job queue + temporary progress storage
 │  (ARQ)          │
 └────────┬────────┘
          │
          ↓
-┌─────────────────┐
-│  ARQ Worker     │  Background processing:
-│  (Python)       │  1. Download/Load video
-│                 │  2. Transcribe (Whisper)
-│                 │  3. Analyze (Gemini)
-│                 │  4. Edit (FFmpeg)
-│                 │  5. Update job status
-└────────┬────────┘
+┌─────────────────────────────────────────┐
+│  LangGraph Pipeline (ARQ Worker)        │
+│                                         │
+│  transcription → analysis → editing → finalization
+│  (WhisperX)     (Gemini)   (FFmpeg)   (DB save)
+└────────┬────────────────────────────────┘
          │
          ↓
 ┌─────────────────┐
-│   Database      │  Job status & results
+│   SQLite DB     │  Persistent job & clip metadata
 └─────────────────┘
 ```
 
 ---
 
-## 📋 Detailed Flow
+## 📋 LangGraph Pipeline Flow
 
-### **1. Upload Flow**
-
+### **Phase 1: Transcription — "Ears" (0% → 25%)**
 ```
-User (Next.js)
-  ↓
-  Provides YouTube URL or uploads video file
-  ↓
-Next.js sends to Golang API
-  ↓
-Golang:
-  - Validates request
-  - Saves file metadata to DB
-  - Creates job entry (status: "pending")
-  - Calls Python FastAPI
-  ↓
-Returns job_id to user (INSTANT response)
+WhisperX Pipeline:
+  0%  → Load audio from video
+  5%  → Transcription (batched inference, language detection)
+ 15%  → Alignment (wav2vec2 phoneme-based word timestamps)
+ 20%  → Diarization (speaker labels via pyannote)
+ 25%  → Complete: TranscriptionResultDetailed saved to state
 ```
 
-### **2. Processing Flow (Async Background)**
-
-#### **Step 1: Job Enqueueing**
+### **Phase 2: Content Analysis — "Brain" (25% → 50%)**
 ```
-Python FastAPI receives request
-  ↓
-Saves uploaded file to temp storage
-  ↓
-Enqueues job to ARQ (Redis queue)
-  ↓
-Returns {job_id, status: "queued"} immediately
+Gemini LLM Analysis:
+ 25%  → Build transcript text from segments
+ 30%  → Send to Gemini via LangChain with viral detection prompt
+ 45%  → Parse response: clip candidates with timestamps,
+         titles, viral scores, reasoning
+ 50%  → Complete: clip_candidates routed to editing
 ```
 
-#### **Step 2: Background Processing (ARQ Worker)**
-
-**Full Pipeline Progress Map:**
+### **Phase 3: Video Editing — "Hands" (50% → 80%)**
 ```
-┌─────────────────────────────────────────────────────────┐
-│  0%          25%          50%          80%         100%  │
-│  ├───────────┼────────────┼────────────┼───────────┤    │
-│  │  PHASE 1  │  PHASE 2   │  PHASE 3   │  PHASE 4  │    │
-│  │Transcribe │  Analyze   │   Edit     │ Finalize  │    │
-│  │(WhisperX) │  (Gemini)  │  (FFmpeg)  │           │    │
-│  └───────────┴────────────┴────────────┴───────────┘    │
-└─────────────────────────────────────────────────────────┘
+FFmpeg Processing (per clip):
+ 50%  → Create output directory clips/{job_id}/
+        For each clip candidate:
+        1. Generate ASS subtitle (word-level karaoke timing)
+        2. Detect video orientation (landscape/portrait)
+        3. FFmpeg: cut + crop to 9:16 + burn subtitles
+ 78%  → All clips generated with subtitles
+ 80%  → Route to finalization
 ```
 
-**A. Download/Preparation (0%)**
+### **Phase 4: Finalization (80% → 100%)**
 ```
-ARQ Worker picks job from queue
-  ↓
-Update status: "downloading"
-  ↓
-If YouTube URL: download using yt-dlp
-If uploaded file: use temp file
-```
-
-**B. Phase 1: Transcription — The "Ears" (0% → 25%)**
-```
-Status: "transcribing"
-
-  0%  → ARQ Worker picks job, load audio
-  5%  → WhisperX Step 1: Transcription (batched inference)
-        Output: Raw transcript segments + detected language
- 15%  → WhisperX Step 2: Alignment (wav2vec2 phoneme-based)
-        Output: Precise word-level timestamps per segment
- 20%  → WhisperX Step 3: Diarization [if ENABLE_DIARIZATION=true]
-        Output: Speaker labels per segment + per word (pyannote)
- 25%  → Transcription complete, save to Redis
-
-Current implementation: ✅ DONE
-```
-
-**C. Phase 2: Content Analysis — The "Brain" (25% → 50%)**
-```
-Status: "analyzing"
-
- 25%  → Feed full transcript to Gemini LLM
- 30%  → Gemini processes transcript
-        Prompt: "Based on this transcript, find viral-worthy clips"
- 45%  → Gemini returns:
-          - Clip timestamps (start/end)
-          - Reasoning (why this clip is viral-worthy)
-          - Suggested title/keywords
- 50%  → Analysis complete, clip candidates identified
-
-Current implementation: ❌ TODO
-```
-
-**D. Phase 3: Video Editing (50% → 80%)**
-```
-Status: "editing"
-
- 50%  → Start video editing pipeline
-        For each clip recommended by Gemini:
- 55%  →   FFmpeg cuts video based on timestamps
- 65%  →   Burns subtitles using WhisperX word-level timing
- 75%  →   Encode & save clip to output directory
- 80%  → All clips generated
-
-Current implementation: ❌ TODO
-```
-
-**E. Phase 4: Finalization (80% → 100%)**
-```
-Status: "finalizing"
-
- 80%  → Generate clip thumbnails
- 85%  → Save clip metadata to DB
- 90%  → Notify Golang (webhook/callback)
- 95%  → Cleanup temp files (source video, intermediate files)
-100%  → Job complete! Clips ready for review
-
-Status: "completed"
-
-Current implementation: ❌ TODO
-```
-
-### **3. Review Flow**
-
-```
-Golang receives completion notification
-  ↓
-Updates job status in DB
-  ↓
-Next.js polls job status (or receives webhook)
-  ↓
-Displays clips to user:
-  - Preview thumbnails
-  - Playback
-  - Download options
+ 80%  → Save clip metadata to SQLite DB
+ 85%  → Generate thumbnails (TODO)
+ 90%  → Cleanup temp files
+ 95%  → Mark job completed in Redis + DB
+100%  → Done! Clips ready for download
 ```
 
 ---
 
-## 🎬 Handling Long Videos (1-2 Hours)
-
-### **Problem dengan Sync Processing:**
-- HTTP timeout (>30 menit transcription)
-- Memory issues (loading entire file)
-- No progress feedback
-- Blocks server resources
-
-### **Solution: ARQ Job Queue**
-
-**Technology:** ARQ (Async Redis Queue)
-- **Why ARQ?** Async-native, simple setup, works perfectly with FastAPI
-- **Why not Celery?** ARQ lebih simple, native async, cukup untuk use case ini
-
-**Implementation:**
-```python
-# FastAPI Endpoint
-@app.post("/transcribe-async")
-async def transcribe_async(file: UploadFile):
-    job_id = generate_id()
-    save_file_streaming(file)  # Chunked upload
-    await redis.enqueue_job('transcribe_task', job_id, file_path)
-    return {"job_id": job_id, "status": "queued"}
-
-# Status Polling
-@app.get("/job/{job_id}")
-async def get_job_status(job_id):
-    status = await redis.get(f"job:{job_id}:status")
-    progress = await redis.get(f"job:{job_id}:progress")
-    return {"status": status, "progress": progress}
-```
-
-**Benefits:**
-- ✅ Upload returns instantly (<1 second)
-- ✅ Processing happens in background
-- ✅ User can check progress via polling
-- ✅ No HTTP timeout issues
-- ✅ Can handle multiple jobs concurrently
-- ✅ Scalable (add more workers)
-
----
-
-## 📁 Component Structure
+## 📁 Engine Structure
 
 ```
-/coclip
-├── /frontend
-│   └── Next.js 14+ (App Router)
-│       - File upload UI
-│       - Job status polling
-│       - Clip preview/download
+/coclip-engine
+├── main.py                          # FastAPI app entry point
+├── pyproject.toml                   # Dependencies
+├── .env                             # Environment config
 │
-├── /backend
-│   └── Golang (Gin framework)
-│       - API Gateway
-│       - Auth & user management
-│       - File metadata storage
-│       - Job orchestration
-│       - Database operations
+├── /app
+│   ├── /api/routes
+│   │   └── transcribe.py            # API endpoints (upload, status, result, download)
+│   ├── /core
+│   │   ├── config.py                # App settings (Whisper, Gemini, Redis, paths)
+│   │   └── database.py              # SQLAlchemy engine & session (TODO)
+│   ├── /models
+│   │   └── models.py                # ORM models: Job, Clip (TODO)
+│   ├── /schemas
+│   │   ├── transcription.py         # Pydantic models (segments, words, results)
+│   │   └── graph_schemas.py         # LangGraph state TypedDict
+│   ├── /graphs
+│   │   ├── video_processing_graph.py # LangGraph DAG definition
+│   │   └── /nodes
+│   │       ├── transcription_node.py # WhisperX transcription
+│   │       ├── analysis_node.py      # Gemini viral clip detection
+│   │       ├── editing_node.py       # FFmpeg cutting + subtitle burning
+│   │       └── finalization_node.py  # Result saving + cleanup
+│   ├── /tools
+│   │   └── transcriber.py           # WhisperX model loader
+│   ├── /utils
+│   │   ├── logging.py               # Rich console + file logger
+│   │   ├── progress_tracker.py      # Redis progress updates
+│   │   └── subtitle_generator.py    # ASS subtitle generation (word-level)
+│   └── /workers
+│       └── transcription_worker.py  # ARQ worker (runs LangGraph pipeline)
 │
-└── /engine
-    └── Python (FastAPI + ARQ)
-        ├── /app
-        │   ├── /api/routes
-        │   │   └── transcribe.py (async endpoints)
-        │   ├── /schemas
-        │   │   └── transcription.py (Pydantic models)
-        │   ├── /tools
-        │   │   ├── transcriber.py (WhisperX)
-        │   │   ├── analyzer.py (Gemini)
-        │   │   └── editor.py (FFmpeg)
-        │   └── /workers
-        │       └── transcription_worker.py (ARQ tasks)
-        ├── pyproject.toml (Poetry)
-        └── requirements.txt
+├── /clips                           # Generated clip output (per job_id)
+├── /temp                            # Temporary uploaded videos
+└── /logs                            # Application logs (coclip.log)
 ```
 
 ---
@@ -284,53 +157,45 @@ async def get_job_status(job_id):
 ## 🔄 Job Status States
 
 ```
-pending → queued → downloading → transcribing → analyzing → editing → finalizing → completed
-                                                                                 ↓
-                                                                               failed
+queued → transcribing → analyzing → editing → finalizing → completed
+                                                            ↓
+                                                          failed
 ```
-
-**Status Definitions:**
-- `pending`: Job created, waiting to be picked
-- `queued`: In Redis queue, waiting for worker
-- `downloading`: Downloading video (YouTube only)
-- `transcribing`: Running WhisperX (transcribe + align + diarize) — 0-25%
-- `analyzing`: Gemini analyzing transcript for viral clips — 25-50%
-- `editing`: FFmpeg cutting clips + burning subtitles — 50-80%
-- `finalizing`: Saving metadata, generating thumbnails, cleanup — 80-100%
-- `completed`: All clips generated successfully
-- `failed`: Error occurred (with error message)
 
 ---
 
-## 🚀 Deployment Considerations
+## 🚀 Running the Engine
 
-### **Development:**
-- FastAPI: `uvicorn app.main:app --reload`
-- ARQ Worker: `arq app.workers.transcription_worker.WorkerSettings`
-- Redis: `redis-server` (local)
+### Development
+```bash
+# Terminal 1: FastAPI server
+python main.py
 
-### **Production:**
-- Multiple ARQ workers untuk concurrent processing
-- Redis dengan persistence enabled
-- Monitoring untuk job queue depth
-- Auto-cleanup old jobs (TTL di Redis)
+# Terminal 2: ARQ Worker
+arq app.workers.transcription_worker.WorkerSettings
+
+# Redis must be running
+redis-server
+```
 
 ---
 
 ## ✅ Implementation Status
 
 - [x] WhisperX transcription (Faster-Whisper + Alignment + Diarization)
-- [x] FastAPI async endpoints (transcribe-async, status polling, full result)
+- [x] FastAPI async endpoints (upload, status polling, result, clip download)
 - [x] ARQ job queue integration (Redis-based background processing)
-- [x] Progress tracking per-step (0% → 10% → 40% → 70% → 90% → 100%)
-- [x] Pydantic schemas separation (app/schemas/)
-- [x] Diarization configurable via .env (ENABLE_DIARIZATION)
+- [x] LangGraph pipeline orchestration (state management, node routing)
+- [x] Gemini content analysis (viral clip detection via LangChain)
+- [x] FFmpeg video cutting (async subprocess, per-clip progress)
+- [x] Subtitle burning (ASS format, word-level karaoke timing from WhisperX)
+- [x] Progress tracking per-phase (0% → 25% → 50% → 80% → 100%)
+- [x] File logging (logs/coclip.log mirrors console output)
 - [x] Streaming file upload (chunked 8KB)
 - [x] Redis connection health check (keepalive, retry on timeout)
-- [ ] Gemini content analysis
-- [ ] FFmpeg video editing
-- [ ] Subtitle burning
-- [ ] Golang backend
-- [ ] Next.js frontend
-- [ ] Database schema
+- [ ] Portrait crop (9:16 for TikTok/Reels)
+- [ ] SQLite database (persistent job & clip storage)
+- [ ] Thumbnail generation
+- [ ] Golang backend (API gateway, auth)
+- [ ] Next.js frontend (upload UI, clip preview, download)
 - [ ] Authentication

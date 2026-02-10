@@ -3,7 +3,7 @@ name = "engine"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "arq>=0.27.0",
     "ctranslate2>=4.7.0",
@@ -21,6 +21,17 @@ dependencies = [
     "uvicorn>=0.40.0",
     "whisperx>=3.7.6",
     "yt-dlp>=2026.1.31",
-    # install ini manual: uv pip install --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-    # uv pip install --forece-reinstall transformer
+    "torch>=2.6.0,<2.8",
+    "torchvision>=0.21.0,<0.22",
+    "torchaudio>=2.6.0,<2.8",
+    "sqlalchemy",
+    "asyncpg",
+]
+
+# Override whisperx's torch requirements to use our compatible versions
+[tool.uv]
+override-dependencies = [
+    "torch>=2.6.0,<2.8",
+    "torchvision>=0.21.0,<0.22",
+    "torchaudio>=2.6.0,<2.8",
 ]

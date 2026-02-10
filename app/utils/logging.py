@@ -1,32 +1,60 @@
 import logging
+import os
 from rich.logging import RichHandler
+
 
 def setup_logger(name: str = "coclip"):
     """
-    Setup rich logger with filename and line number support.
+    Setup rich logger with both console AND file output.
+
+    - Console: Rich formatted output (colored, tracebacks)
+    - File: Plain text log mirroring console output
     """
-    # Konfigurasi basic logger
+    # Create logs directory
+    log_dir = os.path.join(os.getcwd(), "logs")
+    os.makedirs(log_dir, exist_ok=True)
+    log_file = os.path.join(log_dir, "coclip.log")
+
+    # Clear any existing handlers to prevent duplicates
+    root_logger = logging.getLogger()
+    root_logger.handlers.clear()
+
+    # Console handler (Rich)
+    console_handler = RichHandler(
+        rich_tracebacks=True,
+        show_path=True,
+        enable_link_path=True,
+        show_time=True,
+        show_level=True,
+        markup=True,
+    )
+    console_handler.setLevel(logging.INFO)
+
+    # File handler (plain text, same content as console)
+    file_handler = logging.FileHandler(log_file, encoding="utf-8")
+    file_handler.setLevel(logging.DEBUG)
+    file_formatter = logging.Formatter(
+        "%(asctime)s | %(levelname)-8s | %(name)s:%(filename)s:%(lineno)d | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    file_handler.setFormatter(file_formatter)
+
+    # Configure root logger
     logging.basicConfig(
         level=logging.INFO,
         format="%(message)s",
         datefmt="[%X]",
-        handlers=[
-            RichHandler(
-                rich_tracebacks=True,
-                show_path=True,          # Tampilkan nama file + line number
-                enable_link_path=True,   # Bikin path Ctrl+clickable di terminal
-                show_time=True,
-                show_level=True,
-                markup=True
-            )
-        ]
+        handlers=[console_handler, file_handler],
     )
 
-    # Buat logger instance
+    # Create app logger
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
 
+    logger.info(f"📝 Logging to file: {log_file}")
+
     return logger
 
-# Singleton logger instance yang bisa di-import di mana saja
+
+# Singleton logger instance
 logger = setup_logger()

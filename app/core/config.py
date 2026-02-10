@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 # utf-8-sig handles BOM (Byte Order Mark) dari file yang pernah disave sebagai UTF-16
 load_dotenv(encoding="utf-8-sig")
 
+
 class Settings(BaseModel):
     # App
     PROJECT_NAME: str = "CoClip Engine"
@@ -13,12 +14,20 @@ class Settings(BaseModel):
 
     # Whisper Settings
     # Menggunakan model Turbo
-    WHISPER_MODEL: str = os.getenv("WHISPER_MODEL", "deepdml/faster-whisper-large-v3-turbo-ct2")
-    WHISPER_DEVICE: str = os.getenv("WHISPER_DEVICE", "cuda") # ganti 'cpu' jika tidak ada GPU
-    WHISPER_COMPUTE_TYPE: str = os.getenv("WHISPER_COMPUTE_TYPE", "float16") # ganti 'int8' jika CPU usage
+    WHISPER_MODEL: str = os.getenv(
+        "WHISPER_MODEL", "deepdml/faster-whisper-large-v3-turbo-ct2"
+    )
+    WHISPER_DEVICE: str = os.getenv(
+        "WHISPER_DEVICE", "cuda"
+    )  # ganti 'cpu' jika tidak ada GPU
+    WHISPER_COMPUTE_TYPE: str = os.getenv(
+        "WHISPER_COMPUTE_TYPE", "float16"
+    )  # ganti 'int8' jika CPU usage
 
     # WhisperX Settings
-    ENABLE_DIARIZATION: bool = os.getenv("ENABLE_DIARIZATION", "true").lower() == "true"  # Enable/disable speaker detection
+    ENABLE_DIARIZATION: bool = (
+        os.getenv("ENABLE_DIARIZATION", "true").lower() == "true"
+    )  # Enable/disable speaker detection
 
     # Gemini
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
@@ -30,5 +39,13 @@ class Settings(BaseModel):
 
     # Storage
     TEMP_DIR: str = os.path.join(os.getcwd(), "temp")
+    CLIPS_DIR: str = os.path.join(os.getcwd(), "clips")
+
+    # Database
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        "postgresql+asyncpg://postgres:postgres@localhost:5434/model_clip",
+    )
+
 
 settings = Settings()
