@@ -19,7 +19,7 @@ Build an automated video clipper application that takes YouTube links or video f
 | **Content Analysis** | Gemini (LangChain) | AI untuk detect viral clips |
 | **Video Processing** | FFmpeg | Video cutting, subtitle burning, portrait cropping |
 | **Video Download** | yt-dlp | Download video dari YouTube |
-| **Database** | SQLite (dev) / PostgreSQL (prod) | Persistent job & clip storage |
+| **Database** | PostgreSQL | Persistent job & clip storage |
 
 ---
 
@@ -61,7 +61,7 @@ Build an automated video clipper application that takes YouTube links or video f
          │
          ↓
 ┌─────────────────┐
-│   SQLite DB     │  Persistent job & clip metadata
+│   Postgree DB     │  Persistent job & clip metadata
 └─────────────────┘
 ```
 
@@ -103,10 +103,10 @@ FFmpeg Processing (per clip):
 
 ### **Phase 4: Finalization (80% → 100%)**
 ```
- 80%  → Save clip metadata to SQLite DB
- 85%  → Generate thumbnails (TODO)
- 90%  → Cleanup temp files
- 95%  → Mark job completed in Redis + DB
+ 80%  → Cache results to Redis (fast access)
+ 85%  → Save job + clips to PostgreSQL (persistent)
+ 90%  → Generate thumbnails (TODO)
+ 95%  → Cleanup temp files, mark job completed
 100%  → Done! Clips ready for download
 ```
 
@@ -124,10 +124,10 @@ FFmpeg Processing (per clip):
 │   ├── /api/routes
 │   │   └── transcribe.py            # API endpoints (upload, status, result, download)
 │   ├── /core
-│   │   ├── config.py                # App settings (Whisper, Gemini, Redis, paths)
-│   │   └── database.py              # SQLAlchemy engine & session (TODO)
+│   │   ├── config.py                # App settings (Whisper, Gemini, Redis, DB)
+│   │   └── database.py              # Async SQLAlchemy engine & session
 │   ├── /models
-│   │   └── models.py                # ORM models: Job, Clip (TODO)
+│   │   └── __init__.py              # ORM models (Job, Clip)
 │   ├── /schemas
 │   │   ├── transcription.py         # Pydantic models (segments, words, results)
 │   │   └── graph_schemas.py         # LangGraph state TypedDict
@@ -137,7 +137,7 @@ FFmpeg Processing (per clip):
 │   │       ├── transcription_node.py # WhisperX transcription
 │   │       ├── analysis_node.py      # Gemini viral clip detection
 │   │       ├── editing_node.py       # FFmpeg cutting + subtitle burning
-│   │       └── finalization_node.py  # Result saving + cleanup
+│   │       └── finalization_node.py  # DB save + cleanup
 │   ├── /tools
 │   │   └── transcriber.py           # WhisperX model loader
 │   ├── /utils
@@ -193,8 +193,9 @@ redis-server
 - [x] File logging (logs/coclip.log mirrors console output)
 - [x] Streaming file upload (chunked 8KB)
 - [x] Redis connection health check (keepalive, retry on timeout)
+- [x] PostgreSQL database (async SQLAlchemy, Job + Clip models, persistent storage)
+- [x] DB API endpoints (GET /jobs, GET /jobs/{job_id} for history)
 - [ ] Portrait crop (9:16 for TikTok/Reels)
-- [ ] SQLite database (persistent job & clip storage)
 - [ ] Thumbnail generation
 - [ ] Golang backend (API gateway, auth)
 - [ ] Next.js frontend (upload UI, clip preview, download)
