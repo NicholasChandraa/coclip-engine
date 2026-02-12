@@ -142,6 +142,7 @@ async def _cut_clip_ffmpeg(
     """
     duration = end - start
 
+    # Use input seeking (faster, less accurate but subtitles actually render)
     cmd = [
         "ffmpeg",
         "-ss",

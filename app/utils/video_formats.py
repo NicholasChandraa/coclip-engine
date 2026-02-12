@@ -50,7 +50,7 @@ FORMATS: Dict[str, VideoFormat] = {
         height=1920,
         ratio="9:16",
         subtitle_size=85,
-        subtitle_margin_bottom=320,
+        subtitle_margin_bottom=440,
         description="TikTok vertical (1080x1920)",
     ),
     "reels": VideoFormat(
