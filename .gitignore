@@ -1,10 +1,36 @@
-# Python-generated files
+# Python
 __pycache__/
-*.py[oc]
+*.py[cod]
+*$py.class
+*.so
+.Python
 build/
 dist/
 wheels/
 *.egg-info
 
-# Virtual environments
-.venv
+
+# Video Processing Output
+clips/              # Generated video clips
+temp/               # Uploaded temp videos
+*.mp4               # All video files
+*.avi
+*.mov
+*.mkv
+*.ass               # Subtitle files
+test_subtitle_*.ass # Test subtitle files
+subtitle_preview.mp4 # Preview output
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

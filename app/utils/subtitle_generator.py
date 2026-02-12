@@ -10,6 +10,7 @@ import os
 from typing import List, Optional
 from app.schemas.transcription import TranscriptionSegment, WordTimestamp
 from app.utils.logging import logger
+from app.core.config import settings
 
 
 def _seconds_to_ass_time(seconds: float) -> str:
@@ -28,18 +29,42 @@ def _escape_ass_text(text: str) -> str:
 
 # ===== ASS Style Presets =====
 
-# Primary color: white, highlight color: yellow, outline: black
-ASS_HEADER = """[Script Info]
+
+def _generate_ass_header(
+    width: int = 1080,
+    height: int = 1920,
+    font_size: int = 28,
+    margin_bottom: int = 180,
+) -> str:
+    """
+    Generate ASS header with format-specific styling.
+
+    Args:
+        width: PlayResX (video width)
+        height: PlayResY (video height)
+        font_size: Font size for subtitles
+        margin_bottom: Bottom margin in pixels
+
+    Returns:
+        ASS header string
+    """
+    # Video clipper / shorts style:
+    # - Pure white text (no yellow karaoke)
+    # - Thick black outline (3.5px)
+    # - Bold font
+    # - Solid black background
+    # - Clean and professional
+
+    return f"""[Script Info]
 Title: CoClip Subtitles
 ScriptType: v4.00+
-PlayResX: 1080
-PlayResY: 1920
+PlayResX: {width}
+PlayResY: {height}
 WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,Arial,72,&H00FFFFFF,&H0000FFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,4,2,2,40,40,80,1
-Style: Highlight,Arial,72,&H0000FFFF,&H00FFFFFF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,4,2,2,40,40,80,1
+Style: Default,Arial,{font_size},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,2.5,0,2,10,10,{margin_bottom},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -150,6 +175,10 @@ def generate_ass_subtitle(
     output_path: str,
     job_id: str = "",
     style: str = "word_highlight",
+    video_width: int = 1080,
+    video_height: int = 1920,
+    font_size: int = 28,
+    margin_bottom: int = 180,
 ) -> Optional[str]:
     """
     Generate ASS subtitle file for a clip with word-by-word highlighting.
@@ -196,7 +225,10 @@ def generate_ass_subtitle(
                 for w in line_words:
                     word_duration_cs = int((w["end"] - w["start"]) * 100)
                     # \kf = karaoke fill, duration in centiseconds
-                    escaped = _escape_ass_text(w["word"])
+                    word_text = (
+                        w["word"].upper() if settings.SUBTITLE_UPPERCASE else w["word"]
+                    )
+                    escaped = _escape_ass_text(word_text)
                     text_parts.append(f"{{\\kf{word_duration_cs}}}{escaped}")
 
                 line_text = " ".join(text_parts)
@@ -214,7 +246,16 @@ def generate_ass_subtitle(
             for line_words in lines:
                 line_start = line_words[0]["start"]
                 line_end = line_words[-1]["end"]
-                line_text = " ".join(_escape_ass_text(w["word"]) for w in line_words)
+
+                # Apply uppercase if enabled
+                if settings.SUBTITLE_UPPERCASE:
+                    line_text = " ".join(
+                        _escape_ass_text(w["word"].upper()) for w in line_words
+                    )
+                else:
+                    line_text = " ".join(
+                        _escape_ass_text(w["word"]) for w in line_words
+                    )
 
                 event = (
                     f"Dialogue: 0,"
@@ -226,8 +267,15 @@ def generate_ass_subtitle(
                 events.append(event)
 
         # Write ASS file
+        ass_header = _generate_ass_header(
+            width=video_width,
+            height=video_height,
+            font_size=font_size,
+            margin_bottom=margin_bottom,
+        )
+
         with open(output_path, "w", encoding="utf-8") as f:
-            f.write(ASS_HEADER)
+            f.write(ass_header)
             for event in events:
                 f.write(event + "\n")
 

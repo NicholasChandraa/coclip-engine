@@ -47,5 +47,11 @@ class Settings(BaseModel):
         "postgresql+asyncpg://postgres:postgres@localhost:5434/model_clip",
     )
 
+    # Video Output Format (tiktok, reels, shorts, square, landscape)
+    OUTPUT_FORMAT: str = os.getenv("OUTPUT_FORMAT", "tiktok")
+
+    # Subtitle Settings
+    SUBTITLE_UPPERCASE: bool = os.getenv("SUBTITLE_UPPERCASE", "true").lower() == "true"
+
 
 settings = Settings()

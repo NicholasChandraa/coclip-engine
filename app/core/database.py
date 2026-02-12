@@ -30,9 +30,16 @@ async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit
 
 async def init_db():
     """Create all tables on startup."""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("✅ Database tables initialized")
+    # Import models so SQLAlchemy knows about them
+    from app.models import Job, Clip  # noqa: F401
+
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("✅ Database tables initialized (jobs, clips)")
+    except Exception as e:
+        logger.error(f"❌ Failed to create tables: {e}")
+        raise
 
 
 async def get_db() -> AsyncSession:

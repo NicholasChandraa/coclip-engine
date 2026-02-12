@@ -195,7 +195,9 @@ redis-server
 - [x] Redis connection health check (keepalive, retry on timeout)
 - [x] PostgreSQL database (async SQLAlchemy, Job + Clip models, persistent storage)
 - [x] DB API endpoints (GET /jobs, GET /jobs/{job_id} for history)
-- [ ] Portrait crop (9:16 for TikTok/Reels)
+- [x] Video format customization (TikTok 9:16, Reels, Shorts, Square, Landscape)
+- [x] Auto-crop for aspect ratio conversion (landscape → portrait)
+- [x] Enhanced subtitles (28px font, 180px higher position)
 - [ ] Thumbnail generation
 - [ ] Golang backend (API gateway, auth)
 - [ ] Next.js frontend (upload UI, clip preview, download)
