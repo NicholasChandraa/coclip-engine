@@ -9,17 +9,16 @@ dist/
 wheels/
 *.egg-info
 
-
 # Video Processing Output
-clips/              # Generated video clips
-temp/               # Uploaded temp videos
-*.mp4               # All video files
+clips/
+temp/
+*.mp4
 *.avi
 *.mov
 *.mkv
-*.ass               # Subtitle files
-test_subtitle_*.ass # Test subtitle files
-subtitle_preview.mp4 # Preview output
+*.ass
+test_subtitle_*.ass
+subtitle_preview.mp4
 
 # Logs
 logs/
