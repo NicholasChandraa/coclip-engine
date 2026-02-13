@@ -53,5 +53,9 @@ class Settings(BaseModel):
     # Subtitle Settings
     SUBTITLE_UPPERCASE: bool = os.getenv("SUBTITLE_UPPERCASE", "true").lower() == "true"
 
+    # Smart Crop (Face Tracking)
+    ENABLE_SMART_CROP: bool = os.getenv("ENABLE_SMART_CROP", "true").lower() == "true"
+    CROP_MODE: str = os.getenv("CROP_MODE", "smart")  # "smart" | "center" | "none"
+
 
 settings = Settings()

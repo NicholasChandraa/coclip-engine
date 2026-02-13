@@ -38,19 +38,24 @@ async def process_video_task(ctx, job_id: str, video_path: str):
             redis=ctx["redis"],
             job_id=job_id,
             video_path=video_path,
-            use_streaming=False,  # Can be set to True for real-time progress
         )
 
         # Check final status
         final_status = final_state.get("status", "unknown")
         errors = final_state.get("errors", [])
 
-        if final_status == "failed" or errors:
+        if final_status == "failed":
             error_msg = errors[0] if errors else "Pipeline failed with unknown error"
             logger.error(f"❌ [Job {job_id}] Pipeline failed: {error_msg}")
             raise Exception(error_msg)
         else:
-            logger.info(f"✅ [Job {job_id}] Pipeline completed successfully!")
+            if errors:
+                logger.warning(
+                    f"⚠️ [Job {job_id}] Pipeline completed with {len(errors)} clip errors "
+                    f"(some clips may have failed)"
+                )
+            else:
+                logger.info(f"✅ [Job {job_id}] Pipeline completed successfully!")
 
     except Exception as e:
         logger.error(f"❌ [Job {job_id}] Pipeline failed: {e}", exc_info=True)

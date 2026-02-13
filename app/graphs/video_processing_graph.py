@@ -64,7 +64,7 @@ def create_video_processing_graph(redis: aioredis.Redis, job_id: str):
     graph.add_node("editing", editing_wrapper)
     graph.add_node("finalization", finalization_wrapper)
 
-    # Define edges using 2026 START/END constants
+    # Define edges using START/END constants
     graph.add_edge(START, "transcription")
 
     # Conditional edges are handled by Command API in nodes
@@ -86,7 +86,7 @@ def create_video_processing_graph(redis: aioredis.Redis, job_id: str):
 
 
 async def run_video_processing_pipeline(
-    redis: aioredis.Redis, job_id: str, video_path: str, use_streaming: bool = False
+    redis: aioredis.Redis, job_id: str, video_path: str
 ):
     """
     Execute video processing pipeline with LangGraph.
@@ -95,7 +95,6 @@ async def run_video_processing_pipeline(
         redis: Async Redis connection
         job_id: Unique job identifier
         video_path: Path to video file
-        use_streaming: If True, use astream for real-time updates
 
     Returns:
         Final state after pipeline completion
@@ -113,25 +112,7 @@ async def run_video_processing_pipeline(
 
     logger.info(f"🚀 [Job {job_id}] Starting LangGraph pipeline execution...")
 
-    if use_streaming:
-        # Streaming mode: yields intermediate states
-        logger.info(f"📡 [Job {job_id}] Using streaming mode (astream)")
-        final_state = None
+    # Standard execution mode
+    final_state = await graph.ainvoke(initial_state, config=config)
 
-        async for state in graph.astream(initial_state, config=config):
-            # Each iteration yields the current state
-            # Can be used for real-time UI updates
-            final_state = state
-            current_progress = state.get("progress", 0)
-            current_status = state.get("status", "processing")
-            logger.debug(
-                f"📊 [Job {job_id}] Stream update: {current_progress}% - {current_status}"
-            )
-
-        return final_state
-    else:
-        # Non-streaming mode: returns final state only
-        logger.info(f"⚡ [Job {job_id}] Using standard mode (ainvoke)")
-        final_state = await graph.ainvoke(initial_state, config=config)
-
-        return final_state
+    return final_state

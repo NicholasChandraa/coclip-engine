@@ -53,6 +53,10 @@ def _generate_ass_header(
     # MarginV for alignment 8 = distance from TOP of screen
     margin_from_top = height - margin_bottom
 
+    # Margin kiri-kanan: 15% dari lebar video supaya subtitle ga kepanjangan
+    # 1080px → margin 162px kiri+kanan → max text width ~756px
+    margin_lr = int(width * 0.15)
+
     return f"""[Script Info]
 Title: CoClip Subtitles
 ScriptType: v4.00+
@@ -62,7 +66,7 @@ WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,Arial,{font_size},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,2.5,0,8,10,10,{margin_from_top},1
+Style: Default,Arial,{font_size},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,2.5,0,8,{margin_lr},{margin_lr},{margin_from_top},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

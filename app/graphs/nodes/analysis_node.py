@@ -103,6 +103,8 @@ async def analysis_node(
 
         # Invoke Gemini (async)
         response = await llm.ainvoke(messages)
+
+        logger.info(f"[RESPONSE AI]: {response.content}")
         await tracker.update_progress(42, phase="Gemini analysis complete")
 
         logger.info(f"✅ [Job {job_id}] Received Gemini response")
@@ -207,16 +209,22 @@ def _seconds_to_timestamp(seconds: float) -> str:
 
 def _create_analysis_system_prompt() -> str:
     """Create system prompt for Gemini viral clip detection."""
-    return """You are an expert content analyst specializing in identifying viral-worthy video clips for social media platforms (TikTok, YouTube Shorts, Instagram Reels).
+    return """You are an expert content analyst specializing in identifying the best video clips for social media platforms (TikTok, YouTube Shorts, Instagram Reels).
 
-Your task is to analyze video transcripts and identify the MOST engaging, shareable, and viral-worthy segments.
+Your task is to analyze video transcripts and identify segments that are ENGAGING, COMPLETE, and make sense as STANDALONE content.
 
-**Viral Clip Criteria:**
-1. **Hook Factor** (0-10): Does it grab attention in first 3 seconds?
-2. **Emotional Impact** (0-10): Funny, shocking, inspirational, relatable?
-3. **Shareability** (0-10): Would viewers share this?
-4. **Standalone Value** (0-10): Makes sense without context?
-5. **Optimal Length** (15-60 seconds): Not too short, not too long
+**CRITICAL RULES:**
+- Every clip MUST tell a complete story/topic. A viewer who has NEVER seen the full video must fully understand what is being discussed.
+- ALWAYS include the setup/introduction of a topic BEFORE the punchline or key moment. Don't start a clip in the middle of a thought.
+- If a topic takes 2 minutes to fully explain, the clip should be 2 minutes. DO NOT cut short just to keep it under 60 seconds.
+- It's much better to have a longer clip with full context than a short clip that confuses viewers.
+
+**Clip Quality Criteria:**
+1. **Context Completeness** (0-10): Can a new viewer fully understand this clip without watching the full video? Does it include the setup, explanation, and conclusion of the topic?
+2. **Hook Factor** (0-10): Does the opening grab attention?
+3. **Emotional Impact** (0-10): Funny, shocking, inspirational, relatable?
+4. **Shareability** (0-10): Would viewers share this with friends?
+5. **Standalone Value** (0-10): Does this clip deliver value on its own?
 
 **Output Format (JSON):**
 ```json
@@ -224,14 +232,15 @@ Your task is to analyze video transcripts and identify the MOST engaging, sharea
   "clips": [
     {
       "start": 15.5,
-      "end": 45.2,
+      "end": 105.2,
       "title": "Catchy Title (max 60 chars)",
-      "reasoning": "Why this segment is viral-worthy",
-      "hook_factor": 9,
+      "reasoning": "Why this clip works as standalone content",
+      "context_completeness": 9,
+      "hook_factor": 8,
       "emotional_impact": 8,
       "shareability": 9,
-      "standalone_value": 7,
-      "viral_score": 8.25,
+      "standalone_value": 9,
+      "viral_score": 8.6,
       "suggested_caption": "Engaging caption for social media"
     }
   ]
@@ -239,22 +248,37 @@ Your task is to analyze video transcripts and identify the MOST engaging, sharea
 ```
 
 **Instructions:**
-- Identify 1-5 clips maximum (quality over quantity)
-- Each clip should be 15-60 seconds
+- Identify as many good clips as possible (aim for 1 clip per 3-5 minutes of video)
+- Each clip should be 30-180 seconds (longer is fine if the topic needs it)
+- NEVER cut a topic in the middle. Always include the full discussion from start to finish.
+- Start each clip a few seconds BEFORE the topic begins (to include natural transitions)
+- End each clip a few seconds AFTER the topic concludes (to avoid abrupt cuts)
 - Prioritize clips with viral_score >= 7.0
 - Avoid overlapping clips
-- If no viral-worthy content found, return empty clips array"""
+- If no good content found, return empty clips array"""
 
 
 def _create_analysis_user_prompt(transcript: str, duration: float) -> str:
     """Create user prompt with transcript for analysis."""
-    return f"""Analyze this video transcript and identify viral-worthy clips:
+    minutes = duration / 60
+    min_clips = max(3, int(minutes / 5))
+    max_clips = max(5, int(minutes / 3))
 
-**Video Duration:** {duration:.1f} seconds
+    return f"""Analyze this video transcript and identify the best clips for social media:
+
+**Video Duration:** {duration:.1f} seconds ({minutes:.1f} minutes)
+**Target:** Find {min_clips}-{max_clips} clips (more is better, as long as quality is good)
 **Transcript:**
 {transcript}
 
-Identify the BEST viral-worthy clips following the criteria. Return ONLY valid JSON."""
+IMPORTANT:
+- Each clip MUST contain a COMPLETE topic/story from beginning to end.
+- A viewer who has never seen the full video must understand the full context.
+- Clips can be 30 seconds to 3 minutes — use whatever length the topic needs.
+- DO NOT cut topics short. Include the full discussion.
+- For a {minutes:.0f}-minute video, there should be MANY good clips. Don't be too selective.
+
+Return ONLY valid JSON."""
 
 
 def _parse_gemini_response(response_text: str, job_id: str) -> list[dict]:

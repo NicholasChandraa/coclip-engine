@@ -26,6 +26,10 @@ dependencies = [
     "torchaudio>=2.6.0,<2.8",
     "sqlalchemy",
     "asyncpg",
+    "python-speech-features>=0.6",
+    "opencv-python>=4.8",
+    "scipy>=1.10",
+    "easydict>=1.13",
 ]
 
 # Override whisperx's torch requirements to use our compatible versions

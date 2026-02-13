@@ -69,6 +69,7 @@ def _calculate_crop_filter(
     input_width: int,
     input_height: int,
     target_format: VideoFormat,
+    crop_x_override: Optional[int] = None,
 ) -> Optional[str]:
     """
     Calculate FFmpeg crop+scale filter to convert video to target format.
@@ -77,6 +78,8 @@ def _calculate_crop_filter(
         input_width: Input video width
         input_height: Input video height
         target_format: Target video format
+        crop_x_override: If provided, use this X position instead of center
+                         (for smart crop following active speaker)
 
     Returns:
         FFmpeg filter string or None if no crop needed
@@ -97,7 +100,13 @@ def _calculate_crop_filter(
         # Input is wider → crop width (landscape → portrait)
         crop_h = input_height
         crop_w = int(input_height * target_ratio)
-        crop_x = (input_width - crop_w) // 2
+        crop_x = (
+            crop_x_override
+            if crop_x_override is not None
+            else (input_width - crop_w) // 2
+        )
+        # Clamp to valid range
+        crop_x = max(0, min(crop_x, input_width - crop_w))
         crop_y = 0
     else:
         # Input is taller → crop height (portrait → landscape)
@@ -108,9 +117,104 @@ def _calculate_crop_filter(
 
     # Build filter: crop then scale
     filter_str = f"crop={crop_w}:{crop_h}:{crop_x}:{crop_y},scale={target_w}:{target_h}"
+    label = "🎯 Smart" if crop_x_override is not None else "📐"
     logger.info(
-        f"📐 Crop {input_width}x{input_height} → {target_w}x{target_h}: {filter_str}"
+        f"{label} Crop {input_width}x{input_height} → {target_w}x{target_h}: {filter_str}"
     )
+    return filter_str
+
+
+def _build_keyframe_crop_filter(
+    keyframes: list,
+    input_width: int,
+    input_height: int,
+    target_format: "VideoFormat",
+    transition_duration: float,
+) -> Optional[str]:
+    """
+    Build FFmpeg crop filter with animated x-position from keyframes.
+    Smoothly interpolates between keyframe positions.
+
+    Args:
+        keyframes: List of CropKeyframe(time, crop_x)
+        input_width: Input video width
+        input_height: Input video height
+        target_format: Target video format
+        transition_duration: Seconds to lerp between positions
+
+    Returns:
+        FFmpeg filter string with animated crop expression
+    """
+    target_w = target_format.width
+    target_h = target_format.height
+    target_ratio = target_w / target_h
+
+    crop_h = input_height
+    crop_w = int(input_height * target_ratio)
+    if crop_w > input_width:
+        crop_w = input_width
+        crop_h = int(input_width / target_ratio)
+    max_x = input_width - crop_w
+
+    if not keyframes:
+        x = (input_width - crop_w) // 2
+        return f"crop={crop_w}:{crop_h}:{x}:0,scale={target_w}:{target_h}"
+
+    if len(keyframes) == 1:
+        x = max(0, min(keyframes[0].crop_x, max_x))
+        return f"crop={crop_w}:{crop_h}:{x}:0,scale={target_w}:{target_h}"
+
+    # Reduce keyframes: only keep ones where crop_x changes by >= 5px
+    # FFmpeg crashes with deeply nested expressions, so cap at 60
+    MAX_EXPR_KEYFRAMES = 60
+
+    reduced = [keyframes[0]]
+    for kf in keyframes[1:]:
+        if abs(kf.crop_x - reduced[-1].crop_x) >= 5:
+            reduced.append(kf)
+    if reduced[-1].time != keyframes[-1].time:
+        reduced.append(keyframes[-1])
+
+    # Subsample evenly if still too many
+    if len(reduced) > MAX_EXPR_KEYFRAMES:
+        step = len(reduced) / (MAX_EXPR_KEYFRAMES - 1)
+        subsampled = [reduced[int(i * step)] for i in range(MAX_EXPR_KEYFRAMES - 1)]
+        subsampled.append(reduced[-1])
+        reduced = subsampled
+
+    logger.info(
+        f"🎯 Smart Crop expression: {len(reduced)} keyframes "
+        f"(reduced from {len(keyframes)})"
+    )
+
+    if len(reduced) == 1:
+        x = max(0, min(reduced[0].crop_x, max_x))
+        return f"crop={crop_w}:{crop_h}:{x}:0,scale={target_w}:{target_h}"
+
+    # Build nested FFmpeg expression
+    x_expr = str(max(0, min(reduced[0].crop_x, max_x)))
+
+    for i in range(1, len(reduced)):
+        kf = reduced[i]
+        prev_kf = reduced[i - 1]
+        x_cur = max(0, min(kf.crop_x, max_x))
+        x_prev = max(0, min(prev_kf.crop_x, max_x))
+        t_start = kf.time
+
+        if x_cur == x_prev:
+            continue
+
+        t_trans_end = t_start + transition_duration
+        progress = f"(t-{t_start:.3f})/{transition_duration:.3f}"
+        lerp = f"{x_prev}+({x_cur}-{x_prev})*min(1\\,max(0\\,{progress}))"
+
+        x_expr = (
+            f"if(gte(t\\,{t_start:.3f})\\,"
+            f"if(gte(t\\,{t_trans_end:.3f})\\,{x_cur}\\,{lerp})\\,"
+            f"{x_expr})"
+        )
+
+    filter_str = f"crop={crop_w}:{crop_h}:'{x_expr}':0,scale={target_w}:{target_h}"
     return filter_str
 
 
@@ -305,8 +409,67 @@ async def editing_node(
             )
             target_format = get_format("tiktok")
 
-        # Calculate crop filter if needed
-        crop_filter = _calculate_crop_filter(input_width, input_height, target_format)
+        # ── Smart Crop: Active Speaker Detection ───────────────────────────
+        speaker_positions = None
+        is_landscape_to_portrait = (input_width / input_height) > (
+            target_format.width / target_format.height
+        )
+
+        if (
+            settings.ENABLE_SMART_CROP
+            and settings.CROP_MODE == "smart"
+            and is_landscape_to_portrait
+        ):
+            try:
+                logger.info(
+                    f"🎯 [Job {job_id}] Smart Crop: Detecting faces..."
+                )
+                await tracker.update_progress(
+                    52, "editing", "Detecting faces for smart crop..."
+                )
+
+                from app.utils.speaker_detector import (
+                    SpeakerDetector,
+                    TRANSITION_DURATION,
+                )
+
+                crop_target_ratio = target_format.width / target_format.height
+                crop_w_in_source = int(input_height * crop_target_ratio)
+
+                detection_clips = [
+                    {"start_time": c["start"], "end_time": c["end"]}
+                    for c in clip_candidates
+                ]
+
+                detector = SpeakerDetector(device="cuda")
+                detector.load()
+
+                speaker_positions = detector.detect_active_speakers(
+                    video_path=video_path,
+                    clip_candidates=detection_clips,
+                    frame_width=input_width,
+                    frame_height=input_height,
+                    target_width=crop_w_in_source,
+                    target_height=input_height,
+                )
+
+                detector.unload()
+
+                logger.info(
+                    f"✅ [Job {job_id}] Smart Crop: Detected positions for "
+                    f"{len(speaker_positions)} clips"
+                )
+
+            except Exception as e:
+                logger.warning(
+                    f"⚠️ [Job {job_id}] Smart Crop failed, falling back to center crop: {e}"
+                )
+                speaker_positions = None
+
+        # Calculate default (center) crop filter
+        default_crop_filter = _calculate_crop_filter(
+            input_width, input_height, target_format
+        )
 
         # Cut each clip
         generated_clips = []
@@ -343,7 +506,24 @@ async def editing_node(
                     margin_bottom=target_format.subtitle_margin_bottom,
                 )
 
-            # Step B: Cut clip + burn subtitles with FFmpeg
+            # Step B: Determine crop filter (smart keyframe or center)
+            clip_crop_filter = default_crop_filter
+            if speaker_positions and i < len(speaker_positions):
+                pos = speaker_positions[i]
+                if not pos.is_fallback and pos.keyframes:
+                    clip_crop_filter = _build_keyframe_crop_filter(
+                        keyframes=pos.keyframes,
+                        input_width=input_width,
+                        input_height=input_height,
+                        target_format=target_format,
+                        transition_duration=TRANSITION_DURATION,
+                    )
+                    logger.info(
+                        f"🎯 [Job {job_id}] Clip {clip_num}: "
+                        f"dynamic crop with {len(pos.keyframes)} keyframes"
+                    )
+
+            # Step C: Cut clip + burn subtitles with FFmpeg
             clip_filename = f"clip_{clip_num}.mp4"
             output_path = os.path.join(job_clips_dir, clip_filename)
 
@@ -355,7 +535,7 @@ async def editing_node(
                 job_id=job_id,
                 clip_index=clip_num,
                 subtitle_path=subtitle_path,
-                crop_filter=crop_filter,
+                crop_filter=clip_crop_filter,
             )
 
             if result["success"]:
