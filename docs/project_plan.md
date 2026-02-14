@@ -258,5 +258,5 @@ Solusinya install Deno (yang di-recommend yt-dlp):
 # Windows (PowerShell)
 irm https://deno.land/install.ps1 | iex
 
-# Atau via winget
-winget install DenoLand.Deno
+# Tambah install ini juga
+yt-dlp --remote-components ejs:github "https://www.youtube.com/watch?v=vh5VbvP0dPM" --skip-download
