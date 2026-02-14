@@ -27,14 +27,15 @@ Build an automated video clipper application that takes YouTube links or video f
 
 ```
 ┌─────────────────┐
-│   Next.js       │  User uploads video / YouTube URL
+│   Next.js       │  User uploads video / pastes YouTube URL
 │   (Frontend)    │
 └────────┬────────┘
          │ HTTP Request (direct)
          ↓
 ┌─────────────────┐
 │  Python FastAPI │  - API server + Auth
-│  (Backend)      │  - File management
+│  (Backend)      │  - File upload OR YouTube URL
+│                 │  - yt-dlp download (if URL)
 │                 │  - Enqueue to ARQ worker
 │                 │  - Return job_id instantly
 └────────┬────────┘
@@ -61,6 +62,13 @@ Build an automated video clipper application that takes YouTube links or video f
 │  PostgreSQL DB  │  Persistent job & clip metadata
 └─────────────────┘
 ```
+
+### Input Modes
+
+| Mode | Flow |
+|------|------|
+| **File Upload** | User uploads video file → save to temp/ → enqueue pipeline |
+| **YouTube URL** | User pastes URL → yt-dlp downloads to temp/ → enqueue pipeline |
 
 ---
 
@@ -149,7 +157,8 @@ Smart Crop + FFmpeg Processing:
 │   │   ├── progress_tracker.py      # Redis progress updates
 │   │   ├── subtitle_generator.py    # ASS subtitle generation (word-level)
 │   │   ├── video_formats.py         # Video format presets (TikTok, Reels, etc)
-│   │   └── speaker_detector.py      # Face tracking smart crop
+│   │   ├── speaker_detector.py      # Face tracking smart crop
+│   │   └── downloader.py            # yt-dlp YouTube video downloader
 │   └── /workers
 │       └── transcription_worker.py  # ARQ worker (runs LangGraph pipeline)
 │
@@ -166,9 +175,9 @@ Smart Crop + FFmpeg Processing:
 ## Job Status States
 
 ```
-queued → transcribing → analyzing → editing → finalizing → completed
-                                                              ↓
-                                                           failed
+queued → downloading (if URL) → transcribing → analyzing → editing → finalizing → completed
+                                                                                     ↓
+                                                                                  failed
 ```
 
 ---
@@ -228,6 +237,7 @@ Tunable constants (top of `speaker_detector.py`):
 - [x] Auto-crop for aspect ratio conversion (landscape → portrait)
 - [x] Enhanced subtitles (85px font, 440px margin, ALL CAPS, top-aligned)
 - [x] **Smart crop (S3FD face tracking + keyframe dynamic crop)**
+- [x] **YouTube URL download (yt-dlp integration di API + worker)**
 - [ ] Thumbnail generation
 - [ ] Next.js frontend (upload UI, clip preview, download)
 - [ ] Authentication (langsung di FastAPI, JWT/session)
@@ -239,3 +249,14 @@ Tunable constants (top of `speaker_detector.py`):
 - **S3FD Face Detector**: Used for accurate face detection in video frames
 - **Internal Module**: [`app/utils/speaker_detector.py`](../app/utils/speaker_detector.py) - Face tracking smart crop
 - **Pretrained Weights**: S3FD Face Detector at `models/loconet_repo/model/faceDetector/s3fd/sfd_face.pth`
+
+
+## Information
+yt-dlp butuh JavaScript runtime untuk extract format YouTube yang lengkap. Tanpa itu, beberapa format mungkin gak tersedia (tapi download   tetap jalan).
+
+Solusinya install Deno (yang di-recommend yt-dlp): 
+# Windows (PowerShell)
+irm https://deno.land/install.ps1 | iex
+
+# Atau via winget
+winget install DenoLand.Deno

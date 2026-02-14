@@ -27,6 +27,7 @@ def get_gemini_llm():
     """Get or create Gemini LLM instance."""
     global _gemini_llm
     if _gemini_llm is None:
+        logger.info("Initializing Gemini LLM (gemini-3-flash-preview, temp=0.4)")
         _gemini_llm = ChatGoogleGenerativeAI(
             model="gemini-3-flash-preview",  # Latest Gemini model
             google_api_key=settings.GEMINI_API_KEY,
@@ -99,15 +100,17 @@ async def analysis_node(
             HumanMessage(content=user_prompt),
         ]
 
-        logger.info(f"USER PROMPT DIKIRIM KE AI: {user_prompt}")
+        logger.debug(f"[Job {job_id}] User prompt: {user_prompt}...")
 
         # Invoke Gemini (async)
+        import time as _time
+        _gemini_start = _time.time()
         response = await llm.ainvoke(messages)
+        _gemini_elapsed = _time.time() - _gemini_start
 
-        logger.info(f"[RESPONSE AI]: {response.content}")
+        logger.info(f"✅ [Job {job_id}] Gemini responded in {_gemini_elapsed:.1f}s")
+        logger.debug(f"[Job {job_id}] Response: {response.content}...")
         await tracker.update_progress(42, phase="Gemini analysis complete")
-
-        logger.info(f"✅ [Job {job_id}] Received Gemini response")
 
         # Step 3: Parse response (42% → 50%)
         logger.info(f"📊 [Job {job_id}] Parsing Gemini response...")
@@ -323,8 +326,13 @@ def _parse_gemini_response(response_text: str, job_id: str) -> list[dict]:
             if _validate_clip_candidate(clip):
                 valid_clips.append(clip)
             else:
-                logger.warning(f"⚠️ [Job {job_id}] Invalid clip candidate: {clip}")
+                logger.warning(
+                    f"⚠️ [Job {job_id}] Clip rejected: "
+                    f"start={clip.get('start')}, end={clip.get('end')}, "
+                    f"title={clip.get('title', 'N/A')}"
+                )
 
+        logger.info(f"[Job {job_id}] Parsed {len(valid_clips)}/{len(clips)} valid clips from Gemini")
         return valid_clips
 
     except json.JSONDecodeError as e:

@@ -34,7 +34,7 @@ CROP_STRENGTH = 1
 # 0.3 = cek ~3x per detik (responsif)
 # 0.5 = cek 2x per detik (balance)
 # 1.0 = cek 1x per detik (cepat proses)
-SAMPLE_INTERVAL = 0.2
+SAMPLE_INTERVAL = 0.3
 
 # Smoothing untuk menghindari crop goyang-goyang
 # 0.0 = tidak ada smoothing (langsung ikuti wajah, bisa goyang)
@@ -113,6 +113,7 @@ class SpeakerDetector:
         self.device = device
         self.face_detector = None
         self._loaded = False
+        self._stats = {}
 
     def load(self):
         if self._loaded:
@@ -133,6 +134,12 @@ class SpeakerDetector:
         try:
             import sys
             import torch
+
+            logger.info(f"  PyTorch {torch.__version__}, CUDA available: {torch.cuda.is_available()}")
+            if torch.cuda.is_available():
+                gpu_props = torch.cuda.get_device_properties(0)
+                vram_gb = gpu_props.total_memory / 1024**3
+                logger.info(f"  GPU: {gpu_props.name}, VRAM: {vram_gb:.1f}GB")
 
             loconet_repo = os.path.normpath(
                 os.path.join(
@@ -164,6 +171,7 @@ class SpeakerDetector:
         if self.face_detector is not None:
             try:
                 bboxes = self.face_detector.detect_faces(frame, conf_th=conf_threshold)
+                self._stats["s3fd_ok"] = self._stats.get("s3fd_ok", 0) + 1
                 return [
                     FaceBBox(
                         x1=float(b[0]),
@@ -175,7 +183,8 @@ class SpeakerDetector:
                     for b in bboxes
                 ]
             except Exception as e:
-                logger.debug(f"S3FD detection failed: {e}")
+                self._stats["s3fd_fail"] = self._stats.get("s3fd_fail", 0) + 1
+                logger.warning(f"S3FD detection failed (fallback to OpenCV): {e}")
         return self._detect_faces_opencv(frame)
 
     def _detect_faces_opencv(self, frame: np.ndarray) -> List[FaceBBox]:
@@ -261,6 +270,10 @@ class SpeakerDetector:
             # Detect faces and compute raw crop_x per sample
             raw_keyframes: List[Tuple[float, int, Optional[FaceBBox]]] = []
             prev_crop_x = center_x
+            self._stats = {}  # reset per clip
+            face_found = 0
+            face_miss = 0
+            frame_fail = 0
 
             for sample_time in sample_times:
                 frame_idx = int(sample_time * fps)
@@ -268,19 +281,31 @@ class SpeakerDetector:
                 ret, frame = cap.read()
 
                 if not ret:
+                    frame_fail += 1
                     raw_keyframes.append((sample_time - start_time, prev_crop_x, None))
                     continue
 
                 faces = self.detect_faces_in_frame(frame)
 
                 if not faces:
+                    face_miss += 1
                     raw_keyframes.append((sample_time - start_time, prev_crop_x, None))
                     continue
 
+                face_found += 1
                 largest_face = max(faces, key=lambda f: f.area)
                 crop_x = self._calc_crop_x(largest_face, frame_width, target_width)
                 raw_keyframes.append((sample_time - start_time, crop_x, largest_face))
                 prev_crop_x = crop_x
+
+            # Detection stats
+            s3fd_fail = self._stats.get("s3fd_fail", 0)
+            logger.info(
+                f"  Clip {clip_idx + 1} detection stats: "
+                f"total={num_samples}, face_found={face_found}, "
+                f"face_miss={face_miss}, frame_fail={frame_fail}, "
+                f"s3fd_errors={s3fd_fail}"
+            )
 
             # Apply exponential smoothing
             smoothed_keyframes = self._smooth_keyframes(raw_keyframes)

@@ -23,6 +23,8 @@ class Job(Base):
     language: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
     duration: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     total_segments: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    source: Mapped[str] = mapped_column(String(20), default="upload")  # "upload" or "youtube"
+    source_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # YouTube URL
     status: Mapped[str] = mapped_column(String(50), default="queued")
     error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
@@ -41,6 +43,8 @@ class Job(Base):
         return {
             "id": self.id,
             "video_name": self.video_name,
+            "source": self.source,
+            "source_url": self.source_url,
             "language": self.language,
             "duration": self.duration,
             "total_segments": self.total_segments,

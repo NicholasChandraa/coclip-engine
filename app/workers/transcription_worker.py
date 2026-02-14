@@ -7,7 +7,9 @@ import os
 import json
 
 
-async def process_video_task(ctx, job_id: str, video_path: str):
+async def process_video_task(
+    ctx, job_id: str, video_path: str, source: str = "upload", youtube_url: str = ""
+):
     """
     Background task for full pipeline processing using LangGraph.
 
@@ -15,34 +17,63 @@ async def process_video_task(ctx, job_id: str, video_path: str):
     The actual pipeline logic is in app.graphs.video_processing_graph.
 
     Full Pipeline Progress:
+      Phase 0: Download (yt-dlp, YouTube only)
       Phase 1: Transcription (WhisperX)  →  0% - 25%
-      Phase 2: Content Analysis (Gemini) → 25% - 50%  [TODO]
-      Phase 3: Video Editing (FFmpeg)    → 50% - 80%  [TODO]
+      Phase 2: Content Analysis (Gemini) → 25% - 50%
+      Phase 3: Video Editing (FFmpeg)    → 50% - 80%
       Phase 4: Finalization              → 80% - 100%
 
     Args:
         ctx: ARQ context (can access Redis connection)
         job_id: Unique job identifier
-        video_path: Path to video file to process
+        video_path: Path to video file to process (empty if YouTube)
+        source: "upload" or "youtube"
+        youtube_url: YouTube URL (only when source="youtube")
     """
     # Import LangGraph pipeline
     from app.graphs import run_video_processing_pipeline
 
     try:
+        # Phase 0: Download YouTube video if needed
+        if source == "youtube" and youtube_url:
+            logger.info(f"📥 [Job {job_id}] Downloading YouTube video: {youtube_url}")
+            await ctx["redis"].set(f"job:{job_id}:status", "downloading")
+
+            from app.utils.downloader import download_video
+
+            result = await download_video(
+                url=youtube_url,
+                output_dir=settings.TEMP_DIR,
+                job_id=job_id,
+            )
+            video_path = result.file_path
+            logger.info(
+                f"✅ [Job {job_id}] YouTube download complete: "
+                f"'{result.title}' ({result.file_size / 1024 / 1024:.1f} MB)"
+            )
+
         logger.info(f"🎬 [Job {job_id}] Starting LangGraph pipeline: {video_path}")
+        file_size = os.path.getsize(video_path) / 1024 / 1024 if os.path.exists(video_path) else 0
+        logger.info(f"📁 [Job {job_id}] Video file: {file_size:.1f} MB")
 
         # Execute LangGraph pipeline
-        # Use non-streaming mode (ainvoke) for simplicity
-        # For real-time updates, switch to use_streaming=True
+        import time as _time
+        _pipeline_start = _time.time()
+
         final_state = await run_video_processing_pipeline(
             redis=ctx["redis"],
             job_id=job_id,
             video_path=video_path,
+            source=source,
+            source_url=youtube_url,
         )
+
+        _pipeline_elapsed = _time.time() - _pipeline_start
 
         # Check final status
         final_status = final_state.get("status", "unknown")
         errors = final_state.get("errors", [])
+        clips_count = len(final_state.get("clips", []))
 
         if final_status == "failed":
             error_msg = errors[0] if errors else "Pipeline failed with unknown error"
@@ -55,7 +86,10 @@ async def process_video_task(ctx, job_id: str, video_path: str):
                     f"(some clips may have failed)"
                 )
             else:
-                logger.info(f"✅ [Job {job_id}] Pipeline completed successfully!")
+                logger.info(
+                    f"✅ [Job {job_id}] Pipeline completed in {_pipeline_elapsed:.1f}s, "
+                    f"{clips_count} clips generated"
+                )
 
     except Exception as e:
         logger.error(f"❌ [Job {job_id}] Pipeline failed: {e}", exc_info=True)

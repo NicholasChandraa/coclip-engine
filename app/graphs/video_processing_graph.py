@@ -86,7 +86,11 @@ def create_video_processing_graph(redis: aioredis.Redis, job_id: str):
 
 
 async def run_video_processing_pipeline(
-    redis: aioredis.Redis, job_id: str, video_path: str
+    redis: aioredis.Redis,
+    job_id: str,
+    video_path: str,
+    source: str = "upload",
+    source_url: str = "",
 ):
     """
     Execute video processing pipeline with LangGraph.
@@ -95,6 +99,8 @@ async def run_video_processing_pipeline(
         redis: Async Redis connection
         job_id: Unique job identifier
         video_path: Path to video file
+        source: "upload" or "youtube"
+        source_url: Original YouTube URL (if source="youtube")
 
     Returns:
         Final state after pipeline completion
@@ -106,6 +112,9 @@ async def run_video_processing_pipeline(
 
     # Create initial state
     initial_state = create_initial_state(job_id, video_path)
+    initial_state["source"] = source
+    if source_url:
+        initial_state["source_url"] = source_url
 
     # Config with thread_id for checkpointing
     config = {"configurable": {"thread_id": job_id}}
@@ -114,5 +123,13 @@ async def run_video_processing_pipeline(
 
     # Standard execution mode
     final_state = await graph.ainvoke(initial_state, config=config)
+
+    final_status = final_state.get("status", "unknown")
+    final_clips = len(final_state.get("clips", []))
+    final_errors = len(final_state.get("errors", []))
+    logger.info(
+        f"🏁 [Job {job_id}] Pipeline finished: "
+        f"status={final_status}, clips={final_clips}, errors={final_errors}"
+    )
 
     return final_state

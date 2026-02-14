@@ -31,6 +31,8 @@ class VideoProcessingState(TypedDict):
     # ===== Input Fields =====
     job_id: str  # Unique job identifier
     video_path: str  # Path to video file
+    source: str  # "upload" or "youtube"
+    source_url: NotRequired[Optional[str]]  # YouTube URL (if source="youtube")
 
     # ===== Processing Data (Optional) =====
     audio_data: NotRequired[
@@ -76,6 +78,7 @@ def create_initial_state(job_id: str, video_path: str) -> VideoProcessingState:
     return VideoProcessingState(
         job_id=job_id,
         video_path=video_path,
+        source="upload",
         clips=[],  # Initialize empty list for Annotated[List, operator.add]
         errors=[],  # Initialize empty list for error accumulation
         progress=0,

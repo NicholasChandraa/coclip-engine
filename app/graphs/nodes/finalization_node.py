@@ -50,6 +50,11 @@ async def finalization_node(state: VideoProcessingState, redis: aioredis.Redis) 
 
         # Step 1: Save final result to Redis cache (80% → 85%)
         if current_status != "failed" and transcription:
+            logger.info(
+                f"💾 [Job {job_id}] Caching to Redis: "
+                f"lang={transcription.language}, duration={transcription.duration:.1f}s, "
+                f"segments={transcription.total_segments}, clips={len(clips)}"
+            )
             await redis.set(
                 f"job:{job_id}:transcription",
                 transcription.model_dump_json(),
@@ -68,6 +73,7 @@ async def finalization_node(state: VideoProcessingState, redis: aioredis.Redis) 
 
             await redis.set(f"job:{job_id}:result", json.dumps(final_result), ex=3600)
         else:
+            logger.warning(f"⚠️ [Job {job_id}] Caching failed result to Redis, errors={len(errors)}")
             final_result = {"job_id": job_id, "status": "failed", "errors": errors}
             await redis.set(f"job:{job_id}:result", json.dumps(final_result), ex=3600)
 
@@ -90,6 +96,8 @@ async def finalization_node(state: VideoProcessingState, redis: aioredis.Redis) 
                         video_name=(
                             os.path.basename(video_path) if video_path else "unknown"
                         ),
+                        source=state.get("source", "upload"),
+                        source_url=state.get("source_url"),
                         language=transcription.language if transcription else None,
                         duration=transcription.duration if transcription else None,
                         total_segments=(
@@ -100,6 +108,8 @@ async def finalization_node(state: VideoProcessingState, redis: aioredis.Redis) 
                         completed_at=datetime.now(timezone.utc),
                     )
                     session.add(job)
+
+                    logger.info(f"💾 [Job {job_id}] DB: saving job (status={job_status})")
 
                     # Create Clip records
                     for clip_data in clips:

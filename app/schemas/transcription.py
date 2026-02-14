@@ -34,6 +34,11 @@ class TranscriptionSegment(BaseModel):
     speaker: Optional[str] = None  # Speaker label dari diarization
 
 
+class YouTubeRequest(BaseModel):
+    """Request body untuk YouTube URL transcription."""
+    url: str  # YouTube video URL
+
+
 class TranscribeAsyncResponse(BaseModel):
     """Response untuk async transcription endpoint."""
     job_id: str

@@ -59,3 +59,14 @@ class Settings(BaseModel):
 
 
 settings = Settings()
+
+# Log settings saat module di-import (sekali saja)
+import logging as _logging
+_cfg_logger = _logging.getLogger("coclip")
+_cfg_logger.info(
+    f"Settings loaded: device={settings.WHISPER_DEVICE}, "
+    f"compute={settings.WHISPER_COMPUTE_TYPE}, "
+    f"format={settings.OUTPUT_FORMAT}, "
+    f"smart_crop={settings.ENABLE_SMART_CROP}, "
+    f"diarization={settings.ENABLE_DIARIZATION}"
+)

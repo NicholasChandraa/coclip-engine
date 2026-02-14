@@ -3,6 +3,9 @@ Smart Crop Test - Dynamic Face Tracking with Smooth Transitions
 Compare center crop vs dynamic smart crop that follows faces smoothly.
 """
 
+import warnings
+warnings.filterwarnings("ignore", message=".*An output with one or more elements was resized.*")
+
 import os
 import json
 import asyncio

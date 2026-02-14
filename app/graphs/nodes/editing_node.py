@@ -298,23 +298,28 @@ async def _cut_clip_ffmpeg(
     )
 
     try:
+        import time as _time
+        _ffmpeg_start = _time.time()
+
         process = await asyncio.create_subprocess_exec(
             *cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
         stdout, stderr = await process.communicate()
+        _ffmpeg_elapsed = _time.time() - _ffmpeg_start
 
         if process.returncode != 0:
             error_msg = stderr.decode()[-500:]
             logger.error(
-                f"❌ [Job {job_id}] FFmpeg failed for clip {clip_index}: {error_msg}"
+                f"❌ [Job {job_id}] FFmpeg failed for clip {clip_index} "
+                f"({_ffmpeg_elapsed:.1f}s): {error_msg}"
             )
             return {"success": False, "error": error_msg}
 
         file_size = os.path.getsize(output_path)
         logger.info(
-            f"✅ [Job {job_id}] Clip {clip_index} saved: "
+            f"✅ [Job {job_id}] Clip {clip_index} saved in {_ffmpeg_elapsed:.1f}s: "
             f"{output_path} ({file_size / 1024 / 1024:.1f} MB)"
         )
 
@@ -494,17 +499,23 @@ async def editing_node(
                 ass_filename = f"clip_{clip_num}.ass"
                 ass_path = os.path.join(job_clips_dir, ass_filename)
 
-                subtitle_path = generate_ass_subtitle(
-                    segments=segments,
-                    clip_start=clip_start,
-                    clip_end=clip_end,
-                    output_path=ass_path,
-                    job_id=job_id,
-                    video_width=target_format.width,
-                    video_height=target_format.height,
-                    font_size=target_format.subtitle_size,
-                    margin_bottom=target_format.subtitle_margin_bottom,
-                )
+                try:
+                    subtitle_path = generate_ass_subtitle(
+                        segments=segments,
+                        clip_start=clip_start,
+                        clip_end=clip_end,
+                        output_path=ass_path,
+                        job_id=job_id,
+                        video_width=target_format.width,
+                        video_height=target_format.height,
+                        font_size=target_format.subtitle_size,
+                        margin_bottom=target_format.subtitle_margin_bottom,
+                    )
+                    if not subtitle_path:
+                        logger.warning(f"⚠️ [Job {job_id}] Clip {clip_num}: subtitle generation returned None")
+                except Exception as e:
+                    logger.warning(f"⚠️ [Job {job_id}] Clip {clip_num}: subtitle generation failed: {e}")
+                    subtitle_path = None
 
             # Step B: Determine crop filter (smart keyframe or center)
             clip_crop_filter = default_crop_filter

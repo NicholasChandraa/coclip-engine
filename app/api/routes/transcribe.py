@@ -4,6 +4,7 @@ from app.core.config import settings
 from app.utils.logging import logger
 from app.schemas.transcription import (
     SegmentPreview,
+    YouTubeRequest,
     TranscribeAsyncResponse,
     JobStatusResponse,
     TranscriptionResult,
@@ -57,10 +58,13 @@ async def transcribe_async(file: UploadFile = File(...)):
     """
 
     # Step 1: Validasi File Type
+    logger.info(f"📤 Upload request: {file.filename} ({file.content_type})")
+
     if not file.content_type or (
         not file.content_type.startswith("audio/")
         and not file.content_type.startswith("video/")
     ):
+        logger.warning(f"❌ Upload rejected: invalid type {file.content_type}")
         raise HTTPException(
             status_code=400, detail="File must be audio or video format"
         )
@@ -126,6 +130,80 @@ async def transcribe_async(file: UploadFile = File(...)):
 
         raise HTTPException(
             status_code=500, detail=f"Failed to enqueue transcription job: {str(e)}"
+        )
+
+
+@router.post("/transcribe-youtube", response_model=TranscribeAsyncResponse)
+async def transcribe_youtube(request: YouTubeRequest):
+    """
+    Submit YouTube URL for async video processing.
+
+    Flow:
+    1. Validate YouTube URL format
+    2. Generate job_id
+    3. Enqueue job to ARQ (download happens in worker)
+    4. Return job_id immediately
+
+    Args:
+        request: YouTubeRequest with url field
+
+    Returns:
+        TranscribeAsyncResponse dengan job_id dan status "queued"
+    """
+    from app.utils.downloader import validate_youtube_url
+
+    url = request.url.strip()
+    logger.info(f"🔗 YouTube request: {url}")
+
+    # Validate URL
+    if not validate_youtube_url(url):
+        logger.warning(f"❌ Invalid YouTube URL: {url}")
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid YouTube URL. Supported: youtube.com/watch, youtu.be, youtube.com/shorts",
+        )
+
+    job_id = str(uuid.uuid4())
+
+    try:
+        # Enqueue job to ARQ — download will happen in worker
+        redis_pool = await create_pool(
+            RedisSettings(
+                host=settings.REDIS_HOST,
+                port=settings.REDIS_PORT,
+                database=settings.REDIS_DB,
+            )
+        )
+
+        # video_path is empty string — worker will download first
+        await redis_pool.enqueue_job(
+            "process_video_task",
+            job_id,
+            "",  # no video_path yet, worker downloads it
+            "youtube",  # source
+            url,  # youtube_url
+        )
+
+        # Set initial status
+        redis = await get_redis_connection()
+        await redis.set(f"job:{job_id}:status", "queued")
+        await redis.set(f"job:{job_id}:progress", "0")
+        await redis.set(f"job:{job_id}:filename", url)
+        await redis.close()
+
+        logger.info(f"✅ [Job {job_id}] YouTube job enqueued: {url}")
+
+        return TranscribeAsyncResponse(
+            job_id=job_id,
+            status="queued",
+            message=f"YouTube video queued for processing: {url}",
+        )
+
+    except Exception as e:
+        logger.error(f"❌ [Job {job_id}] Failed to enqueue YouTube job: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to enqueue YouTube job: {str(e)}",
         )
 
 
@@ -275,11 +353,13 @@ async def download_clip(job_id: str, clip_number: int):
     clip_path = os.path.join(settings.CLIPS_DIR, job_id, f"clip_{clip_number}.mp4")
 
     if not os.path.exists(clip_path):
+        logger.warning(f"⚠️ Clip download 404: job={job_id}, clip={clip_number}")
         raise HTTPException(
             status_code=404,
             detail=f"Clip {clip_number} for job {job_id} not found",
         )
 
+    logger.info(f"📥 Clip download: job={job_id}, clip={clip_number}")
     return FileResponse(
         path=clip_path,
         media_type="video/mp4",

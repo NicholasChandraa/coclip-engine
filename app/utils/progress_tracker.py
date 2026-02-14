@@ -65,8 +65,12 @@ class ProgressTracker:
         Returns:
             Current progress (0-100)
         """
-        progress = await self.redis.get(self._progress_key)
-        return int(progress) if progress else 0
+        try:
+            progress = await self.redis.get(self._progress_key)
+            return int(progress) if progress else 0
+        except Exception as e:
+            logger.warning(f"[Job {self.job_id}] Redis get_progress failed: {e}")
+            return 0
 
     async def get_status(self) -> str:
         """
@@ -75,8 +79,12 @@ class ProgressTracker:
         Returns:
             Current status string
         """
-        status = await self.redis.get(self._status_key)
-        return status.decode() if status else "unknown"
+        try:
+            status = await self.redis.get(self._status_key)
+            return status.decode() if status else "unknown"
+        except Exception as e:
+            logger.warning(f"[Job {self.job_id}] Redis get_status failed: {e}")
+            return "unknown"
 
     async def set_error(self, error: str) -> None:
         """

@@ -41,7 +41,7 @@ def setup_logger(name: str = "coclip"):
 
     # Configure root logger
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format="%(message)s",
         datefmt="[%X]",
         handlers=[console_handler, file_handler],

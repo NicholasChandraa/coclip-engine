@@ -17,6 +17,10 @@ class Base(DeclarativeBase):
 
 
 # Create async engine
+# Mask password in URL for logging
+_db_url_masked = settings.DATABASE_URL.split("@")[-1] if "@" in settings.DATABASE_URL else settings.DATABASE_URL
+logger.info(f"Database engine: postgresql+asyncpg@{_db_url_masked} (pool=5, overflow=10)")
+
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=False,
