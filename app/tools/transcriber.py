@@ -93,7 +93,7 @@ class WhisperXTranscriber:
     # Config
     _device: str = settings.WHISPER_DEVICE
     _compute_type: str = settings.WHISPER_COMPUTE_TYPE
-    _batch_size: int = 16  # Adjust based on GPU memory
+    _batch_size: int = 4  # Safe default, auto-adjusted in load_model()
 
     def __new__(cls):
         """Singleton pattern."""
@@ -117,6 +117,19 @@ class WhisperXTranscriber:
                     start_time = time.time()
 
                     try:
+                        # Auto-detect batch_size based on VRAM
+                        if self._device == "cuda":
+                            import torch
+                            if torch.cuda.is_available():
+                                vram_gb = torch.cuda.get_device_properties(0).total_memory / 1024**3
+                                if vram_gb >= 12:
+                                    self._batch_size = 16
+                                elif vram_gb >= 8:
+                                    self._batch_size = 8
+                                else:
+                                    self._batch_size = 5
+                                logger.info(f"  VRAM: {vram_gb:.1f}GB → batch_size={self._batch_size}")
+
                         self._model = whisperx.load_model(
                             settings.WHISPER_MODEL,
                             self._device,
@@ -129,6 +142,35 @@ class WhisperXTranscriber:
                         logger.error(f"❌ Failed to load WhisperX model: {e}")
                         logger.error(traceback.format_exc())
                         raise e
+
+    def unload_all(self) -> None:
+        """
+        Unload all models from GPU to free VRAM.
+        Models will be re-loaded on next job if needed.
+        """
+        import torch
+        import gc
+
+        logger.info("🗑️ Unloading WhisperX models from GPU...")
+
+        if self._model is not None:
+            del self._model
+            self._model = None
+
+        if self._align_model is not None:
+            del self._align_model
+            self._align_model = None
+            self._align_metadata = None
+
+        if self._diarize_model is not None:
+            del self._diarize_model
+            self._diarize_model = None
+
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            vram_free = torch.cuda.mem_get_info()[0] / 1024**3
+            logger.info(f"✅ WhisperX unloaded. GPU free: {vram_free:.1f}GB")
 
     def _load_align_model(self, language_code: str) -> None:
         """
@@ -236,15 +278,25 @@ class WhisperXTranscriber:
 
         assert self._model is not None, "Model should be loaded"
 
-        logger.info("📝 Step 1/3: Transcribing audio...")
+        logger.info(f"📝 Step 1/3: Transcribing audio (batch_size={self._batch_size})...")
         start = time.time()
 
-        result = self._model.transcribe(audio, batch_size=self._batch_size)
-
-        duration = time.time() - start
-        logger.info(f"✅ Transcription done in {duration:.2f}s. Language: {result['language']}")
-
-        return result
+        batch_size = self._batch_size
+        while batch_size >= 1:
+            try:
+                result = self._model.transcribe(audio, batch_size=batch_size)
+                duration = time.time() - start
+                logger.info(f"✅ Transcription done in {duration:.2f}s. Language: {result['language']}")
+                return result
+            except RuntimeError as e:
+                if "out of memory" in str(e).lower() and batch_size > 1:
+                    import torch, gc
+                    gc.collect()
+                    torch.cuda.empty_cache()
+                    batch_size = max(1, batch_size // 2)
+                    logger.warning(f"⚠️ OOM! Retrying with batch_size={batch_size}...")
+                else:
+                    raise
 
     def step_align(self, segments: list, audio, language: str) -> dict:
         """

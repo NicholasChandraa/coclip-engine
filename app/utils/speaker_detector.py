@@ -13,12 +13,19 @@ Pipeline:
 """
 
 import os
+import time
+import tempfile
+import subprocess
 import cv2
 import numpy as np
 from typing import List, Optional, Tuple
 from dataclasses import dataclass, field
 
 from app.utils.logging import logger
+
+# Max resolution for face detection (resize frame if larger)
+# S3FD ga butuh full resolution — 640px width cukup untuk detect muka
+DETECTION_MAX_WIDTH = 640
 
 # ── Tuning Constants ────────────────────────────────────────────────────
 # Ubah nilai-nilai ini untuk adjust behavior smart crop
@@ -165,19 +172,60 @@ class SpeakerDetector:
 
     # ── Face Detection ──────────────────────────────────────────────────────
 
-    def detect_faces_in_frame(
+    def _resize_for_detection(self, frame: np.ndarray) -> Tuple[np.ndarray, float]:
+        """
+        Resize frame for faster face detection.
+        Returns (resized_frame, scale_factor).
+        Scale factor is used to map bbox coordinates back to original size.
+        """
+        h, w = frame.shape[:2]
+        if w <= DETECTION_MAX_WIDTH:
+            return frame, 1.0
+        scale = DETECTION_MAX_WIDTH / w
+        new_w = DETECTION_MAX_WIDTH
+        new_h = int(h * scale)
+        resized = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
+        return resized, scale
+
+    def _detect_faces_raw(
         self, frame: np.ndarray, conf_threshold: float = 0.7
     ) -> List[FaceBBox]:
+        """Detect faces on an already-resized frame (no resize step)."""
         if self.face_detector is not None:
             try:
                 bboxes = self.face_detector.detect_faces(frame, conf_th=conf_threshold)
                 self._stats["s3fd_ok"] = self._stats.get("s3fd_ok", 0) + 1
                 return [
                     FaceBBox(
-                        x1=float(b[0]),
-                        y1=float(b[1]),
-                        x2=float(b[2]),
-                        y2=float(b[3]),
+                        x1=float(b[0]), y1=float(b[1]),
+                        x2=float(b[2]), y2=float(b[3]),
+                        confidence=float(b[4]),
+                    )
+                    for b in bboxes
+                ]
+            except Exception as e:
+                self._stats["s3fd_fail"] = self._stats.get("s3fd_fail", 0) + 1
+                logger.warning(f"S3FD detection failed (fallback to OpenCV): {e}")
+        return self._detect_faces_opencv(frame)
+
+    def detect_faces_in_frame(
+        self, frame: np.ndarray, conf_threshold: float = 0.7
+    ) -> List[FaceBBox]:
+        # Resize for speed
+        small_frame, scale = self._resize_for_detection(frame)
+
+        if self.face_detector is not None:
+            try:
+                bboxes = self.face_detector.detect_faces(small_frame, conf_th=conf_threshold)
+                self._stats["s3fd_ok"] = self._stats.get("s3fd_ok", 0) + 1
+                # Scale bbox coordinates back to original resolution
+                inv_scale = 1.0 / scale
+                return [
+                    FaceBBox(
+                        x1=float(b[0]) * inv_scale,
+                        y1=float(b[1]) * inv_scale,
+                        x2=float(b[2]) * inv_scale,
+                        y2=float(b[3]) * inv_scale,
                         confidence=float(b[4]),
                     )
                     for b in bboxes
@@ -218,6 +266,115 @@ class SpeakerDetector:
         crop_x = int(center_x + (face_crop_x - center_x) * strength)
         return max(0, min(crop_x, frame_width - target_width))
 
+    # ── Frame Extraction ─────────────────────────────────────────────────────
+
+    def _extract_frames_ffmpeg(
+        self, video_path: str, sample_times: List[float], max_width: int = DETECTION_MAX_WIDTH
+    ) -> List[Optional[np.ndarray]]:
+        """
+        Extract frames at regular intervals using a single FFmpeg command.
+        Uses fps filter for consistent frame extraction — much faster than per-frame seeking.
+
+        Returns list of frames (or None for failed extractions).
+        """
+        if not sample_times:
+            return []
+
+        tmp_dir = tempfile.mkdtemp(prefix="coclip_frames_")
+
+        try:
+            start_time = sample_times[0]
+            end_time = sample_times[-1] + 0.5  # small buffer
+            duration = end_time - start_time
+            num_frames = len(sample_times)
+
+            # Calculate fps to get approximately the right number of frames
+            target_fps = num_frames / duration if duration > 0 else 2.0
+
+            out_pattern = os.path.join(tmp_dir, "frame_%04d.jpg")
+
+            cmd = [
+                "ffmpeg", "-y",
+                "-ss", f"{start_time:.3f}",
+                "-t", f"{duration:.3f}",
+                "-i", video_path,
+                "-vf", f"fps={target_fps:.4f},scale={max_width}:-1",
+                "-q:v", "2",
+                out_pattern,
+            ]
+
+            result = subprocess.run(
+                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                timeout=300,
+            )
+
+            if result.returncode != 0:
+                stderr = result.stderr.decode(errors="ignore")[-200:]
+                logger.warning(f"FFmpeg batch extraction failed: {stderr}")
+                return self._extract_frames_ffmpeg_fallback(video_path, sample_times, max_width, tmp_dir)
+
+            # Read extracted frames
+            frames = []
+            i = 1
+            while True:
+                frame_path = os.path.join(tmp_dir, f"frame_{i:04d}.jpg")
+                if not os.path.exists(frame_path):
+                    break
+                frames.append(cv2.imread(frame_path))
+                i += 1
+
+            # Pad or trim to match expected count
+            if len(frames) < num_frames:
+                # Pad with last frame or None
+                last = frames[-1] if frames else None
+                while len(frames) < num_frames:
+                    frames.append(last)
+            elif len(frames) > num_frames:
+                frames = frames[:num_frames]
+
+            return frames
+
+        except Exception as e:
+            logger.warning(f"FFmpeg frame extraction failed: {e}")
+            return [None] * len(sample_times)
+        finally:
+            # Cleanup temp frames
+            for f in os.listdir(tmp_dir):
+                try:
+                    os.remove(os.path.join(tmp_dir, f))
+                except OSError:
+                    pass
+            try:
+                os.rmdir(tmp_dir)
+            except OSError:
+                pass
+
+    def _extract_frames_ffmpeg_fallback(
+        self, video_path: str, sample_times: List[float], max_width: int, tmp_dir: str
+    ) -> List[Optional[np.ndarray]]:
+        """Fallback: extract frames one by one with -ss seeking."""
+        frames = []
+        for i, t in enumerate(sample_times):
+            out_path = os.path.join(tmp_dir, f"fallback_{i:04d}.jpg")
+            cmd = [
+                "ffmpeg", "-y",
+                "-ss", f"{t:.3f}",
+                "-i", video_path,
+                "-vframes", "1",
+                "-vf", f"scale={max_width}:-1",
+                "-q:v", "2",
+                out_path,
+            ]
+            result = subprocess.run(
+                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                timeout=10,
+            )
+            if result.returncode == 0 and os.path.exists(out_path):
+                frames.append(cv2.imread(out_path))
+            else:
+                frames.append(None)
+        return frames
+
     # ── Main Detection Pipeline ─────────────────────────────────────────────
 
     def detect_active_speakers(
@@ -234,7 +391,7 @@ class SpeakerDetector:
         Detect faces across each clip and produce smoothed crop keyframes.
 
         For each clip:
-        1. Sample a frame every `sample_interval` seconds
+        1. Extract frames via FFmpeg (fast seeking)
         2. Detect largest face → compute raw crop_x
         3. Apply exponential smoothing to avoid jitter
         4. Return keyframes for FFmpeg animated crop
@@ -242,12 +399,12 @@ class SpeakerDetector:
         results = []
         center_x = (frame_width - target_width) // 2
 
-        cap = cv2.VideoCapture(video_path)
-        if not cap.isOpened():
-            logger.error(f"Cannot open video: {video_path}")
-            return self._fallback_positions(clip_candidates, frame_width, target_width)
-
-        fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
+        total_clips = len(clip_candidates)
+        logger.info(
+            f"Starting face detection: {total_clips} clips, "
+            f"video={frame_width}x{frame_height}, "
+            f"detection_width={min(frame_width, DETECTION_MAX_WIDTH)}px"
+        )
 
         for clip_idx, clip in enumerate(clip_candidates):
             start_time = clip.get("start_time", 0)
@@ -267,42 +424,80 @@ class SpeakerDetector:
                 for i in range(num_samples)
             ]
 
-            # Detect faces and compute raw crop_x per sample
+            logger.info(
+                f"  Clip {clip_idx + 1}/{total_clips}: "
+                f"{duration:.1f}s ({start_time:.1f}-{end_time:.1f}), "
+                f"{num_samples} samples"
+            )
+
+            # Extract all frames via FFmpeg (fast)
+            logger.info(f"    Extracting {num_samples} frames via FFmpeg...")
+            t_extract = time.time()
+            extracted_frames = self._extract_frames_ffmpeg(video_path, sample_times)
+            extract_elapsed = time.time() - t_extract
+            extracted_ok = sum(1 for f in extracted_frames if f is not None)
+            logger.info(
+                f"    Extracted {extracted_ok}/{num_samples} frames in {extract_elapsed:.1f}s"
+            )
+
+            # Detect faces on extracted frames
             raw_keyframes: List[Tuple[float, int, Optional[FaceBBox]]] = []
             prev_crop_x = center_x
             self._stats = {}  # reset per clip
             face_found = 0
             face_miss = 0
             frame_fail = 0
+            detect_start = time.time()
 
-            for sample_time in sample_times:
-                frame_idx = int(sample_time * fps)
-                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
-                ret, frame = cap.read()
-
-                if not ret:
+            for sample_idx, (sample_time, frame) in enumerate(
+                zip(sample_times, extracted_frames)
+            ):
+                if frame is None:
                     frame_fail += 1
                     raw_keyframes.append((sample_time - start_time, prev_crop_x, None))
                     continue
 
-                faces = self.detect_faces_in_frame(frame)
+                t0 = time.time()
+                # Frame already resized by FFmpeg, skip resize in detect
+                faces = self._detect_faces_raw(frame)
+                detect_ms = (time.time() - t0) * 1000
 
-                if not faces:
+                # Log progress every 10 frames
+                if sample_idx % 10 == 0 or sample_idx == num_samples - 1:
+                    logger.debug(
+                        f"    Detect {sample_idx + 1}/{num_samples} "
+                        f"({detect_ms:.0f}ms, faces={len(faces)})"
+                    )
+
+                # Scale face coordinates back to original resolution
+                scale = frame_width / frame.shape[1] if frame.shape[1] > 0 else 1.0
+                scaled_faces = [
+                    FaceBBox(
+                        x1=f.x1 * scale, y1=f.y1 * scale,
+                        x2=f.x2 * scale, y2=f.y2 * scale,
+                        confidence=f.confidence,
+                    )
+                    for f in faces
+                ]
+
+                if not scaled_faces:
                     face_miss += 1
                     raw_keyframes.append((sample_time - start_time, prev_crop_x, None))
                     continue
 
                 face_found += 1
-                largest_face = max(faces, key=lambda f: f.area)
+                largest_face = max(scaled_faces, key=lambda f: f.area)
                 crop_x = self._calc_crop_x(largest_face, frame_width, target_width)
                 raw_keyframes.append((sample_time - start_time, crop_x, largest_face))
                 prev_crop_x = crop_x
 
-            # Detection stats
+            clip_elapsed = time.time() - detect_start
+            total_elapsed = time.time() - t_extract
             s3fd_fail = self._stats.get("s3fd_fail", 0)
             logger.info(
-                f"  Clip {clip_idx + 1} detection stats: "
-                f"total={num_samples}, face_found={face_found}, "
+                f"  Clip {clip_idx + 1}/{total_clips} done in {total_elapsed:.1f}s "
+                f"(extract={extract_elapsed:.1f}s, detect={clip_elapsed:.1f}s): "
+                f"face_found={face_found}, "
                 f"face_miss={face_miss}, frame_fail={frame_fail}, "
                 f"s3fd_errors={s3fd_fail}"
             )
@@ -341,7 +536,6 @@ class SpeakerDetector:
                 f"primary crop_x={primary_crop_x}"
             )
 
-        cap.release()
         return results
 
     def _smooth_keyframes(

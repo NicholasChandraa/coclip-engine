@@ -1,0 +1,1008 @@
+2026-02-14 16:19:10 | INFO     | coclip:transcriber.py:358 | ✅ Diarization done in 353.79s. Speakers: {'SPEAKER_00'}
+2026-02-14 16:19:10 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 23% | Phase: Diarization complete
+2026-02-14 16:19:10 | INFO     | coclip:transcription_node.py:78 | 📝 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Formatting transcription result...
+2026-02-14 16:19:10 | INFO     | coclip:transcriber.py:154 | 🗑️ Unloading WhisperX models from GPU...
+2026-02-14 16:19:11 | INFO     | coclip:transcriber.py:173 | ✅ WhisperX unloaded. GPU free: 3.2GB
+2026-02-14 16:19:11 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 25% | Status: analyzing | Phase: Phase 1 complete
+2026-02-14 16:19:11 | INFO     | coclip:transcription_node.py:86 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Phase 1 COMPLETE! Language: id, Segments: 108
+2026-02-14 16:19:11 | INFO     | coclip:analysis_node.py:65 | 🧠 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Starting Phase 2: Gemini Content Analysis
+2026-02-14 16:19:11 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 25% | Status: analyzing | Phase: Phase 2: Content Analysis
+2026-02-14 16:19:11 | INFO     | coclip:analysis_node.py:84 | 📝 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Preparing transcript for Gemini...
+2026-02-14 16:19:11 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 28% | Phase: Transcript prepared
+2026-02-14 16:19:11 | INFO     | coclip:analysis_node.py:89 | 🤖 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Sending transcript to Gemini for analysis...
+2026-02-14 16:19:11 | INFO     | coclip:analysis_node.py:30 | Initializing Gemini LLM (gemini-3-flash-preview, temp=0.4)
+2026-02-14 16:19:12 | INFO     | google_genai.models:models.py:7325 | AFC is enabled with max remote calls: 10.
+2026-02-14 16:19:34 | INFO     | coclip:analysis_node.py:111 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Gemini responded in 21.4s
+2026-02-14 16:19:34 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 42% | Phase: Gemini analysis complete
+2026-02-14 16:19:34 | INFO     | coclip:analysis_node.py:116 | 📊 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Parsing Gemini response...
+2026-02-14 16:19:34 | INFO     | coclip:analysis_node.py:335 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Parsed 6/6 valid clips from Gemini
+2026-02-14 16:19:34 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 50% | Status: editing | Phase: Phase 2 complete
+2026-02-14 16:19:34 | INFO     | coclip:analysis_node.py:120 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Phase 2 COMPLETE! Found 6 clip candidates
+2026-02-14 16:19:34 | INFO     | coclip:editing_node.py:371 | 🎬 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Starting Phase 3: Video Editing + Subtitles
+2026-02-14 16:19:34 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 50% | Status: editing | Phase: Phase 3: Video Editing
+2026-02-14 16:19:34 | INFO     | coclip:editing_node.py:398 | 🔍 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Detecting video resolution...
+2026-02-14 16:19:34 | INFO     | coclip:editing_node.py:400 | 📐 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Input: 1920x1080
+2026-02-14 16:19:34 | INFO     | coclip:editing_node.py:405 | 🎯 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Target format: TikTok vertical (1080x1920) (1080x1920)
+2026-02-14 16:19:34 | INFO     | coclip:editing_node.py:429 | 🎯 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Smart Crop: Detecting faces...
+2026-02-14 16:19:34 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 52% | Status: editing | Phase: Detecting faces for smart crop...
+2026-02-14 16:19:34 | INFO     | coclip:speaker_detector.py:128 | Loading face detector...
+2026-02-14 16:19:34 | INFO     | coclip:speaker_detector.py:145 |   PyTorch 2.6.0+cu124, CUDA available: True
+2026-02-14 16:19:34 | INFO     | coclip:speaker_detector.py:149 |   GPU: NVIDIA GeForce RTX 3050 Laptop GPU, VRAM: 4.0GB
+2026-02-14 16:19:34 | INFO     | coclip:speaker_detector.py:168 |   S3FD face detector loaded on cuda
+2026-02-14 16:19:34 | INFO     | coclip:speaker_detector.py:131 | Face detector loaded
+2026-02-14 16:19:34 | INFO     | coclip:speaker_detector.py:409 | Starting face detection: 6 clips, video=1920x1080, detection_width=640px
+2026-02-14 16:19:34 | INFO     | coclip:speaker_detector.py:433 |   Clip 1/6: 61.0s (0.0-61.0), 204 samples
+2026-02-14 16:19:34 | INFO     | coclip:speaker_detector.py:440 |     Extracting 204 frames via FFmpeg...
+2026-02-14 16:19:41 | INFO     | coclip:speaker_detector.py:445 |     Extracted 204/204 frames in 6.8s
+2026-02-14 16:19:42 | INFO     | coclip:speaker_detector.py:473 |     Detect 1/204 (554ms, faces=1)
+2026-02-14 16:19:42 | INFO     | coclip:speaker_detector.py:473 |     Detect 11/204 (59ms, faces=1)
+2026-02-14 16:19:43 | INFO     | coclip:speaker_detector.py:473 |     Detect 21/204 (63ms, faces=1)
+2026-02-14 16:19:44 | INFO     | coclip:speaker_detector.py:473 |     Detect 31/204 (68ms, faces=1)
+2026-02-14 16:19:44 | INFO     | coclip:speaker_detector.py:473 |     Detect 41/204 (72ms, faces=1)
+2026-02-14 16:19:45 | INFO     | coclip:speaker_detector.py:473 |     Detect 51/204 (61ms, faces=1)
+2026-02-14 16:19:46 | INFO     | coclip:speaker_detector.py:473 |     Detect 61/204 (67ms, faces=1)
+2026-02-14 16:19:46 | INFO     | coclip:speaker_detector.py:473 |     Detect 71/204 (63ms, faces=1)
+2026-02-14 16:19:47 | INFO     | coclip:speaker_detector.py:473 |     Detect 81/204 (74ms, faces=1)
+2026-02-14 16:19:48 | INFO     | coclip:speaker_detector.py:473 |     Detect 91/204 (81ms, faces=1)
+2026-02-14 16:19:49 | INFO     | coclip:speaker_detector.py:473 |     Detect 101/204 (69ms, faces=1)
+2026-02-14 16:19:49 | INFO     | coclip:speaker_detector.py:473 |     Detect 111/204 (62ms, faces=1)
+2026-02-14 16:19:50 | INFO     | coclip:speaker_detector.py:473 |     Detect 121/204 (68ms, faces=1)
+2026-02-14 16:19:51 | INFO     | coclip:speaker_detector.py:473 |     Detect 131/204 (103ms, faces=1)
+2026-02-14 16:19:51 | INFO     | coclip:speaker_detector.py:473 |     Detect 141/204 (74ms, faces=1)
+2026-02-14 16:19:52 | INFO     | coclip:speaker_detector.py:473 |     Detect 151/204 (66ms, faces=1)
+2026-02-14 16:19:53 | INFO     | coclip:speaker_detector.py:473 |     Detect 161/204 (74ms, faces=1)
+2026-02-14 16:19:53 | INFO     | coclip:speaker_detector.py:473 |     Detect 171/204 (64ms, faces=1)
+2026-02-14 16:19:54 | INFO     | coclip:speaker_detector.py:473 |     Detect 181/204 (76ms, faces=1)
+2026-02-14 16:19:55 | INFO     | coclip:speaker_detector.py:473 |     Detect 191/204 (70ms, faces=1)
+2026-02-14 16:19:56 | INFO     | coclip:speaker_detector.py:473 |     Detect 201/204 (84ms, faces=1)
+2026-02-14 16:19:56 | INFO     | coclip:speaker_detector.py:473 |     Detect 204/204 (68ms, faces=1)
+2026-02-14 16:19:56 | INFO     | coclip:speaker_detector.py:503 |   Clip 1/6 done in 21.5s (extract=6.8s, detect=14.7s): face_found=201, face_miss=3, frame_fail=0, s3fd_errors=0
+2026-02-14 16:19:56 | INFO     | coclip:speaker_detector.py:540 |   Clip 1: 204 keyframes, primary crop_x=646
+2026-02-14 16:19:56 | INFO     | coclip:speaker_detector.py:433 |   Clip 2/6: 45.0s (62.0-107.0), 151 samples
+2026-02-14 16:19:56 | INFO     | coclip:speaker_detector.py:440 |     Extracting 151 frames via FFmpeg...
+2026-02-14 16:20:00 | WARNING  | coclip:speaker_detector.py:328 | FFmpeg batch extraction failed, falling back to per-frame extraction
+2026-02-14 16:20:52 | INFO     | coclip:speaker_detector.py:445 |     Extracted 151/151 frames in 56.2s
+2026-02-14 16:20:52 | INFO     | coclip:speaker_detector.py:473 |     Detect 1/151 (227ms, faces=1)
+2026-02-14 16:20:53 | INFO     | coclip:speaker_detector.py:473 |     Detect 11/151 (69ms, faces=1)
+2026-02-14 16:20:54 | INFO     | coclip:speaker_detector.py:473 |     Detect 21/151 (77ms, faces=1)
+2026-02-14 16:20:54 | INFO     | coclip:speaker_detector.py:473 |     Detect 31/151 (64ms, faces=1)
+2026-02-14 16:20:55 | INFO     | coclip:speaker_detector.py:473 |     Detect 41/151 (93ms, faces=1)
+2026-02-14 16:20:56 | INFO     | coclip:speaker_detector.py:473 |     Detect 51/151 (77ms, faces=1)
+2026-02-14 16:20:57 | INFO     | coclip:speaker_detector.py:473 |     Detect 61/151 (86ms, faces=1)
+2026-02-14 16:20:57 | INFO     | coclip:speaker_detector.py:473 |     Detect 71/151 (72ms, faces=1)
+2026-02-14 16:20:58 | INFO     | coclip:speaker_detector.py:473 |     Detect 81/151 (73ms, faces=1)
+2026-02-14 16:20:59 | INFO     | coclip:speaker_detector.py:473 |     Detect 91/151 (75ms, faces=1)
+2026-02-14 16:21:00 | INFO     | coclip:speaker_detector.py:473 |     Detect 101/151 (65ms, faces=1)
+2026-02-14 16:21:00 | INFO     | coclip:speaker_detector.py:473 |     Detect 111/151 (74ms, faces=2)
+2026-02-14 16:21:01 | INFO     | coclip:speaker_detector.py:473 |     Detect 121/151 (117ms, faces=2)
+2026-02-14 16:21:02 | INFO     | coclip:speaker_detector.py:473 |     Detect 131/151 (73ms, faces=2)
+2026-02-14 16:21:03 | INFO     | coclip:speaker_detector.py:473 |     Detect 141/151 (72ms, faces=2)
+2026-02-14 16:21:03 | INFO     | coclip:speaker_detector.py:473 |     Detect 151/151 (83ms, faces=2)
+2026-02-14 16:21:03 | INFO     | coclip:speaker_detector.py:503 |   Clip 2/6 done in 67.5s (extract=56.2s, detect=11.4s): face_found=147, face_miss=4, frame_fail=0, s3fd_errors=0
+2026-02-14 16:21:03 | INFO     | coclip:speaker_detector.py:540 |   Clip 2: 151 keyframes, primary crop_x=618
+2026-02-14 16:21:03 | INFO     | coclip:speaker_detector.py:433 |   Clip 3/6: 47.0s (135.0-182.0), 157 samples
+2026-02-14 16:21:03 | INFO     | coclip:speaker_detector.py:440 |     Extracting 157 frames via FFmpeg...
+2026-02-14 16:21:07 | WARNING  | coclip:speaker_detector.py:328 | FFmpeg batch extraction failed, falling back to per-frame extraction
+2026-02-14 16:21:55 | INFO     | coclip:speaker_detector.py:445 |     Extracted 157/157 frames in 51.3s
+2026-02-14 16:21:55 | INFO     | coclip:speaker_detector.py:473 |     Detect 1/157 (353ms, faces=1)
+2026-02-14 16:21:56 | INFO     | coclip:speaker_detector.py:473 |     Detect 11/157 (71ms, faces=1)
+2026-02-14 16:21:56 | INFO     | coclip:speaker_detector.py:473 |     Detect 21/157 (67ms, faces=1)
+2026-02-14 16:21:57 | INFO     | coclip:speaker_detector.py:473 |     Detect 31/157 (66ms, faces=1)
+2026-02-14 16:21:58 | INFO     | coclip:speaker_detector.py:473 |     Detect 41/157 (64ms, faces=1)
+2026-02-14 16:21:59 | INFO     | coclip:speaker_detector.py:473 |     Detect 51/157 (79ms, faces=1)
+2026-02-14 16:21:59 | INFO     | coclip:speaker_detector.py:473 |     Detect 61/157 (66ms, faces=1)
+2026-02-14 16:22:00 | INFO     | coclip:speaker_detector.py:473 |     Detect 71/157 (69ms, faces=1)
+2026-02-14 16:22:01 | INFO     | coclip:speaker_detector.py:473 |     Detect 81/157 (65ms, faces=1)
+2026-02-14 16:22:01 | INFO     | coclip:speaker_detector.py:473 |     Detect 91/157 (86ms, faces=1)
+2026-02-14 16:22:02 | INFO     | coclip:speaker_detector.py:473 |     Detect 101/157 (72ms, faces=1)
+2026-02-14 16:22:03 | INFO     | coclip:speaker_detector.py:473 |     Detect 111/157 (66ms, faces=1)
+2026-02-14 16:22:04 | INFO     | coclip:speaker_detector.py:473 |     Detect 121/157 (71ms, faces=1)
+2026-02-14 16:22:04 | INFO     | coclip:speaker_detector.py:473 |     Detect 131/157 (69ms, faces=1)
+2026-02-14 16:22:05 | INFO     | coclip:speaker_detector.py:473 |     Detect 141/157 (65ms, faces=1)
+2026-02-14 16:22:06 | INFO     | coclip:speaker_detector.py:473 |     Detect 151/157 (67ms, faces=1)
+2026-02-14 16:22:06 | INFO     | coclip:speaker_detector.py:473 |     Detect 157/157 (65ms, faces=1)
+2026-02-14 16:22:06 | INFO     | coclip:speaker_detector.py:503 |   Clip 3/6 done in 62.6s (extract=51.3s, detect=11.4s): face_found=156, face_miss=1, frame_fail=0, s3fd_errors=0
+2026-02-14 16:22:06 | INFO     | coclip:speaker_detector.py:540 |   Clip 3: 157 keyframes, primary crop_x=0
+2026-02-14 16:22:06 | INFO     | coclip:speaker_detector.py:433 |   Clip 4/6: 79.0s (183.0-262.0), 264 samples
+2026-02-14 16:22:06 | INFO     | coclip:speaker_detector.py:440 |     Extracting 264 frames via FFmpeg...
+2026-02-14 16:22:12 | WARNING  | coclip:speaker_detector.py:328 | FFmpeg batch extraction failed, falling back to per-frame extraction
+2026-02-14 16:23:32 | INFO     | coclip:speaker_detector.py:445 |     Extracted 264/264 frames in 86.4s
+2026-02-14 16:23:33 | INFO     | coclip:speaker_detector.py:473 |     Detect 1/264 (404ms, faces=1)
+2026-02-14 16:23:34 | INFO     | coclip:speaker_detector.py:473 |     Detect 11/264 (66ms, faces=1)
+2026-02-14 16:23:34 | INFO     | coclip:speaker_detector.py:473 |     Detect 21/264 (81ms, faces=0)
+2026-02-14 16:23:35 | INFO     | coclip:speaker_detector.py:473 |     Detect 31/264 (74ms, faces=0)
+2026-02-14 16:23:36 | INFO     | coclip:speaker_detector.py:473 |     Detect 41/264 (69ms, faces=1)
+2026-02-14 16:23:36 | INFO     | coclip:speaker_detector.py:473 |     Detect 51/264 (73ms, faces=1)
+2026-02-14 16:23:37 | INFO     | coclip:speaker_detector.py:473 |     Detect 61/264 (64ms, faces=1)
+2026-02-14 16:23:38 | INFO     | coclip:speaker_detector.py:473 |     Detect 71/264 (62ms, faces=1)
+2026-02-14 16:23:38 | INFO     | coclip:speaker_detector.py:473 |     Detect 81/264 (85ms, faces=1)
+2026-02-14 16:23:39 | INFO     | coclip:speaker_detector.py:473 |     Detect 91/264 (65ms, faces=1)
+2026-02-14 16:23:40 | INFO     | coclip:speaker_detector.py:473 |     Detect 101/264 (69ms, faces=1)
+2026-02-14 16:23:41 | INFO     | coclip:speaker_detector.py:473 |     Detect 111/264 (67ms, faces=1)
+2026-02-14 16:23:41 | INFO     | coclip:speaker_detector.py:473 |     Detect 121/264 (73ms, faces=1)
+2026-02-14 16:23:42 | INFO     | coclip:speaker_detector.py:473 |     Detect 131/264 (74ms, faces=1)
+2026-02-14 16:23:43 | INFO     | coclip:speaker_detector.py:473 |     Detect 141/264 (68ms, faces=1)
+2026-02-14 16:23:43 | INFO     | coclip:speaker_detector.py:473 |     Detect 151/264 (73ms, faces=1)
+2026-02-14 16:23:44 | INFO     | coclip:speaker_detector.py:473 |     Detect 161/264 (67ms, faces=1)
+2026-02-14 16:23:45 | INFO     | coclip:speaker_detector.py:473 |     Detect 171/264 (67ms, faces=1)
+2026-02-14 16:23:46 | INFO     | coclip:speaker_detector.py:473 |     Detect 181/264 (66ms, faces=1)
+2026-02-14 16:23:46 | INFO     | coclip:speaker_detector.py:473 |     Detect 191/264 (72ms, faces=1)
+2026-02-14 16:23:47 | INFO     | coclip:speaker_detector.py:473 |     Detect 201/264 (71ms, faces=1)
+2026-02-14 16:23:48 | INFO     | coclip:speaker_detector.py:473 |     Detect 211/264 (64ms, faces=1)
+2026-02-14 16:23:48 | INFO     | coclip:speaker_detector.py:473 |     Detect 221/264 (69ms, faces=1)
+2026-02-14 16:23:49 | INFO     | coclip:speaker_detector.py:473 |     Detect 231/264 (71ms, faces=1)
+2026-02-14 16:23:50 | INFO     | coclip:speaker_detector.py:473 |     Detect 241/264 (64ms, faces=1)
+2026-02-14 16:23:51 | INFO     | coclip:speaker_detector.py:473 |     Detect 251/264 (76ms, faces=1)
+2026-02-14 16:23:51 | INFO     | coclip:speaker_detector.py:473 |     Detect 261/264 (63ms, faces=1)
+2026-02-14 16:23:51 | INFO     | coclip:speaker_detector.py:473 |     Detect 264/264 (80ms, faces=1)
+2026-02-14 16:23:51 | INFO     | coclip:speaker_detector.py:503 |   Clip 4/6 done in 105.4s (extract=86.4s, detect=19.0s): face_found=250, face_miss=14, frame_fail=0, s3fd_errors=0
+2026-02-14 16:23:51 | INFO     | coclip:speaker_detector.py:540 |   Clip 4: 264 keyframes, primary crop_x=0
+2026-02-14 16:23:51 | INFO     | coclip:speaker_detector.py:433 |   Clip 5/6: 85.0s (263.0-348.0), 284 samples
+2026-02-14 16:23:51 | INFO     | coclip:speaker_detector.py:440 |     Extracting 284 frames via FFmpeg...
+2026-02-14 16:23:58 | WARNING  | coclip:speaker_detector.py:328 | FFmpeg batch extraction failed, falling back to per-frame extraction
+2026-02-14 16:25:24 | INFO     | coclip:speaker_detector.py:445 |     Extracted 284/284 frames in 92.3s
+2026-02-14 16:25:24 | INFO     | coclip:speaker_detector.py:473 |     Detect 1/284 (255ms, faces=1)
+2026-02-14 16:25:25 | INFO     | coclip:speaker_detector.py:473 |     Detect 11/284 (63ms, faces=1)
+2026-02-14 16:25:25 | INFO     | coclip:speaker_detector.py:473 |     Detect 21/284 (73ms, faces=1)
+2026-02-14 16:25:26 | INFO     | coclip:speaker_detector.py:473 |     Detect 31/284 (63ms, faces=1)
+2026-02-14 16:25:27 | INFO     | coclip:speaker_detector.py:473 |     Detect 41/284 (67ms, faces=1)
+2026-02-14 16:25:28 | INFO     | coclip:speaker_detector.py:473 |     Detect 51/284 (76ms, faces=1)
+2026-02-14 16:25:28 | INFO     | coclip:speaker_detector.py:473 |     Detect 61/284 (77ms, faces=1)
+2026-02-14 16:25:29 | INFO     | coclip:speaker_detector.py:473 |     Detect 71/284 (70ms, faces=1)
+2026-02-14 16:25:30 | INFO     | coclip:speaker_detector.py:473 |     Detect 81/284 (64ms, faces=1)
+2026-02-14 16:25:30 | INFO     | coclip:speaker_detector.py:473 |     Detect 91/284 (74ms, faces=1)
+2026-02-14 16:25:31 | INFO     | coclip:speaker_detector.py:473 |     Detect 101/284 (68ms, faces=1)
+2026-02-14 16:25:32 | INFO     | coclip:speaker_detector.py:473 |     Detect 111/284 (80ms, faces=1)
+2026-02-14 16:25:33 | INFO     | coclip:speaker_detector.py:473 |     Detect 121/284 (78ms, faces=1)
+2026-02-14 16:25:33 | INFO     | coclip:speaker_detector.py:473 |     Detect 131/284 (67ms, faces=1)
+2026-02-14 16:25:34 | INFO     | coclip:speaker_detector.py:473 |     Detect 141/284 (70ms, faces=1)
+2026-02-14 16:25:35 | INFO     | coclip:speaker_detector.py:473 |     Detect 151/284 (68ms, faces=1)
+2026-02-14 16:25:35 | INFO     | coclip:speaker_detector.py:473 |     Detect 161/284 (65ms, faces=1)
+2026-02-14 16:25:36 | INFO     | coclip:speaker_detector.py:473 |     Detect 171/284 (64ms, faces=1)
+2026-02-14 16:25:37 | INFO     | coclip:speaker_detector.py:473 |     Detect 181/284 (65ms, faces=1)
+2026-02-14 16:25:37 | INFO     | coclip:speaker_detector.py:473 |     Detect 191/284 (80ms, faces=1)
+2026-02-14 16:25:38 | INFO     | coclip:speaker_detector.py:473 |     Detect 201/284 (66ms, faces=1)
+2026-02-14 16:25:39 | INFO     | coclip:speaker_detector.py:473 |     Detect 211/284 (70ms, faces=1)
+2026-02-14 16:25:39 | INFO     | coclip:speaker_detector.py:473 |     Detect 221/284 (63ms, faces=1)
+2026-02-14 16:25:40 | INFO     | coclip:speaker_detector.py:473 |     Detect 231/284 (82ms, faces=1)
+2026-02-14 16:25:41 | INFO     | coclip:speaker_detector.py:473 |     Detect 241/284 (68ms, faces=1)
+2026-02-14 16:25:42 | INFO     | coclip:speaker_detector.py:473 |     Detect 251/284 (65ms, faces=0)
+2026-02-14 16:25:42 | INFO     | coclip:speaker_detector.py:473 |     Detect 261/284 (67ms, faces=1)
+2026-02-14 16:25:43 | INFO     | coclip:speaker_detector.py:473 |     Detect 271/284 (65ms, faces=1)
+2026-02-14 16:25:44 | INFO     | coclip:speaker_detector.py:473 |     Detect 281/284 (73ms, faces=1)
+2026-02-14 16:25:44 | INFO     | coclip:speaker_detector.py:473 |     Detect 284/284 (71ms, faces=1)
+2026-02-14 16:25:44 | INFO     | coclip:speaker_detector.py:503 |   Clip 5/6 done in 112.5s (extract=92.3s, detect=20.2s): face_found=281, face_miss=3, frame_fail=0, s3fd_errors=0
+2026-02-14 16:25:44 | INFO     | coclip:speaker_detector.py:540 |   Clip 5: 284 keyframes, primary crop_x=0
+2026-02-14 16:25:44 | INFO     | coclip:speaker_detector.py:433 |   Clip 6/6: 77.0s (348.0-425.0), 257 samples
+2026-02-14 16:25:44 | INFO     | coclip:speaker_detector.py:440 |     Extracting 257 frames via FFmpeg...
+2026-02-14 16:25:50 | WARNING  | coclip:speaker_detector.py:328 | FFmpeg batch extraction failed, falling back to per-frame extraction
+2026-02-14 16:27:08 | INFO     | coclip:speaker_detector.py:445 |     Extracted 257/257 frames in 83.6s
+2026-02-14 16:27:08 | INFO     | coclip:speaker_detector.py:473 |     Detect 1/257 (387ms, faces=1)
+2026-02-14 16:27:09 | INFO     | coclip:speaker_detector.py:473 |     Detect 11/257 (65ms, faces=1)
+2026-02-14 16:27:09 | INFO     | coclip:speaker_detector.py:473 |     Detect 21/257 (65ms, faces=1)
+2026-02-14 16:27:10 | INFO     | coclip:speaker_detector.py:473 |     Detect 31/257 (76ms, faces=1)
+2026-02-14 16:27:11 | INFO     | coclip:speaker_detector.py:473 |     Detect 41/257 (67ms, faces=1)
+2026-02-14 16:27:11 | INFO     | coclip:speaker_detector.py:473 |     Detect 51/257 (67ms, faces=1)
+2026-02-14 16:27:12 | INFO     | coclip:speaker_detector.py:473 |     Detect 61/257 (68ms, faces=1)
+2026-02-14 16:27:13 | INFO     | coclip:speaker_detector.py:473 |     Detect 71/257 (65ms, faces=1)
+2026-02-14 16:27:14 | INFO     | coclip:speaker_detector.py:473 |     Detect 81/257 (79ms, faces=1)
+2026-02-14 16:27:14 | INFO     | coclip:speaker_detector.py:473 |     Detect 91/257 (73ms, faces=1)
+2026-02-14 16:27:15 | INFO     | coclip:speaker_detector.py:473 |     Detect 101/257 (68ms, faces=1)
+2026-02-14 16:27:16 | INFO     | coclip:speaker_detector.py:473 |     Detect 111/257 (68ms, faces=1)
+2026-02-14 16:27:16 | INFO     | coclip:speaker_detector.py:473 |     Detect 121/257 (74ms, faces=1)
+2026-02-14 16:27:17 | INFO     | coclip:speaker_detector.py:473 |     Detect 131/257 (67ms, faces=1)
+2026-02-14 16:27:18 | INFO     | coclip:speaker_detector.py:473 |     Detect 141/257 (81ms, faces=1)
+2026-02-14 16:27:19 | INFO     | coclip:speaker_detector.py:473 |     Detect 151/257 (69ms, faces=1)
+2026-02-14 16:27:19 | INFO     | coclip:speaker_detector.py:473 |     Detect 161/257 (67ms, faces=1)
+2026-02-14 16:27:20 | INFO     | coclip:speaker_detector.py:473 |     Detect 171/257 (86ms, faces=1)
+2026-02-14 16:27:21 | INFO     | coclip:speaker_detector.py:473 |     Detect 181/257 (68ms, faces=1)
+2026-02-14 16:27:21 | INFO     | coclip:speaker_detector.py:473 |     Detect 191/257 (66ms, faces=1)
+2026-02-14 16:27:22 | INFO     | coclip:speaker_detector.py:473 |     Detect 201/257 (74ms, faces=1)
+2026-02-14 16:27:23 | INFO     | coclip:speaker_detector.py:473 |     Detect 211/257 (61ms, faces=1)
+2026-02-14 16:27:24 | INFO     | coclip:speaker_detector.py:473 |     Detect 221/257 (69ms, faces=1)
+2026-02-14 16:27:24 | INFO     | coclip:speaker_detector.py:473 |     Detect 231/257 (68ms, faces=1)
+2026-02-14 16:27:25 | INFO     | coclip:speaker_detector.py:473 |     Detect 241/257 (67ms, faces=1)
+2026-02-14 16:27:26 | INFO     | coclip:speaker_detector.py:473 |     Detect 251/257 (106ms, faces=1)
+2026-02-14 16:27:26 | INFO     | coclip:speaker_detector.py:473 |     Detect 257/257 (67ms, faces=1)
+2026-02-14 16:27:26 | INFO     | coclip:speaker_detector.py:503 |   Clip 6/6 done in 102.2s (extract=83.6s, detect=18.6s): face_found=257, face_miss=0, frame_fail=0, s3fd_errors=0
+2026-02-14 16:27:26 | INFO     | coclip:speaker_detector.py:540 |   Clip 6: 257 keyframes, primary crop_x=0
+2026-02-14 16:27:26 | INFO     | coclip:speaker_detector.py:138 | Face detector unloaded
+2026-02-14 16:27:26 | INFO     | coclip:editing_node.py:463 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Smart Crop: Detected positions for 6 clips
+2026-02-14 16:27:26 | INFO     | coclip:editing_node.py:121 | 📐 Crop 1920x1080 → 1080x1920: crop=607:1080:656:0,scale=1080:1920
+2026-02-14 16:27:26 | ERROR    | asyncio:base_events.py:1785 | Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2026-02-14 16:27:26 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 54% | Phase: Cutting clip 1/6: Wajib Pakai AI di Kantor: Produktivitas Naik 50%!
+2026-02-14 16:27:26 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6\clip_1.ass (33 lines, 161 words)
+2026-02-14 16:27:26 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 53 keyframes (reduced from 204)
+2026-02-14 16:27:26 | INFO     | coclip:editing_node.py:532 | 🎯 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Clip 1: dynamic crop with 204 keyframes
+2026-02-14 16:27:26 | INFO     | coclip:editing_node.py:270 | 🔤 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Burning subtitles for clip 1
+2026-02-14 16:27:26 | INFO     | coclip:editing_node.py:295 | ✂️ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Cutting clip 1: 0.0s → 61.0s (61.0s)
+2026-02-14 16:28:12 | INFO     | coclip:editing_node.py:321 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Clip 1 saved in 45.5s: D:\Project-Project\Project-AI\coclip\engine\clips\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6\clip_1.mp4 (22.2 MB)
+2026-02-14 16:28:12 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 59% | Phase: Cutting clip 2/6: AI untuk Senior Developer: Kerja 2 Hari Jadi 2 Menit
+2026-02-14 16:28:12 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6\clip_2.ass (26 lines, 126 words)
+2026-02-14 16:28:12 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 24 keyframes (reduced from 151)
+2026-02-14 16:28:12 | INFO     | coclip:editing_node.py:532 | 🎯 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Clip 2: dynamic crop with 151 keyframes
+2026-02-14 16:28:12 | INFO     | coclip:editing_node.py:270 | 🔤 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Burning subtitles for clip 2
+2026-02-14 16:28:12 | INFO     | coclip:editing_node.py:295 | ✂️ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Cutting clip 2: 62.0s → 107.0s (45.0s)
+2026-02-14 16:28:42 | INFO     | coclip:editing_node.py:321 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Clip 2 saved in 30.7s: D:\Project-Project\Project-AI\coclip\engine\clips\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6\clip_2.mp4 (12.8 MB)
+2026-02-14 16:28:42 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 64% | Phase: Cutting clip 3/6: Hemat Budget! AI Tingkatkan Kecepatan Coding 30%
+2026-02-14 16:28:43 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6\clip_3.ass (27 lines, 134 words)
+2026-02-14 16:28:43 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 4 keyframes (reduced from 157)
+2026-02-14 16:28:43 | INFO     | coclip:editing_node.py:532 | 🎯 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Clip 3: dynamic crop with 157 keyframes
+2026-02-14 16:28:43 | INFO     | coclip:editing_node.py:270 | 🔤 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Burning subtitles for clip 3
+2026-02-14 16:28:43 | INFO     | coclip:editing_node.py:295 | ✂️ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Cutting clip 3: 135.0s → 182.0s (47.0s)
+2026-02-14 16:29:13 | INFO     | coclip:editing_node.py:321 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Clip 3 saved in 30.2s: D:\Project-Project\Project-AI\coclip\engine\clips\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6\clip_3.mp4 (12.4 MB)
+2026-02-14 16:29:13 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 68% | Phase: Cutting clip 4/6: Mindset 'Mandor': Kunci Sukses Coding Pake AI
+2026-02-14 16:29:13 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6\clip_4.ass (39 lines, 193 words)
+2026-02-14 16:29:13 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 5 keyframes (reduced from 264)
+2026-02-14 16:29:13 | INFO     | coclip:editing_node.py:532 | 🎯 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Clip 4: dynamic crop with 264 keyframes
+2026-02-14 16:29:13 | INFO     | coclip:editing_node.py:270 | 🔤 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Burning subtitles for clip 4
+2026-02-14 16:29:13 | INFO     | coclip:editing_node.py:295 | ✂️ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Cutting clip 4: 183.0s → 262.0s (79.0s)
+2026-02-14 16:30:00 | INFO     | coclip:editing_node.py:321 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Clip 4 saved in 47.5s: D:\Project-Project\Project-AI\coclip\engine\clips\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6\clip_4.mp4 (19.3 MB)
+2026-02-14 16:30:00 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 73% | Phase: Cutting clip 5/6: Cara AI Nggak Halusinasi: Pake AI Rules!
+2026-02-14 16:30:00 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6\clip_5.ass (46 lines, 229 words)
+2026-02-14 16:30:00 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 6 keyframes (reduced from 284)
+2026-02-14 16:30:00 | INFO     | coclip:editing_node.py:532 | 🎯 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Clip 5: dynamic crop with 284 keyframes
+2026-02-14 16:30:00 | INFO     | coclip:editing_node.py:270 | 🔤 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Burning subtitles for clip 5
+2026-02-14 16:30:00 | INFO     | coclip:editing_node.py:295 | ✂️ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Cutting clip 5: 263.0s → 348.0s (85.0s)
+2026-02-14 16:37:46 | INFO     | coclip:main.py:30 | 🛑 Engine is shutting down...
+2026-02-14 16:37:57 | INFO     | coclip:logging.py:54 | 📝 Logging to file: D:\Project-Project\Project-AI\coclip\engine\logs\coclip.log
+2026-02-14 16:38:00 | INFO     | coclip:config.py:66 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-14 16:38:00 | INFO     | coclip:logging.py:54 | 📝 Logging to file: D:\Project-Project\Project-AI\coclip\engine\logs\coclip.log
+2026-02-14 16:38:00 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-14 16:38:00 | INFO     | coclip:database.py:22 | Database engine: postgresql+asyncpg@localhost:5433/model_clip (pool=5, overflow=10)
+2026-02-14 16:38:00 | INFO     | arq.worker:worker.py:355 | Starting worker for 1 functions: process_video_task
+2026-02-14 16:38:00 | INFO     | arq.worker:connections.py:314 | redis_version=7.0.15 mem_usage=1.59M clients_connected=3 db_keys=14
+2026-02-14 16:38:00 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-14 16:38:00 | INFO     | coclip:main.py:13 | 🚀 Engine is starting up...
+2026-02-14 16:38:01 | INFO     | coclip:transcriber.py:116 | 📥 Loading WhisperX Model: deepdml/faster-whisper-large-v3-turbo-ct2 on cuda...
+2026-02-14 16:38:01 | INFO     | coclip:transcriber.py:131 |   VRAM: 4.0GB → batch_size=6
+2026-02-14 16:38:02 | INFO     | coclip:transcription_worker.py:124 | 🔧 ARQ Worker starting up...
+2026-02-14 16:38:02 | INFO     | coclip:transcriber.py:116 | 📥 Loading WhisperX Model: deepdml/faster-whisper-large-v3-turbo-ct2 on cuda...
+2026-02-14 16:38:02 | INFO     | coclip:transcriber.py:131 |   VRAM: 4.0GB → batch_size=6
+2026-02-14 16:38:07 | DEBUG    | matplotlib:__init__.py:342 | matplotlib data path: D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\matplotlib\mpl-data
+2026-02-14 16:38:07 | DEBUG    | matplotlib:__init__.py:342 | CONFIGDIR=C:\Users\nicho\.matplotlib
+2026-02-14 16:38:07 | DEBUG    | matplotlib:__init__.py:342 | CONFIGDIR=C:\Users\nicho\.matplotlib
+2026-02-14 16:38:07 | DEBUG    | matplotlib:__init__.py:1560 | interactive is False
+2026-02-14 16:38:07 | DEBUG    | matplotlib:__init__.py:1560 | interactive is False
+2026-02-14 16:38:07 | DEBUG    | matplotlib:__init__.py:1561 | platform is win32
+2026-02-14 16:38:07 | DEBUG    | matplotlib:__init__.py:1561 | platform is win32
+2026-02-14 16:38:07 | DEBUG    | matplotlib:__init__.py:342 | CACHEDIR=C:\Users\nicho\.matplotlib
+2026-02-14 16:38:07 | DEBUG    | matplotlib.font_manager:font_manager.py:1635 | Using fontManager instance from C:\Users\nicho\.matplotlib\fontlist-v390.json
+2026-02-14 16:38:07 | DEBUG    | matplotlib:__init__.py:342 | CACHEDIR=C:\Users\nicho\.matplotlib
+2026-02-14 16:38:07 | DEBUG    | matplotlib.font_manager:font_manager.py:1635 | Using fontManager instance from C:\Users\nicho\.matplotlib\fontlist-v390.json
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg6
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg6
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg6 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg6.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg6 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg6.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg5
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg5
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg5 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg5.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg4
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg4 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg4.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg4 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg4.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg
+2026-02-14 16:38:08 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 106, in _find_versionsed_ffmpeg_extension
+    raise RuntimeError(f"FFmpeg{version} extension is not available.")
+RuntimeError: FFmpeg extension is not available.
+2026-02-14 16:38:09 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for _speechbrain_save
+2026-02-14 16:38:09 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for _speechbrain_load
+2026-02-14 16:38:09 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for save
+2026-02-14 16:38:09 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for load
+2026-02-14 16:38:09 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for _speechbrain_save
+2026-02-14 16:38:09 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for _speechbrain_load
+2026-02-14 16:38:09 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for save
+2026-02-14 16:38:09 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for load
+2026-02-14 16:38:10 | INFO     | speechbrain.utils.quirks:quirks.py:115 | Applied quirks (see `speechbrain.utils.quirks`): [allow_tf32, disable_jit_profiling]
+2026-02-14 16:38:10 | INFO     | speechbrain.utils.quirks:quirks.py:115 | Applied quirks (see `speechbrain.utils.quirks`): [disable_jit_profiling, allow_tf32]
+2026-02-14 16:38:10 | INFO     | speechbrain.utils.quirks:quirks.py:120 | Excluded quirks specified by the `SB_DISABLE_QUIRKS` environment (comma-separated list): []
+2026-02-14 16:38:10 | INFO     | speechbrain.utils.quirks:quirks.py:120 | Excluded quirks specified by the `SB_DISABLE_QUIRKS` environment (comma-separated list): []
+2026-02-14 16:38:10 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for _save
+2026-02-14 16:38:10 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for _recover
+2026-02-14 16:38:10 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for _save
+2026-02-14 16:38:10 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for _recover
+2026-02-14 16:38:10 | DEBUG    | urllib3.connectionpool:connectionpool.py:1049 | Starting new HTTPS connection (1): huggingface.co:443
+2026-02-14 16:38:10 | DEBUG    | urllib3.connectionpool:connectionpool.py:1049 | Starting new HTTPS connection (1): huggingface.co:443
+2026-02-14 16:38:11 | DEBUG    | urllib3.connectionpool:connectionpool.py:544 | https://huggingface.co:443 "GET /api/models/deepdml/faster-whisper-large-v3-turbo-ct2/revision/main HTTP/1.1" 200 2774
+2026-02-14 16:38:11 | DEBUG    | urllib3.connectionpool:connectionpool.py:544 | https://huggingface.co:443 "GET /api/models/deepdml/faster-whisper-large-v3-turbo-ct2/revision/main HTTP/1.1" 200 2774
+2026-02-14 16:38:19 | DEBUG    | fsspec.local:local.py:383 | open file: D:/Project-Project/Project-AI/coclip/engine/.venv/Lib/site-packages/whisperx/assets/pytorch_model.bin
+2026-02-14 16:38:19 | DEBUG    | fsspec.local:local.py:383 | open file: D:/Project-Project/Project-AI/coclip/engine/.venv/Lib/site-packages/whisperx/assets/pytorch_model.bin
+2026-02-14 16:38:19 | DEBUG    | fsspec.local:local.py:383 | open file: D:/Project-Project/Project-AI/coclip/engine/.venv/Lib/site-packages/whisperx/assets/pytorch_model.bin
+2026-02-14 16:38:19 | INFO     | pytorch_lightning.utilities.migration.utils:utils.py:154 | Lightning automatically upgraded your loaded checkpoint from v1.5.4 to v2.6.1. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\whisperx\assets\pytorch_model.bin`
+2026-02-14 16:38:19 | DEBUG    | fsspec.local:local.py:383 | open file: D:/Project-Project/Project-AI/coclip/engine/.venv/Lib/site-packages/whisperx/assets/pytorch_model.bin
+2026-02-14 16:38:19 | INFO     | pytorch_lightning.utilities.migration.utils:utils.py:154 | Lightning automatically upgraded your loaded checkpoint from v1.5.4 to v2.6.1. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\whisperx\assets\pytorch_model.bin`
+2026-02-14 16:38:19 | INFO     | coclip:transcriber.py:139 | ✅ WhisperX model loaded in 16.66s
+2026-02-14 16:38:19 | INFO     | coclip:transcriber.py:139 | ✅ WhisperX model loaded in 18.43s
+2026-02-14 16:38:19 | INFO     | coclip:transcription_worker.py:126 | ✅ Worker ready with WhisperX model loaded! Diarization: enabled
+2026-02-14 16:38:19 | INFO     | coclip:database.py:43 | ✅ Database tables initialized (jobs, clips)
+2026-02-14 16:38:35 | INFO     | coclip:transcribe.py:156 | 🔗 YouTube request: https://www.youtube.com/watch?v=vh5VbvP0dPM
+2026-02-14 16:38:35 | INFO     | coclip:transcribe.py:194 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] YouTube job enqueued: https://www.youtube.com/watch?v=vh5VbvP0dPM
+2026-02-14 16:38:35 | INFO     | arq.worker:worker.py:590 |   0.39s → ae16f10e238040fa8abfcfcb1346c1c7:process_video_task('1843d383-d9b3-4dcb-bff0-86d30eaa65fc', '', 'youtube', 'https://www.youtube.com…)
+2026-02-14 16:38:38 | INFO     | coclip:database.py:22 | Database engine: postgresql+asyncpg@localhost:5433/model_clip (pool=5, overflow=10)
+2026-02-14 16:38:38 | INFO     | coclip:transcription_worker.py:39 | 📥 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Downloading YouTube video: https://www.youtube.com/watch?v=vh5VbvP0dPM
+2026-02-14 16:38:38 | INFO     | coclip:downloader.py:137 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Starting YouTube download: https://www.youtube.com/watch?v=vh5VbvP0dPM
+2026-02-14 16:38:51 | INFO     | coclip:downloader.py:121 |   [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Download finished, merging...
+2026-02-14 16:38:52 | INFO     | coclip:downloader.py:121 |   [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Download finished, merging...
+2026-02-14 16:38:52 | INFO     | coclip:downloader.py:160 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Download complete: 'From Code to Delivery: Bagaimana AI Membantu Developer Bekerja Lebih Produktif' (621s, 98.5 MB)
+2026-02-14 16:38:52 | INFO     | coclip:transcription_worker.py:50 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] YouTube download complete: 'From Code to Delivery: Bagaimana AI Membantu Developer Bekerja Lebih Produktif' (98.5 MB)
+2026-02-14 16:38:52 | INFO     | coclip:transcription_worker.py:55 | 🎬 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Starting LangGraph pipeline: D:\Project-Project\Project-AI\coclip\engine\temp\1843d383-d9b3-4dcb-bff0-86d30eaa65fc.mp4
+2026-02-14 16:38:52 | INFO     | coclip:transcription_worker.py:57 | 📁 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Video file: 98.5 MB
+2026-02-14 16:38:52 | INFO     | coclip:video_processing_graph.py:42 | 🔧 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Building LangGraph processing pipeline...
+2026-02-14 16:38:52 | INFO     | coclip:video_processing_graph.py:83 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] LangGraph pipeline compiled successfully
+2026-02-14 16:38:52 | INFO     | coclip:video_processing_graph.py:122 | 🚀 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Starting LangGraph pipeline execution...
+2026-02-14 16:38:52 | INFO     | coclip:transcription_node.py:44 | 🎬 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Starting Phase 1: Transcription
+2026-02-14 16:38:52 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 0% | Status: transcribing | Phase: Phase 1: Transcription
+2026-02-14 16:38:52 | INFO     | coclip:transcription_node.py:48 | 📂 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Loading audio from video...
+2026-02-14 16:38:52 | INFO     | coclip:transcriber.py:263 | 🎙️ Loading audio: D:\Project-Project\Project-AI\coclip\engine\temp\1843d383-d9b3-4dcb-bff0-86d30eaa65fc.mp4
+2026-02-14 16:38:54 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 2% | Phase: Audio loaded
+2026-02-14 16:38:54 | INFO     | coclip:transcription_node.py:53 | 🎤 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Running WhisperX transcription...
+2026-02-14 16:38:54 | INFO     | coclip:transcriber.py:281 | 📝 Step 1/3: Transcribing audio (batch_size=6)...
+2026-02-14 16:39:14 | INFO     | coclip:transcriber.py:289 | ✅ Transcription done in 20.35s. Language: id
+2026-02-14 16:39:14 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 10% | Phase: Transcription complete (lang: id)
+2026-02-14 16:39:14 | INFO     | coclip:transcription_node.py:61 | 🎯 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Aligning for word-level timestamps...
+2026-02-14 16:39:14 | INFO     | coclip:transcriber.py:313 | 🎯 Step 2/3: Aligning for word-level timestamps...
+2026-02-14 16:39:14 | INFO     | coclip:transcriber.py:190 | 📥 Loading alignment model for language: id
+2026-02-14 16:39:14 | INFO     | coclip:transcriber.py:205 | 🇮🇩 Using Indonesian alignment model: indonesian-nlp/wav2vec2-large-xlsr-indonesian
+2026-02-14 16:39:20 | INFO     | coclip:transcriber.py:222 | ✅ Alignment model loaded in 6.26s
+2026-02-14 16:40:01 | INFO     | coclip:transcriber.py:328 | ✅ Alignment done in 46.51s
+2026-02-14 16:40:01 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 18% | Phase: Word alignment complete
+2026-02-14 16:40:01 | INFO     | coclip:transcription_node.py:69 | 👥 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Running speaker diarization...
+2026-02-14 16:40:01 | INFO     | coclip:transcriber.py:343 | 👥 Step 3/3: Detecting speakers...
+2026-02-14 16:40:01 | INFO     | coclip:transcriber.py:243 | 📥 Loading diarization model...
+2026-02-14 16:40:01 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--segmentation-3.0/snapshots/e66f3d3b9eb0873085418a7b813d3b369bf160bb/pytorch_model.bin
+2026-02-14 16:40:02 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--segmentation-3.0/snapshots/e66f3d3b9eb0873085418a7b813d3b369bf160bb/pytorch_model.bin
+2026-02-14 16:40:02 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--wespeaker-voxceleb-resnet34-LM/snapshots/837717ddb9ff5507820346191109dc79c958d614/pytorch_model.bin
+2026-02-14 16:40:02 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--wespeaker-voxceleb-resnet34-LM/snapshots/837717ddb9ff5507820346191109dc79c958d614/pytorch_model.bin
+2026-02-14 16:40:03 | INFO     | coclip:transcriber.py:256 | ✅ Diarization model loaded in 1.96s
+2026-02-14 16:45:50 | INFO     | coclip:transcriber.py:358 | ✅ Diarization done in 349.37s. Speakers: {'SPEAKER_00'}
+2026-02-14 16:45:50 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 23% | Phase: Diarization complete
+2026-02-14 16:45:50 | INFO     | coclip:transcription_node.py:78 | 📝 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Formatting transcription result...
+2026-02-14 16:45:50 | INFO     | coclip:transcriber.py:154 | 🗑️ Unloading WhisperX models from GPU...
+2026-02-14 16:45:51 | INFO     | coclip:transcriber.py:173 | ✅ WhisperX unloaded. GPU free: 3.2GB
+2026-02-14 16:45:51 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 25% | Status: analyzing | Phase: Phase 1 complete
+2026-02-14 16:45:51 | INFO     | coclip:transcription_node.py:86 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Phase 1 COMPLETE! Language: id, Segments: 108
+2026-02-14 16:45:51 | INFO     | coclip:analysis_node.py:65 | 🧠 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Starting Phase 2: Gemini Content Analysis
+2026-02-14 16:45:51 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 25% | Status: analyzing | Phase: Phase 2: Content Analysis
+2026-02-14 16:45:51 | INFO     | coclip:analysis_node.py:84 | 📝 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Preparing transcript for Gemini...
+2026-02-14 16:45:51 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 28% | Phase: Transcript prepared
+2026-02-14 16:45:51 | INFO     | coclip:analysis_node.py:89 | 🤖 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Sending transcript to Gemini for analysis...
+2026-02-14 16:45:51 | INFO     | coclip:analysis_node.py:30 | Initializing Gemini LLM (gemini-3-flash-preview, temp=0.4)
+2026-02-14 16:45:52 | INFO     | google_genai.models:models.py:7325 | AFC is enabled with max remote calls: 10.
+2026-02-14 16:46:06 | INFO     | coclip:analysis_node.py:111 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Gemini responded in 14.7s
+2026-02-14 16:46:06 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 42% | Phase: Gemini analysis complete
+2026-02-14 16:46:06 | INFO     | coclip:analysis_node.py:116 | 📊 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Parsing Gemini response...
+2026-02-14 16:46:06 | INFO     | coclip:analysis_node.py:335 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Parsed 5/5 valid clips from Gemini
+2026-02-14 16:46:06 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 50% | Status: editing | Phase: Phase 2 complete
+2026-02-14 16:46:06 | INFO     | coclip:analysis_node.py:120 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Phase 2 COMPLETE! Found 5 clip candidates
+2026-02-14 16:46:06 | INFO     | coclip:editing_node.py:371 | 🎬 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Starting Phase 3: Video Editing + Subtitles
+2026-02-14 16:46:06 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 50% | Status: editing | Phase: Phase 3: Video Editing
+2026-02-14 16:46:06 | INFO     | coclip:editing_node.py:398 | 🔍 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Detecting video resolution...
+2026-02-14 16:46:07 | INFO     | coclip:editing_node.py:400 | 📐 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Input: 1920x1080
+2026-02-14 16:46:07 | INFO     | coclip:editing_node.py:405 | 🎯 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Target format: TikTok vertical (1080x1920) (1080x1920)
+2026-02-14 16:46:07 | INFO     | coclip:editing_node.py:429 | 🎯 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Smart Crop: Detecting faces...
+2026-02-14 16:46:07 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 52% | Status: editing | Phase: Detecting faces for smart crop...
+2026-02-14 16:46:07 | INFO     | coclip:speaker_detector.py:128 | Loading face detector...
+2026-02-14 16:46:07 | INFO     | coclip:speaker_detector.py:145 |   PyTorch 2.6.0+cu124, CUDA available: True
+2026-02-14 16:46:07 | INFO     | coclip:speaker_detector.py:149 |   GPU: NVIDIA GeForce RTX 3050 Laptop GPU, VRAM: 4.0GB
+2026-02-14 16:46:07 | INFO     | coclip:speaker_detector.py:168 |   S3FD face detector loaded on cuda
+2026-02-14 16:46:07 | INFO     | coclip:speaker_detector.py:131 | Face detector loaded
+2026-02-14 16:46:07 | INFO     | coclip:speaker_detector.py:403 | Starting face detection: 5 clips, video=1920x1080, detection_width=640px
+2026-02-14 16:46:07 | INFO     | coclip:speaker_detector.py:427 |   Clip 1/5: 107.0s (0.0-107.0), 357 samples
+2026-02-14 16:46:07 | INFO     | coclip:speaker_detector.py:434 |     Extracting 357 frames via FFmpeg...
+2026-02-14 16:46:19 | INFO     | coclip:speaker_detector.py:439 |     Extracted 357/357 frames in 11.9s
+2026-02-14 16:46:20 | INFO     | coclip:speaker_detector.py:467 |     Detect 1/357 (586ms, faces=1)
+2026-02-14 16:46:20 | INFO     | coclip:speaker_detector.py:467 |     Detect 11/357 (66ms, faces=1)
+2026-02-14 16:46:21 | INFO     | coclip:speaker_detector.py:467 |     Detect 21/357 (65ms, faces=1)
+2026-02-14 16:46:22 | INFO     | coclip:speaker_detector.py:467 |     Detect 31/357 (76ms, faces=1)
+2026-02-14 16:46:23 | INFO     | coclip:speaker_detector.py:467 |     Detect 41/357 (64ms, faces=1)
+2026-02-14 16:46:23 | INFO     | coclip:speaker_detector.py:467 |     Detect 51/357 (62ms, faces=1)
+2026-02-14 16:46:24 | INFO     | coclip:speaker_detector.py:467 |     Detect 61/357 (64ms, faces=1)
+2026-02-14 16:46:25 | INFO     | coclip:speaker_detector.py:467 |     Detect 71/357 (87ms, faces=1)
+2026-02-14 16:46:25 | INFO     | coclip:speaker_detector.py:467 |     Detect 81/357 (65ms, faces=1)
+2026-02-14 16:46:26 | INFO     | coclip:speaker_detector.py:467 |     Detect 91/357 (62ms, faces=1)
+2026-02-14 16:46:27 | INFO     | coclip:speaker_detector.py:467 |     Detect 101/357 (69ms, faces=1)
+2026-02-14 16:46:28 | INFO     | coclip:speaker_detector.py:467 |     Detect 111/357 (65ms, faces=1)
+2026-02-14 16:46:28 | INFO     | coclip:speaker_detector.py:467 |     Detect 121/357 (132ms, faces=1)
+2026-02-14 16:46:29 | INFO     | coclip:speaker_detector.py:467 |     Detect 131/357 (73ms, faces=1)
+2026-02-14 16:46:30 | INFO     | coclip:speaker_detector.py:467 |     Detect 141/357 (79ms, faces=1)
+2026-02-14 16:46:30 | INFO     | coclip:speaker_detector.py:467 |     Detect 151/357 (63ms, faces=1)
+2026-02-14 16:46:31 | INFO     | coclip:speaker_detector.py:467 |     Detect 161/357 (63ms, faces=1)
+2026-02-14 16:46:32 | INFO     | coclip:speaker_detector.py:467 |     Detect 171/357 (65ms, faces=1)
+2026-02-14 16:46:32 | INFO     | coclip:speaker_detector.py:467 |     Detect 181/357 (71ms, faces=1)
+2026-02-14 16:46:33 | INFO     | coclip:speaker_detector.py:467 |     Detect 191/357 (148ms, faces=1)
+2026-02-14 16:46:34 | INFO     | coclip:speaker_detector.py:467 |     Detect 201/357 (68ms, faces=1)
+2026-02-14 16:46:35 | INFO     | coclip:speaker_detector.py:467 |     Detect 211/357 (77ms, faces=1)
+2026-02-14 16:46:35 | INFO     | coclip:speaker_detector.py:467 |     Detect 221/357 (86ms, faces=0)
+2026-02-14 16:46:36 | INFO     | coclip:speaker_detector.py:467 |     Detect 231/357 (71ms, faces=1)
+2026-02-14 16:46:37 | INFO     | coclip:speaker_detector.py:467 |     Detect 241/357 (73ms, faces=1)
+2026-02-14 16:46:38 | INFO     | coclip:speaker_detector.py:467 |     Detect 251/357 (69ms, faces=1)
+2026-02-14 16:46:38 | INFO     | coclip:speaker_detector.py:467 |     Detect 261/357 (76ms, faces=1)
+2026-02-14 16:46:39 | INFO     | coclip:speaker_detector.py:467 |     Detect 271/357 (85ms, faces=1)
+2026-02-14 16:46:40 | INFO     | coclip:speaker_detector.py:467 |     Detect 281/357 (75ms, faces=1)
+2026-02-14 16:46:41 | INFO     | coclip:speaker_detector.py:467 |     Detect 291/357 (72ms, faces=1)
+2026-02-14 16:46:41 | INFO     | coclip:speaker_detector.py:467 |     Detect 301/357 (68ms, faces=1)
+2026-02-14 16:46:42 | INFO     | coclip:speaker_detector.py:467 |     Detect 311/357 (64ms, faces=1)
+2026-02-14 16:46:43 | INFO     | coclip:speaker_detector.py:467 |     Detect 321/357 (78ms, faces=2)
+2026-02-14 16:46:44 | INFO     | coclip:speaker_detector.py:467 |     Detect 331/357 (73ms, faces=2)
+2026-02-14 16:46:44 | INFO     | coclip:speaker_detector.py:467 |     Detect 341/357 (71ms, faces=2)
+2026-02-14 16:46:45 | INFO     | coclip:speaker_detector.py:467 |     Detect 351/357 (108ms, faces=2)
+2026-02-14 16:46:46 | INFO     | coclip:speaker_detector.py:467 |     Detect 357/357 (74ms, faces=2)
+2026-02-14 16:46:46 | INFO     | coclip:speaker_detector.py:497 |   Clip 1/5 done in 38.4s (extract=11.9s, detect=26.5s): face_found=350, face_miss=7, frame_fail=0, s3fd_errors=0
+2026-02-14 16:46:46 | INFO     | coclip:speaker_detector.py:534 |   Clip 1: 357 keyframes, primary crop_x=622
+2026-02-14 16:46:46 | INFO     | coclip:speaker_detector.py:427 |   Clip 2/5: 72.0s (110.0-182.0), 241 samples
+2026-02-14 16:46:46 | INFO     | coclip:speaker_detector.py:434 |     Extracting 241 frames via FFmpeg...
+2026-02-14 16:46:52 | INFO     | coclip:speaker_detector.py:439 |     Extracted 241/241 frames in 6.4s
+2026-02-14 16:46:52 | INFO     | coclip:speaker_detector.py:467 |     Detect 1/241 (283ms, faces=1)
+2026-02-14 16:46:53 | INFO     | coclip:speaker_detector.py:467 |     Detect 11/241 (71ms, faces=1)
+2026-02-14 16:46:54 | INFO     | coclip:speaker_detector.py:467 |     Detect 21/241 (78ms, faces=1)
+2026-02-14 16:46:55 | INFO     | coclip:speaker_detector.py:467 |     Detect 31/241 (86ms, faces=1)
+2026-02-14 16:46:55 | INFO     | coclip:speaker_detector.py:467 |     Detect 41/241 (72ms, faces=1)
+2026-02-14 16:46:56 | INFO     | coclip:speaker_detector.py:467 |     Detect 51/241 (71ms, faces=1)
+2026-02-14 16:46:57 | INFO     | coclip:speaker_detector.py:467 |     Detect 61/241 (83ms, faces=1)
+2026-02-14 16:46:57 | INFO     | coclip:speaker_detector.py:467 |     Detect 71/241 (74ms, faces=1)
+2026-02-14 16:46:58 | INFO     | coclip:speaker_detector.py:467 |     Detect 81/241 (71ms, faces=1)
+2026-02-14 16:46:59 | INFO     | coclip:speaker_detector.py:467 |     Detect 91/241 (68ms, faces=1)
+2026-02-14 16:47:00 | INFO     | coclip:speaker_detector.py:467 |     Detect 101/241 (71ms, faces=1)
+2026-02-14 16:47:00 | INFO     | coclip:speaker_detector.py:467 |     Detect 111/241 (65ms, faces=1)
+2026-02-14 16:47:01 | INFO     | coclip:speaker_detector.py:467 |     Detect 121/241 (79ms, faces=1)
+2026-02-14 16:47:02 | INFO     | coclip:speaker_detector.py:467 |     Detect 131/241 (70ms, faces=1)
+2026-02-14 16:47:03 | INFO     | coclip:speaker_detector.py:467 |     Detect 141/241 (70ms, faces=1)
+2026-02-14 16:47:03 | INFO     | coclip:speaker_detector.py:467 |     Detect 151/241 (69ms, faces=1)
+2026-02-14 16:47:04 | INFO     | coclip:speaker_detector.py:467 |     Detect 161/241 (68ms, faces=1)
+2026-02-14 16:47:05 | INFO     | coclip:speaker_detector.py:467 |     Detect 171/241 (74ms, faces=1)
+2026-02-14 16:47:05 | INFO     | coclip:speaker_detector.py:467 |     Detect 181/241 (71ms, faces=1)
+2026-02-14 16:47:06 | INFO     | coclip:speaker_detector.py:467 |     Detect 191/241 (65ms, faces=1)
+2026-02-14 16:47:07 | INFO     | coclip:speaker_detector.py:467 |     Detect 201/241 (69ms, faces=1)
+2026-02-14 16:47:08 | INFO     | coclip:speaker_detector.py:467 |     Detect 211/241 (67ms, faces=1)
+2026-02-14 16:47:08 | INFO     | coclip:speaker_detector.py:467 |     Detect 221/241 (72ms, faces=1)
+2026-02-14 16:47:09 | INFO     | coclip:speaker_detector.py:467 |     Detect 231/241 (69ms, faces=1)
+2026-02-14 16:47:10 | INFO     | coclip:speaker_detector.py:467 |     Detect 241/241 (62ms, faces=1)
+2026-02-14 16:47:10 | INFO     | coclip:speaker_detector.py:497 |   Clip 2/5 done in 24.1s (extract=6.4s, detect=17.7s): face_found=240, face_miss=1, frame_fail=0, s3fd_errors=0
+2026-02-14 16:47:10 | INFO     | coclip:speaker_detector.py:534 |   Clip 2: 241 keyframes, primary crop_x=0
+2026-02-14 16:47:10 | INFO     | coclip:speaker_detector.py:427 |   Clip 3/5: 106.0s (183.0-289.0), 354 samples
+2026-02-14 16:47:10 | INFO     | coclip:speaker_detector.py:434 |     Extracting 354 frames via FFmpeg...
+2026-02-14 16:47:19 | INFO     | coclip:speaker_detector.py:439 |     Extracted 354/354 frames in 9.1s
+2026-02-14 16:47:19 | INFO     | coclip:speaker_detector.py:467 |     Detect 1/354 (319ms, faces=1)
+2026-02-14 16:47:20 | INFO     | coclip:speaker_detector.py:467 |     Detect 11/354 (72ms, faces=1)
+2026-02-14 16:47:21 | INFO     | coclip:speaker_detector.py:467 |     Detect 21/354 (65ms, faces=0)
+2026-02-14 16:47:21 | INFO     | coclip:speaker_detector.py:467 |     Detect 31/354 (71ms, faces=0)
+2026-02-14 16:47:22 | INFO     | coclip:speaker_detector.py:467 |     Detect 41/354 (72ms, faces=1)
+2026-02-14 16:47:23 | INFO     | coclip:speaker_detector.py:467 |     Detect 51/354 (64ms, faces=1)
+2026-02-14 16:47:23 | INFO     | coclip:speaker_detector.py:467 |     Detect 61/354 (78ms, faces=1)
+2026-02-14 16:47:24 | INFO     | coclip:speaker_detector.py:467 |     Detect 71/354 (66ms, faces=1)
+2026-02-14 16:47:25 | INFO     | coclip:speaker_detector.py:467 |     Detect 81/354 (73ms, faces=1)
+2026-02-14 16:47:26 | INFO     | coclip:speaker_detector.py:467 |     Detect 91/354 (77ms, faces=1)
+2026-02-14 16:47:26 | INFO     | coclip:speaker_detector.py:467 |     Detect 101/354 (69ms, faces=1)
+2026-02-14 16:47:27 | INFO     | coclip:speaker_detector.py:467 |     Detect 111/354 (72ms, faces=1)
+2026-02-14 16:47:28 | INFO     | coclip:speaker_detector.py:467 |     Detect 121/354 (69ms, faces=1)
+2026-02-14 16:47:28 | INFO     | coclip:speaker_detector.py:467 |     Detect 131/354 (75ms, faces=1)
+2026-02-14 16:47:29 | INFO     | coclip:speaker_detector.py:467 |     Detect 141/354 (65ms, faces=1)
+2026-02-14 16:47:30 | INFO     | coclip:speaker_detector.py:467 |     Detect 151/354 (66ms, faces=1)
+2026-02-14 16:47:30 | INFO     | coclip:speaker_detector.py:467 |     Detect 161/354 (65ms, faces=1)
+2026-02-14 16:47:31 | INFO     | coclip:speaker_detector.py:467 |     Detect 171/354 (67ms, faces=1)
+2026-02-14 16:47:32 | INFO     | coclip:speaker_detector.py:467 |     Detect 181/354 (71ms, faces=1)
+2026-02-14 16:47:33 | INFO     | coclip:speaker_detector.py:467 |     Detect 191/354 (65ms, faces=1)
+2026-02-14 16:47:33 | INFO     | coclip:speaker_detector.py:467 |     Detect 201/354 (74ms, faces=1)
+2026-02-14 16:47:34 | INFO     | coclip:speaker_detector.py:467 |     Detect 211/354 (64ms, faces=1)
+2026-02-14 16:47:35 | INFO     | coclip:speaker_detector.py:467 |     Detect 221/354 (63ms, faces=1)
+2026-02-14 16:47:35 | INFO     | coclip:speaker_detector.py:467 |     Detect 231/354 (84ms, faces=1)
+2026-02-14 16:47:36 | INFO     | coclip:speaker_detector.py:467 |     Detect 241/354 (66ms, faces=1)
+2026-02-14 16:47:37 | INFO     | coclip:speaker_detector.py:467 |     Detect 251/354 (69ms, faces=1)
+2026-02-14 16:47:38 | INFO     | coclip:speaker_detector.py:467 |     Detect 261/354 (72ms, faces=1)
+2026-02-14 16:47:38 | INFO     | coclip:speaker_detector.py:467 |     Detect 271/354 (85ms, faces=1)
+2026-02-14 16:47:39 | INFO     | coclip:speaker_detector.py:467 |     Detect 281/354 (65ms, faces=1)
+2026-02-14 16:47:40 | INFO     | coclip:speaker_detector.py:467 |     Detect 291/354 (70ms, faces=1)
+2026-02-14 16:47:40 | INFO     | coclip:speaker_detector.py:467 |     Detect 301/354 (69ms, faces=1)
+2026-02-14 16:47:41 | INFO     | coclip:speaker_detector.py:467 |     Detect 311/354 (66ms, faces=1)
+2026-02-14 16:47:42 | INFO     | coclip:speaker_detector.py:467 |     Detect 321/354 (72ms, faces=1)
+2026-02-14 16:47:43 | INFO     | coclip:speaker_detector.py:467 |     Detect 331/354 (68ms, faces=1)
+2026-02-14 16:47:43 | INFO     | coclip:speaker_detector.py:467 |     Detect 341/354 (69ms, faces=1)
+2026-02-14 16:47:44 | INFO     | coclip:speaker_detector.py:467 |     Detect 351/354 (76ms, faces=1)
+2026-02-14 16:47:44 | INFO     | coclip:speaker_detector.py:467 |     Detect 354/354 (65ms, faces=1)
+2026-02-14 16:47:44 | INFO     | coclip:speaker_detector.py:497 |   Clip 3/5 done in 34.5s (extract=9.1s, detect=25.4s): face_found=340, face_miss=14, frame_fail=0, s3fd_errors=0
+2026-02-14 16:47:44 | INFO     | coclip:speaker_detector.py:534 |   Clip 3: 354 keyframes, primary crop_x=0
+2026-02-14 16:47:44 | INFO     | coclip:speaker_detector.py:427 |   Clip 4/5: 86.0s (290.0-376.0), 287 samples
+2026-02-14 16:47:44 | INFO     | coclip:speaker_detector.py:434 |     Extracting 287 frames via FFmpeg...
+2026-02-14 16:47:52 | INFO     | coclip:speaker_detector.py:439 |     Extracted 287/287 frames in 7.8s
+2026-02-14 16:47:52 | INFO     | coclip:speaker_detector.py:467 |     Detect 1/287 (328ms, faces=1)
+2026-02-14 16:47:53 | INFO     | coclip:speaker_detector.py:467 |     Detect 11/287 (69ms, faces=1)
+2026-02-14 16:47:54 | INFO     | coclip:speaker_detector.py:467 |     Detect 21/287 (89ms, faces=1)
+2026-02-14 16:47:55 | INFO     | coclip:speaker_detector.py:467 |     Detect 31/287 (66ms, faces=1)
+2026-02-14 16:47:55 | INFO     | coclip:speaker_detector.py:467 |     Detect 41/287 (70ms, faces=1)
+2026-02-14 16:47:56 | INFO     | coclip:speaker_detector.py:467 |     Detect 51/287 (67ms, faces=1)
+2026-02-14 16:47:57 | INFO     | coclip:speaker_detector.py:467 |     Detect 61/287 (72ms, faces=1)
+2026-02-14 16:47:57 | INFO     | coclip:speaker_detector.py:467 |     Detect 71/287 (77ms, faces=1)
+2026-02-14 16:47:58 | INFO     | coclip:speaker_detector.py:467 |     Detect 81/287 (69ms, faces=1)
+2026-02-14 16:47:59 | INFO     | coclip:speaker_detector.py:467 |     Detect 91/287 (67ms, faces=1)
+2026-02-14 16:48:00 | INFO     | coclip:speaker_detector.py:467 |     Detect 101/287 (69ms, faces=1)
+2026-02-14 16:48:00 | INFO     | coclip:speaker_detector.py:467 |     Detect 111/287 (66ms, faces=1)
+2026-02-14 16:48:01 | INFO     | coclip:speaker_detector.py:467 |     Detect 121/287 (69ms, faces=1)
+2026-02-14 16:48:02 | INFO     | coclip:speaker_detector.py:467 |     Detect 131/287 (70ms, faces=1)
+2026-02-14 16:48:02 | INFO     | coclip:speaker_detector.py:467 |     Detect 141/287 (71ms, faces=1)
+2026-02-14 16:48:03 | INFO     | coclip:speaker_detector.py:467 |     Detect 151/287 (66ms, faces=1)
+2026-02-14 16:48:04 | INFO     | coclip:speaker_detector.py:467 |     Detect 161/287 (66ms, faces=1)
+2026-02-14 16:48:05 | INFO     | coclip:speaker_detector.py:467 |     Detect 171/287 (65ms, faces=1)
+2026-02-14 16:48:05 | INFO     | coclip:speaker_detector.py:467 |     Detect 181/287 (64ms, faces=1)
+2026-02-14 16:48:06 | INFO     | coclip:speaker_detector.py:467 |     Detect 191/287 (85ms, faces=1)
+2026-02-14 16:48:07 | INFO     | coclip:speaker_detector.py:467 |     Detect 201/287 (67ms, faces=1)
+2026-02-14 16:48:07 | INFO     | coclip:speaker_detector.py:467 |     Detect 211/287 (67ms, faces=1)
+2026-02-14 16:48:08 | INFO     | coclip:speaker_detector.py:467 |     Detect 221/287 (79ms, faces=1)
+2026-02-14 16:48:09 | INFO     | coclip:speaker_detector.py:467 |     Detect 231/287 (68ms, faces=1)
+2026-02-14 16:48:09 | INFO     | coclip:speaker_detector.py:467 |     Detect 241/287 (63ms, faces=1)
+2026-02-14 16:48:10 | INFO     | coclip:speaker_detector.py:467 |     Detect 251/287 (69ms, faces=1)
+2026-02-14 16:48:11 | INFO     | coclip:speaker_detector.py:467 |     Detect 261/287 (72ms, faces=1)
+2026-02-14 16:48:11 | INFO     | coclip:speaker_detector.py:467 |     Detect 271/287 (65ms, faces=1)
+2026-02-14 16:48:12 | INFO     | coclip:speaker_detector.py:467 |     Detect 281/287 (78ms, faces=1)
+2026-02-14 16:48:13 | INFO     | coclip:speaker_detector.py:467 |     Detect 287/287 (68ms, faces=1)
+2026-02-14 16:48:13 | INFO     | coclip:speaker_detector.py:497 |   Clip 4/5 done in 28.4s (extract=7.8s, detect=20.7s): face_found=285, face_miss=2, frame_fail=0, s3fd_errors=0
+2026-02-14 16:48:13 | INFO     | coclip:speaker_detector.py:534 |   Clip 4: 287 keyframes, primary crop_x=0
+2026-02-14 16:48:13 | INFO     | coclip:speaker_detector.py:427 |   Clip 5/5: 53.0s (377.0-430.0), 177 samples
+2026-02-14 16:48:13 | INFO     | coclip:speaker_detector.py:434 |     Extracting 177 frames via FFmpeg...
+2026-02-14 16:48:18 | INFO     | coclip:speaker_detector.py:439 |     Extracted 177/177 frames in 5.2s
+2026-02-14 16:48:18 | INFO     | coclip:speaker_detector.py:467 |     Detect 1/177 (254ms, faces=1)
+2026-02-14 16:48:19 | INFO     | coclip:speaker_detector.py:467 |     Detect 11/177 (75ms, faces=1)
+2026-02-14 16:48:20 | INFO     | coclip:speaker_detector.py:467 |     Detect 21/177 (65ms, faces=1)
+2026-02-14 16:48:20 | INFO     | coclip:speaker_detector.py:467 |     Detect 31/177 (75ms, faces=1)
+2026-02-14 16:48:21 | INFO     | coclip:speaker_detector.py:467 |     Detect 41/177 (78ms, faces=1)
+2026-02-14 16:48:22 | INFO     | coclip:speaker_detector.py:467 |     Detect 51/177 (80ms, faces=1)
+2026-02-14 16:48:22 | INFO     | coclip:speaker_detector.py:467 |     Detect 61/177 (77ms, faces=1)
+2026-02-14 16:48:23 | INFO     | coclip:speaker_detector.py:467 |     Detect 71/177 (71ms, faces=1)
+2026-02-14 16:48:24 | INFO     | coclip:speaker_detector.py:467 |     Detect 81/177 (77ms, faces=1)
+2026-02-14 16:48:25 | INFO     | coclip:speaker_detector.py:467 |     Detect 91/177 (82ms, faces=1)
+2026-02-14 16:48:26 | INFO     | coclip:speaker_detector.py:467 |     Detect 101/177 (73ms, faces=1)
+2026-02-14 16:48:26 | INFO     | coclip:speaker_detector.py:467 |     Detect 111/177 (86ms, faces=1)
+2026-02-14 16:48:27 | INFO     | coclip:speaker_detector.py:467 |     Detect 121/177 (74ms, faces=1)
+2026-02-14 16:48:28 | INFO     | coclip:speaker_detector.py:467 |     Detect 131/177 (70ms, faces=1)
+2026-02-14 16:48:29 | INFO     | coclip:speaker_detector.py:467 |     Detect 141/177 (72ms, faces=1)
+2026-02-14 16:48:29 | INFO     | coclip:speaker_detector.py:467 |     Detect 151/177 (77ms, faces=1)
+2026-02-14 16:48:30 | INFO     | coclip:speaker_detector.py:467 |     Detect 161/177 (71ms, faces=1)
+2026-02-14 16:48:31 | INFO     | coclip:speaker_detector.py:467 |     Detect 171/177 (72ms, faces=1)
+2026-02-14 16:48:31 | INFO     | coclip:speaker_detector.py:467 |     Detect 177/177 (70ms, faces=1)
+2026-02-14 16:48:31 | INFO     | coclip:speaker_detector.py:497 |   Clip 5/5 done in 18.7s (extract=5.2s, detect=13.5s): face_found=177, face_miss=0, frame_fail=0, s3fd_errors=0
+2026-02-14 16:48:31 | INFO     | coclip:speaker_detector.py:534 |   Clip 5: 177 keyframes, primary crop_x=0
+2026-02-14 16:48:31 | INFO     | coclip:speaker_detector.py:138 | Face detector unloaded
+2026-02-14 16:48:31 | INFO     | coclip:editing_node.py:463 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Smart Crop: Detected positions for 5 clips
+2026-02-14 16:48:31 | INFO     | coclip:editing_node.py:121 | 📐 Crop 1920x1080 → 1080x1920: crop=607:1080:656:0,scale=1080:1920
+2026-02-14 16:48:31 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 55% | Phase: Cutting clip 1/5: Kenapa Kantor Saya Mewajibkan AI Assistant?
+2026-02-14 16:48:31 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_1.ass (58 lines, 288 words)
+2026-02-14 16:48:31 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 60 keyframes (reduced from 357)
+2026-02-14 16:48:31 | INFO     | coclip:editing_node.py:532 | 🎯 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 1: dynamic crop with 357 keyframes
+2026-02-14 16:48:31 | INFO     | coclip:editing_node.py:270 | 🔤 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Burning subtitles for clip 1
+2026-02-14 16:48:31 | INFO     | coclip:editing_node.py:295 | ✂️ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Cutting clip 1: 0.0s → 107.0s (107.0s)
+2026-02-14 16:49:48 | INFO     | coclip:editing_node.py:321 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 1 saved in 76.7s: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_1.mp4 (34.0 MB)
+2026-02-14 16:49:48 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 61% | Phase: Cutting clip 2/5: AI vs Hire Programmer Baru: Mana Lebih Untung?
+2026-02-14 16:49:48 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_2.ass (39 lines, 194 words)
+2026-02-14 16:49:48 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 4 keyframes (reduced from 241)
+2026-02-14 16:49:48 | INFO     | coclip:editing_node.py:532 | 🎯 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 2: dynamic crop with 241 keyframes
+2026-02-14 16:49:48 | INFO     | coclip:editing_node.py:270 | 🔤 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Burning subtitles for clip 2
+2026-02-14 16:49:48 | INFO     | coclip:editing_node.py:295 | ✂️ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Cutting clip 2: 110.0s → 182.0s (72.0s)
+2026-02-14 16:50:36 | INFO     | coclip:editing_node.py:321 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 2 saved in 47.6s: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_2.mp4 (19.3 MB)
+2026-02-14 16:50:36 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 66% | Phase: Cutting clip 3/5: Jadi Mandor AI: Rahasia Coding Gak Berantakan
+2026-02-14 16:50:36 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_3.ass (54 lines, 267 words)
+2026-02-14 16:50:36 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 4 keyframes (reduced from 354)
+2026-02-14 16:50:36 | INFO     | coclip:editing_node.py:532 | 🎯 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 3: dynamic crop with 354 keyframes
+2026-02-14 16:50:36 | INFO     | coclip:editing_node.py:270 | 🔤 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Burning subtitles for clip 3
+2026-02-14 16:50:36 | INFO     | coclip:editing_node.py:295 | ✂️ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Cutting clip 3: 183.0s → 289.0s (106.0s)
+2026-02-14 16:51:43 | INFO     | coclip:editing_node.py:321 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 3 saved in 67.3s: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_3.mp4 (26.0 MB)
+2026-02-14 16:51:43 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 72% | Phase: Cutting clip 4/5: Cara Pakai AI Rules Agar AI Gak Halusinasi
+2026-02-14 16:51:43 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_4.ass (49 lines, 242 words)
+2026-02-14 16:51:43 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 4 keyframes (reduced from 287)
+2026-02-14 16:51:43 | INFO     | coclip:editing_node.py:532 | 🎯 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 4: dynamic crop with 287 keyframes
+2026-02-14 16:51:43 | INFO     | coclip:editing_node.py:270 | 🔤 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Burning subtitles for clip 4
+2026-02-14 16:51:43 | INFO     | coclip:editing_node.py:295 | ✂️ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Cutting clip 4: 290.0s → 376.0s (86.0s)
+2026-02-14 16:52:41 | INFO     | coclip:editing_node.py:321 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 4 saved in 57.5s: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_4.mp4 (20.5 MB)
+2026-02-14 16:52:41 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 78% | Phase: Cutting clip 5/5: Programmer Sekarang Bukan Eksekutor, Tapi Navigator!
+2026-02-14 16:52:41 | INFO     | coclip:subtitle_generator.py:284 | 📝 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Generated subtitle: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_5.ass (26 lines, 126 words)
+2026-02-14 16:52:41 | INFO     | coclip:editing_node.py:185 | 🎯 Smart Crop expression: 3 keyframes (reduced from 177)
+2026-02-14 16:52:41 | INFO     | coclip:editing_node.py:532 | 🎯 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 5: dynamic crop with 177 keyframes
+2026-02-14 16:52:41 | INFO     | coclip:editing_node.py:270 | 🔤 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Burning subtitles for clip 5
+2026-02-14 16:52:41 | INFO     | coclip:editing_node.py:295 | ✂️ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Cutting clip 5: 377.0s → 430.0s (53.0s)
+2026-02-14 16:53:07 | INFO     | coclip:editing_node.py:321 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Clip 5 saved in 26.1s: D:\Project-Project\Project-AI\coclip\engine\clips\1843d383-d9b3-4dcb-bff0-86d30eaa65fc\clip_5.mp4 (12.7 MB)
+2026-02-14 16:53:07 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 80% | Status: finalizing | Phase: Phase 3 complete
+2026-02-14 16:53:07 | INFO     | coclip:editing_node.py:577 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Phase 3 COMPLETE! Cut 5/5 clips with subtitles
+2026-02-14 16:53:07 | INFO     | coclip:finalization_node.py:48 | 🏁 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Starting Phase 4: Finalization
+2026-02-14 16:53:07 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 80% | Status: finalizing | Phase: Phase 4: Finalization
+2026-02-14 16:53:07 | INFO     | coclip:finalization_node.py:53 | 💾 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Caching to Redis: lang=id, duration=603.3s, segments=108, clips=5
+2026-02-14 16:53:07 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 85% | Phase: Results saved to Redis
+2026-02-14 16:53:07 | INFO     | coclip:finalization_node.py:112 | 💾 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] DB: saving job (status=completed)
+2026-02-14 16:53:07 | INFO     | coclip:finalization_node.py:134 | 💾 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Saved to PostgreSQL: 1 job + 5 clips
+2026-02-14 16:53:07 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 90% | Phase: Saved to database
+2026-02-14 16:53:07 | INFO     | coclip:finalization_node.py:145 | ⚠️ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Thumbnail generation not implemented (placeholder)
+2026-02-14 16:53:07 | INFO     | coclip:progress_tracker.py:59 | [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Progress: 95% | Phase: Thumbnail generation skipped
+2026-02-14 16:53:07 | INFO     | coclip:finalization_node.py:155 | 🗑️ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Cleaned up temp file: D:\Project-Project\Project-AI\coclip\engine\temp\1843d383-d9b3-4dcb-bff0-86d30eaa65fc.mp4
+2026-02-14 16:53:07 | INFO     | coclip:progress_tracker.py:104 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Completed successfully
+2026-02-14 16:53:07 | INFO     | coclip:finalization_node.py:169 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Job completed successfully!
+2026-02-14 16:53:07 | INFO     | coclip:video_processing_graph.py:130 | 🏁 [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Pipeline finished: status=completed, clips=5, errors=0
+2026-02-14 16:53:07 | INFO     | coclip:transcription_worker.py:89 | ✅ [Job 1843d383-d9b3-4dcb-bff0-86d30eaa65fc] Pipeline completed in 854.9s, 5 clips generated
+2026-02-14 16:53:07 | INFO     | arq.worker:worker.py:634 | 871.84s ← ae16f10e238040fa8abfcfcb1346c1c7:process_video_task ● 
+2026-02-14 17:03:58 | INFO     | coclip:main.py:30 | 🛑 Engine is shutting down...
+2026-02-14 17:04:06 | INFO     | coclip:logging.py:54 | 📝 Logging to file: D:\Project-Project\Project-AI\coclip\engine\logs\coclip.log
+2026-02-14 17:04:06 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-14 17:04:06 | INFO     | arq.worker:worker.py:355 | Starting worker for 1 functions: process_video_task
+2026-02-14 17:04:06 | INFO     | arq.worker:connections.py:314 | redis_version=7.0.15 mem_usage=1.70M clients_connected=1 db_keys=17
+2026-02-14 17:04:09 | INFO     | coclip:transcription_worker.py:124 | 🔧 ARQ Worker starting up...
+2026-02-14 17:04:09 | INFO     | coclip:transcriber.py:116 | 📥 Loading WhisperX Model: deepdml/faster-whisper-large-v3-turbo-ct2 on cuda...
+2026-02-14 17:04:09 | INFO     | coclip:transcriber.py:131 |   VRAM: 4.0GB → batch_size=6
+2026-02-14 17:04:09 | INFO     | coclip:logging.py:54 | 📝 Logging to file: D:\Project-Project\Project-AI\coclip\engine\logs\coclip.log
+2026-02-14 17:04:12 | INFO     | coclip:config.py:66 | Settings loaded: device=cuda, compute=float16, format=tiktok, smart_crop=True, diarization=True
+2026-02-14 17:04:12 | INFO     | coclip:database.py:22 | Database engine: postgresql+asyncpg@localhost:5433/model_clip (pool=5, overflow=10)
+2026-02-14 17:04:12 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-14 17:04:12 | INFO     | coclip:main.py:13 | 🚀 Engine is starting up...
+2026-02-14 17:04:12 | INFO     | coclip:transcriber.py:116 | 📥 Loading WhisperX Model: deepdml/faster-whisper-large-v3-turbo-ct2 on cuda...
+2026-02-14 17:04:12 | INFO     | coclip:transcriber.py:131 |   VRAM: 4.0GB → batch_size=6
+2026-02-14 17:04:15 | DEBUG    | matplotlib:__init__.py:342 | matplotlib data path: D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\matplotlib\mpl-data
+2026-02-14 17:04:15 | DEBUG    | matplotlib:__init__.py:342 | CONFIGDIR=C:\Users\nicho\.matplotlib
+2026-02-14 17:04:15 | DEBUG    | matplotlib:__init__.py:1560 | interactive is False
+2026-02-14 17:04:15 | DEBUG    | matplotlib:__init__.py:1561 | platform is win32
+2026-02-14 17:04:16 | DEBUG    | matplotlib:__init__.py:342 | CACHEDIR=C:\Users\nicho\.matplotlib
+2026-02-14 17:04:16 | DEBUG    | matplotlib.font_manager:font_manager.py:1635 | Using fontManager instance from C:\Users\nicho\.matplotlib\fontlist-v390.json
+2026-02-14 17:04:17 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg6
+2026-02-14 17:04:17 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg6 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg6.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 17:04:17 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg5
+2026-02-14 17:04:17 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg5 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg5.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 17:04:17 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg4
+2026-02-14 17:04:17 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg4 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg4.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 17:04:17 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg
+2026-02-14 17:04:17 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 106, in _find_versionsed_ffmpeg_extension
+    raise RuntimeError(f"FFmpeg{version} extension is not available.")
+RuntimeError: FFmpeg extension is not available.
+2026-02-14 17:04:17 | DEBUG    | matplotlib:__init__.py:342 | matplotlib data path: D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\matplotlib\mpl-data
+2026-02-14 17:04:17 | DEBUG    | matplotlib:__init__.py:342 | CONFIGDIR=C:\Users\nicho\.matplotlib
+2026-02-14 17:04:17 | DEBUG    | matplotlib:__init__.py:1560 | interactive is False
+2026-02-14 17:04:17 | DEBUG    | matplotlib:__init__.py:1561 | platform is win32
+2026-02-14 17:04:17 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for _speechbrain_save
+2026-02-14 17:04:17 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for _speechbrain_load
+2026-02-14 17:04:17 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for save
+2026-02-14 17:04:17 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for load
+2026-02-14 17:04:18 | DEBUG    | matplotlib:__init__.py:342 | CACHEDIR=C:\Users\nicho\.matplotlib
+2026-02-14 17:04:18 | DEBUG    | matplotlib.font_manager:font_manager.py:1635 | Using fontManager instance from C:\Users\nicho\.matplotlib\fontlist-v390.json
+2026-02-14 17:04:18 | INFO     | speechbrain.utils.quirks:quirks.py:115 | Applied quirks (see `speechbrain.utils.quirks`): [disable_jit_profiling, allow_tf32]
+2026-02-14 17:04:18 | INFO     | speechbrain.utils.quirks:quirks.py:120 | Excluded quirks specified by the `SB_DISABLE_QUIRKS` environment (comma-separated list): []
+2026-02-14 17:04:18 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for _save
+2026-02-14 17:04:18 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for _recover
+2026-02-14 17:04:18 | DEBUG    | urllib3.connectionpool:connectionpool.py:1049 | Starting new HTTPS connection (1): huggingface.co:443
+2026-02-14 17:04:18 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg6
+2026-02-14 17:04:18 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg6 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg6.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 17:04:18 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg5
+2026-02-14 17:04:18 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg5 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg5.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 17:04:18 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg4
+2026-02-14 17:04:18 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg4 extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 108, in _find_versionsed_ffmpeg_extension
+    _load_lib(lib)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 94, in _load_lib
+    torch.ops.load_library(path)
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torch\_ops.py", line 1357, in load_library
+    ctypes.CDLL(path)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\ctypes\__init__.py", line 376, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: Could not find module 'D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\lib\libtorio_ffmpeg4.pyd' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-02-14 17:04:18 | DEBUG    | torio._extension.utils:utils.py:114 | Loading FFmpeg
+2026-02-14 17:04:18 | DEBUG    | torio._extension.utils:utils.py:120 | Failed to load FFmpeg extension.
+Traceback (most recent call last):
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 116, in _find_ffmpeg_extension
+    ext = _find_versionsed_ffmpeg_extension(ffmpeg_ver)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\torio\_extension\utils.py", line 106, in _find_versionsed_ffmpeg_extension
+    raise RuntimeError(f"FFmpeg{version} extension is not available.")
+RuntimeError: FFmpeg extension is not available.
+2026-02-14 17:04:19 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for _speechbrain_save
+2026-02-14 17:04:19 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for _speechbrain_load
+2026-02-14 17:04:19 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for save
+2026-02-14 17:04:19 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for load
+2026-02-14 17:04:19 | DEBUG    | urllib3.connectionpool:connectionpool.py:544 | https://huggingface.co:443 "GET /api/models/deepdml/faster-whisper-large-v3-turbo-ct2/revision/main HTTP/1.1" 200 2774
+2026-02-14 17:04:19 | INFO     | speechbrain.utils.quirks:quirks.py:115 | Applied quirks (see `speechbrain.utils.quirks`): [allow_tf32, disable_jit_profiling]
+2026-02-14 17:04:19 | INFO     | speechbrain.utils.quirks:quirks.py:120 | Excluded quirks specified by the `SB_DISABLE_QUIRKS` environment (comma-separated list): []
+2026-02-14 17:04:19 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:452 | Registered checkpoint save hook for _save
+2026-02-14 17:04:19 | DEBUG    | speechbrain.utils.checkpoints:checkpoints.py:455 | Registered checkpoint load hook for _recover
+2026-02-14 17:04:20 | DEBUG    | urllib3.connectionpool:connectionpool.py:1049 | Starting new HTTPS connection (1): huggingface.co:443
+2026-02-14 17:04:20 | DEBUG    | urllib3.connectionpool:connectionpool.py:544 | https://huggingface.co:443 "GET /api/models/deepdml/faster-whisper-large-v3-turbo-ct2/revision/main HTTP/1.1" 200 2774
+2026-02-14 17:04:25 | DEBUG    | fsspec.local:local.py:383 | open file: D:/Project-Project/Project-AI/coclip/engine/.venv/Lib/site-packages/whisperx/assets/pytorch_model.bin
+2026-02-14 17:04:25 | DEBUG    | fsspec.local:local.py:383 | open file: D:/Project-Project/Project-AI/coclip/engine/.venv/Lib/site-packages/whisperx/assets/pytorch_model.bin
+2026-02-14 17:04:25 | INFO     | pytorch_lightning.utilities.migration.utils:utils.py:154 | Lightning automatically upgraded your loaded checkpoint from v1.5.4 to v2.6.1. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\whisperx\assets\pytorch_model.bin`
+2026-02-14 17:04:25 | DEBUG    | fsspec.local:local.py:383 | open file: D:/Project-Project/Project-AI/coclip/engine/.venv/Lib/site-packages/whisperx/assets/pytorch_model.bin
+2026-02-14 17:04:25 | INFO     | pytorch_lightning.utilities.migration.utils:utils.py:154 | Lightning automatically upgraded your loaded checkpoint from v1.5.4 to v2.6.1. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\whisperx\assets\pytorch_model.bin`
+2026-02-14 17:04:25 | INFO     | coclip:transcriber.py:139 | ✅ WhisperX model loaded in 12.56s
+2026-02-14 17:04:25 | INFO     | coclip:transcriber.py:139 | ✅ WhisperX model loaded in 16.39s
+2026-02-14 17:04:25 | INFO     | coclip:transcription_worker.py:126 | ✅ Worker ready with WhisperX model loaded! Diarization: enabled
+2026-02-14 17:04:25 | INFO     | coclip:database.py:43 | ✅ Database tables initialized (jobs, clips)
+2026-02-14 17:04:56 | INFO     | coclip:transcribe.py:156 | 🔗 YouTube request: https://www.youtube.com/watch?v=l8qHTPQXDrg
+2026-02-14 17:04:56 | INFO     | coclip:transcribe.py:194 | ✅ [Job bf887c73-5231-46ad-8edb-aa4be73781fd] YouTube job enqueued: https://www.youtube.com/watch?v=l8qHTPQXDrg
+2026-02-14 17:04:57 | INFO     | arq.worker:worker.py:590 |   0.49s → 22664135956e460897551197c1be2eee:process_video_task('bf887c73-5231-46ad-8edb-aa4be73781fd', '', 'youtube', 'https://www.youtube.com…)
+2026-02-14 17:04:59 | INFO     | coclip:database.py:22 | Database engine: postgresql+asyncpg@localhost:5433/model_clip (pool=5, overflow=10)
+2026-02-14 17:04:59 | INFO     | coclip:transcription_worker.py:39 | 📥 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Downloading YouTube video: https://www.youtube.com/watch?v=l8qHTPQXDrg
+2026-02-14 17:04:59 | INFO     | coclip:downloader.py:137 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Starting YouTube download: https://www.youtube.com/watch?v=l8qHTPQXDrg
+2026-02-14 17:05:48 | INFO     | coclip:downloader.py:121 |   [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Download finished, merging...
+2026-02-14 17:05:52 | INFO     | coclip:downloader.py:121 |   [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Download finished, merging...
+2026-02-14 17:05:56 | INFO     | coclip:downloader.py:160 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Download complete: 'SERAM, SELAMA INI KITA DIBOHONGI AI‼️INI BUKTINYA... AIMAN WITJAKSONO - THE HOST' (3106s, 456.8 MB)
+2026-02-14 17:05:56 | INFO     | coclip:transcription_worker.py:50 | ✅ [Job bf887c73-5231-46ad-8edb-aa4be73781fd] YouTube download complete: 'SERAM, SELAMA INI KITA DIBOHONGI AI‼️INI BUKTINYA... AIMAN WITJAKSONO - THE HOST' (456.8 MB)
+2026-02-14 17:05:56 | INFO     | coclip:transcription_worker.py:55 | 🎬 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Starting LangGraph pipeline: D:\Project-Project\Project-AI\coclip\engine\temp\bf887c73-5231-46ad-8edb-aa4be73781fd.mp4
+2026-02-14 17:05:56 | INFO     | coclip:transcription_worker.py:57 | 📁 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Video file: 456.8 MB
+2026-02-14 17:05:56 | INFO     | coclip:video_processing_graph.py:42 | 🔧 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Building LangGraph processing pipeline...
+2026-02-14 17:05:56 | INFO     | coclip:video_processing_graph.py:83 | ✅ [Job bf887c73-5231-46ad-8edb-aa4be73781fd] LangGraph pipeline compiled successfully
+2026-02-14 17:05:56 | INFO     | coclip:video_processing_graph.py:122 | 🚀 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Starting LangGraph pipeline execution...
+2026-02-14 17:05:56 | INFO     | coclip:transcription_node.py:44 | 🎬 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Starting Phase 1: Transcription
+2026-02-14 17:05:56 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 0% | Status: transcribing | Phase: Phase 1: Transcription
+2026-02-14 17:05:56 | INFO     | coclip:transcription_node.py:48 | 📂 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Loading audio from video...
+2026-02-14 17:05:56 | INFO     | coclip:transcriber.py:263 | 🎙️ Loading audio: D:\Project-Project\Project-AI\coclip\engine\temp\bf887c73-5231-46ad-8edb-aa4be73781fd.mp4
+2026-02-14 17:06:02 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 2% | Phase: Audio loaded
+2026-02-14 17:06:02 | INFO     | coclip:transcription_node.py:53 | 🎤 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Running WhisperX transcription...
+2026-02-14 17:06:02 | INFO     | coclip:transcriber.py:281 | 📝 Step 1/3: Transcribing audio (batch_size=6)...
+2026-02-14 17:18:58 | INFO     | coclip:transcriber.py:289 | ✅ Transcription done in 776.10s. Language: id
+2026-02-14 17:18:58 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 10% | Phase: Transcription complete (lang: id)
+2026-02-14 17:18:58 | INFO     | coclip:transcription_node.py:61 | 🎯 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Aligning for word-level timestamps...
+2026-02-14 17:18:58 | INFO     | coclip:transcriber.py:313 | 🎯 Step 2/3: Aligning for word-level timestamps...
+2026-02-14 17:18:58 | INFO     | coclip:transcriber.py:190 | 📥 Loading alignment model for language: id
+2026-02-14 17:18:58 | INFO     | coclip:transcriber.py:205 | 🇮🇩 Using Indonesian alignment model: indonesian-nlp/wav2vec2-large-xlsr-indonesian
+2026-02-14 17:19:05 | INFO     | coclip:transcriber.py:222 | ✅ Alignment model loaded in 6.99s
+2026-02-14 17:51:58 | INFO     | coclip:transcriber.py:328 | ✅ Alignment done in 1979.83s
+2026-02-14 17:51:58 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 18% | Phase: Word alignment complete
+2026-02-14 17:51:58 | INFO     | coclip:transcription_node.py:69 | 👥 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Running speaker diarization...
+2026-02-14 17:51:58 | INFO     | coclip:transcriber.py:343 | 👥 Step 3/3: Detecting speakers...
+2026-02-14 17:51:58 | INFO     | coclip:transcriber.py:243 | 📥 Loading diarization model...
+2026-02-14 17:51:59 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--segmentation-3.0/snapshots/e66f3d3b9eb0873085418a7b813d3b369bf160bb/pytorch_model.bin
+2026-02-14 17:52:00 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--segmentation-3.0/snapshots/e66f3d3b9eb0873085418a7b813d3b369bf160bb/pytorch_model.bin
+2026-02-14 17:52:00 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--wespeaker-voxceleb-resnet34-LM/snapshots/837717ddb9ff5507820346191109dc79c958d614/pytorch_model.bin
+2026-02-14 17:52:00 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--wespeaker-voxceleb-resnet34-LM/snapshots/837717ddb9ff5507820346191109dc79c958d614/pytorch_model.bin
+2026-02-14 17:52:01 | INFO     | coclip:transcriber.py:256 | ✅ Diarization model loaded in 2.31s
+2026-02-14 18:34:32 | INFO     | coclip:transcriber.py:358 | ✅ Diarization done in 2553.26s. Speakers: {'Unknown', 'SPEAKER_00', 'SPEAKER_01', 'SPEAKER_02', 'SPEAKER_03'}
+2026-02-14 18:34:32 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 23% | Phase: Diarization complete
+2026-02-14 18:34:32 | INFO     | coclip:transcription_node.py:78 | 📝 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Formatting transcription result...
+2026-02-14 18:34:32 | INFO     | coclip:transcriber.py:154 | 🗑️ Unloading WhisperX models from GPU...
+2026-02-14 18:34:32 | INFO     | coclip:transcriber.py:173 | ✅ WhisperX unloaded. GPU free: 3.2GB
+2026-02-14 18:34:32 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 25% | Status: analyzing | Phase: Phase 1 complete
+2026-02-14 18:34:32 | INFO     | coclip:transcription_node.py:86 | ✅ [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Phase 1 COMPLETE! Language: id, Segments: 1127
+2026-02-14 18:34:32 | INFO     | coclip:analysis_node.py:65 | 🧠 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Starting Phase 2: Gemini Content Analysis
+2026-02-14 18:34:32 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 25% | Status: analyzing | Phase: Phase 2: Content Analysis
+2026-02-14 18:34:32 | INFO     | coclip:analysis_node.py:84 | 📝 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Preparing transcript for Gemini...
+2026-02-14 18:34:32 | INFO     | arq.worker:worker.py:785 | recording health: Feb-14 18:34:32 j_complete=0 j_failed=0 j_retried=0 j_ongoing=1 queued=2
+2026-02-14 18:34:32 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 28% | Phase: Transcript prepared
+2026-02-14 18:34:32 | INFO     | coclip:analysis_node.py:89 | 🤖 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Sending transcript to Gemini for analysis...
+2026-02-14 18:34:32 | INFO     | coclip:analysis_node.py:30 | Initializing Gemini LLM (gemini-3-flash-preview, temp=0.4)
+2026-02-14 18:34:33 | INFO     | google_genai.models:models.py:7325 | AFC is enabled with max remote calls: 10.
+2026-02-14 18:34:33 | INFO     | arq.worker:worker.py:590 | 8562.26s → 3d775af2afc2497c88450a69609760ae:process_video_task('d563714e-9a0d-4f97-8bd1-8f2791d1d2e6', '', 'youtube', 'https://www.youtube.com…) try=2 delayed=8562.26s
+2026-02-14 18:34:33 | INFO     | coclip:transcription_worker.py:39 | 📥 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Downloading YouTube video: https://www.youtube.com/watch?v=vh5VbvP0dPM
+2026-02-14 18:34:33 | INFO     | coclip:downloader.py:137 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Starting YouTube download: https://www.youtube.com/watch?v=vh5VbvP0dPM
+2026-02-14 18:34:37 | INFO     | coclip:downloader.py:160 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Download complete: 'From Code to Delivery: Bagaimana AI Membantu Developer Bekerja Lebih Produktif' (621s, 98.5 MB)
+2026-02-14 18:34:37 | INFO     | coclip:transcription_worker.py:50 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] YouTube download complete: 'From Code to Delivery: Bagaimana AI Membantu Developer Bekerja Lebih Produktif' (98.5 MB)
+2026-02-14 18:34:37 | INFO     | coclip:transcription_worker.py:55 | 🎬 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Starting LangGraph pipeline: D:\Project-Project\Project-AI\coclip\engine\temp\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6.mp4
+2026-02-14 18:34:37 | INFO     | coclip:transcription_worker.py:57 | 📁 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Video file: 98.5 MB
+2026-02-14 18:34:37 | INFO     | coclip:video_processing_graph.py:42 | 🔧 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Building LangGraph processing pipeline...
+2026-02-14 18:34:37 | INFO     | coclip:video_processing_graph.py:83 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] LangGraph pipeline compiled successfully
+2026-02-14 18:34:37 | INFO     | coclip:video_processing_graph.py:122 | 🚀 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Starting LangGraph pipeline execution...
+2026-02-14 18:34:37 | INFO     | coclip:transcription_node.py:44 | 🎬 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Starting Phase 1: Transcription
+2026-02-14 18:34:37 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 0% | Status: transcribing | Phase: Phase 1: Transcription
+2026-02-14 18:34:37 | INFO     | coclip:transcription_node.py:48 | 📂 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Loading audio from video...
+2026-02-14 18:34:37 | INFO     | coclip:transcriber.py:263 | 🎙️ Loading audio: D:\Project-Project\Project-AI\coclip\engine\temp\d563714e-9a0d-4f97-8bd1-8f2791d1d2e6.mp4
+2026-02-14 18:34:39 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 2% | Phase: Audio loaded
+2026-02-14 18:34:39 | INFO     | coclip:transcription_node.py:53 | 🎤 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Running WhisperX transcription...
+2026-02-14 18:34:39 | INFO     | coclip:transcriber.py:116 | 📥 Loading WhisperX Model: deepdml/faster-whisper-large-v3-turbo-ct2 on cuda...
+2026-02-14 18:34:39 | INFO     | coclip:transcriber.py:131 |   VRAM: 4.0GB → batch_size=6
+2026-02-14 18:34:44 | DEBUG    | fsspec.local:local.py:383 | open file: D:/Project-Project/Project-AI/coclip/engine/.venv/Lib/site-packages/whisperx/assets/pytorch_model.bin
+2026-02-14 18:34:44 | DEBUG    | fsspec.local:local.py:383 | open file: D:/Project-Project/Project-AI/coclip/engine/.venv/Lib/site-packages/whisperx/assets/pytorch_model.bin
+2026-02-14 18:34:44 | INFO     | pytorch_lightning.utilities.migration.utils:utils.py:154 | Lightning automatically upgraded your loaded checkpoint from v1.5.4 to v2.6.1. To apply the upgrade to your files permanently, run `python -m pytorch_lightning.utilities.upgrade_checkpoint D:\Project-Project\Project-AI\coclip\engine\.venv\Lib\site-packages\whisperx\assets\pytorch_model.bin`
+2026-02-14 18:34:44 | INFO     | coclip:transcriber.py:139 | ✅ WhisperX model loaded in 4.88s
+2026-02-14 18:34:44 | INFO     | coclip:transcriber.py:281 | 📝 Step 1/3: Transcribing audio (batch_size=6)...
+2026-02-14 18:35:04 | INFO     | coclip:transcriber.py:289 | ✅ Transcription done in 20.30s. Language: id
+2026-02-14 18:35:04 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 10% | Phase: Transcription complete (lang: id)
+2026-02-14 18:35:04 | INFO     | coclip:transcription_node.py:61 | 🎯 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Aligning for word-level timestamps...
+2026-02-14 18:35:04 | INFO     | coclip:transcriber.py:313 | 🎯 Step 2/3: Aligning for word-level timestamps...
+2026-02-14 18:35:04 | INFO     | coclip:transcriber.py:190 | 📥 Loading alignment model for language: id
+2026-02-14 18:35:04 | INFO     | coclip:transcriber.py:205 | 🇮🇩 Using Indonesian alignment model: indonesian-nlp/wav2vec2-large-xlsr-indonesian
+2026-02-14 18:35:10 | INFO     | coclip:transcriber.py:222 | ✅ Alignment model loaded in 5.77s
+2026-02-14 18:35:49 | INFO     | coclip:transcriber.py:328 | ✅ Alignment done in 44.65s
+2026-02-14 18:35:49 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 18% | Phase: Word alignment complete
+2026-02-14 18:35:49 | INFO     | coclip:transcription_node.py:69 | 👥 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Running speaker diarization...
+2026-02-14 18:35:49 | INFO     | coclip:transcriber.py:343 | 👥 Step 3/3: Detecting speakers...
+2026-02-14 18:35:49 | INFO     | coclip:transcriber.py:243 | 📥 Loading diarization model...
+2026-02-14 18:35:50 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--segmentation-3.0/snapshots/e66f3d3b9eb0873085418a7b813d3b369bf160bb/pytorch_model.bin
+2026-02-14 18:35:50 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--segmentation-3.0/snapshots/e66f3d3b9eb0873085418a7b813d3b369bf160bb/pytorch_model.bin
+2026-02-14 18:35:51 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--wespeaker-voxceleb-resnet34-LM/snapshots/837717ddb9ff5507820346191109dc79c958d614/pytorch_model.bin
+2026-02-14 18:35:51 | DEBUG    | fsspec.local:local.py:383 | open file: C:/Users/nicho/.cache/torch/pyannote/models--pyannote--wespeaker-voxceleb-resnet34-LM/snapshots/837717ddb9ff5507820346191109dc79c958d614/pytorch_model.bin
+2026-02-14 18:35:51 | INFO     | coclip:transcriber.py:256 | ✅ Diarization model loaded in 2.30s
+2026-02-14 18:40:59 | INFO     | coclip:transcriber.py:358 | ✅ Diarization done in 310.25s. Speakers: {'SPEAKER_00'}
+2026-02-14 18:40:59 | ERROR    | asyncio:base_events.py:1785 | Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\nicho\AppData\Roaming\uv\python\cpython-3.11.12-windows-x86_64-none\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2026-02-14 18:40:59 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 23% | Phase: Diarization complete
+2026-02-14 18:40:59 | INFO     | coclip:transcription_node.py:78 | 📝 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Formatting transcription result...
+2026-02-14 18:40:59 | INFO     | coclip:transcriber.py:154 | 🗑️ Unloading WhisperX models from GPU...
+2026-02-14 18:41:00 | INFO     | coclip:transcriber.py:173 | ✅ WhisperX unloaded. GPU free: 3.2GB
+2026-02-14 18:41:00 | INFO     | coclip:analysis_node.py:111 | ✅ [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Gemini responded in 386.9s
+2026-02-14 18:41:00 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 42% | Phase: Gemini analysis complete
+2026-02-14 18:41:00 | INFO     | coclip:analysis_node.py:116 | 📊 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Parsing Gemini response...
+2026-02-14 18:41:00 | INFO     | coclip:analysis_node.py:335 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Parsed 17/17 valid clips from Gemini
+2026-02-14 18:41:00 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 25% | Status: analyzing | Phase: Phase 1 complete
+2026-02-14 18:41:00 | INFO     | coclip:transcription_node.py:86 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Phase 1 COMPLETE! Language: id, Segments: 101
+2026-02-14 18:41:00 | INFO     | coclip:analysis_node.py:65 | 🧠 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Starting Phase 2: Gemini Content Analysis
+2026-02-14 18:41:00 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 50% | Status: editing | Phase: Phase 2 complete
+2026-02-14 18:41:00 | INFO     | coclip:analysis_node.py:120 | ✅ [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Phase 2 COMPLETE! Found 17 clip candidates
+2026-02-14 18:41:00 | INFO     | coclip:editing_node.py:371 | 🎬 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Starting Phase 3: Video Editing + Subtitles
+2026-02-14 18:41:00 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 25% | Status: analyzing | Phase: Phase 2: Content Analysis
+2026-02-14 18:41:00 | INFO     | coclip:analysis_node.py:84 | 📝 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Preparing transcript for Gemini...
+2026-02-14 18:41:00 | INFO     | coclip:progress_tracker.py:59 | [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Progress: 28% | Phase: Transcript prepared
+2026-02-14 18:41:00 | INFO     | coclip:analysis_node.py:89 | 🤖 [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Sending transcript to Gemini for analysis...
+2026-02-14 18:41:00 | INFO     | google_genai.models:models.py:7325 | AFC is enabled with max remote calls: 10.
+2026-02-14 18:41:00 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 50% | Status: editing | Phase: Phase 3: Video Editing
+2026-02-14 18:41:00 | INFO     | coclip:editing_node.py:398 | 🔍 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Detecting video resolution...
+2026-02-14 18:41:01 | INFO     | coclip:editing_node.py:400 | 📐 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Input: 1920x1080
+2026-02-14 18:41:01 | INFO     | coclip:editing_node.py:405 | 🎯 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Target format: TikTok vertical (1080x1920) (1080x1920)
+2026-02-14 18:41:01 | INFO     | coclip:editing_node.py:429 | 🎯 [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Smart Crop: Detecting faces...
+2026-02-14 18:41:01 | INFO     | coclip:progress_tracker.py:59 | [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Progress: 52% | Status: editing | Phase: Detecting faces for smart crop...
+2026-02-14 18:41:01 | INFO     | coclip:speaker_detector.py:128 | Loading face detector...
+2026-02-14 18:41:01 | INFO     | coclip:speaker_detector.py:145 |   PyTorch 2.6.0+cu124, CUDA available: True
+2026-02-14 18:41:01 | INFO     | coclip:speaker_detector.py:149 |   GPU: NVIDIA GeForce RTX 3050 Laptop GPU, VRAM: 4.0GB
+2026-02-14 18:41:01 | INFO     | coclip:speaker_detector.py:168 |   S3FD face detector loaded on cuda
+2026-02-14 18:41:01 | INFO     | coclip:speaker_detector.py:131 | Face detector loaded
+2026-02-14 18:41:01 | INFO     | coclip:speaker_detector.py:403 | Starting face detection: 17 clips, video=1920x1080, detection_width=640px
+2026-02-14 18:41:01 | INFO     | coclip:speaker_detector.py:427 |   Clip 1/17: 161.0s (0.0-161.0), 537 samples
+2026-02-14 18:41:01 | INFO     | coclip:speaker_detector.py:434 |     Extracting 537 frames via FFmpeg...
+2026-02-14 18:41:15 | INFO     | coclip:speaker_detector.py:439 |     Extracted 537/537 frames in 14.1s
+2026-02-14 18:42:01 | INFO     | coclip:analysis_node.py:111 | ✅ [Job d563714e-9a0d-4f97-8bd1-8f2791d1d2e6] Gemini responded in 60.3s
+2026-02-14 18:42:01 | INFO     | coclip:transcription_worker.py:108 | 🗑️ [Job bf887c73-5231-46ad-8edb-aa4be73781fd] Cleaned up temp file: D:\Project-Project\Project-AI\coclip\engine\temp\bf887c73-5231-46ad-8edb-aa4be73781fd.mp4
