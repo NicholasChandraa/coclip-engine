@@ -150,7 +150,7 @@ class SpeakerDetector:
 
             loconet_repo = os.path.normpath(
                 os.path.join(
-                    os.path.dirname(__file__), "..", "..", "models", "loconet_repo"
+                    os.path.dirname(__file__), "..", "..", "model-asd", "loconet_repo"
                 )
             )
             if loconet_repo not in sys.path:

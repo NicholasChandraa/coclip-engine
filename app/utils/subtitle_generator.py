@@ -33,8 +33,8 @@ def _escape_ass_text(text: str) -> str:
 def _generate_ass_header(
     width: int = 1080,
     height: int = 1920,
-    font_size: int = 28,
-    margin_bottom: int = 180,
+    font_size: int = 85,
+    margin_bottom: int = 300,
 ) -> str:
     """
     Generate ASS header with format-specific styling.
@@ -48,14 +48,15 @@ def _generate_ass_header(
     Returns:
         ASS header string
     """
-    # Alignment 8 = Top-center (text aligns from top of subtitle area)
-    # This makes 1-line subtitles show at "line 1" not "line 3"
-    # MarginV for alignment 8 = distance from TOP of screen
-    margin_from_top = height - margin_bottom
-
-    # Margin kiri-kanan: 15% dari lebar video supaya subtitle ga kepanjangan
-    # 1080px → margin 162px kiri+kanan → max text width ~756px
-    margin_lr = int(width * 0.15)
+    # Alignment 2 = Bottom-center (text aligns from bottom of subtitle area)
+    # This ensures subtitles grow UPWARDS when multi-line, keeping bottom position fixed
+    # MarginV for alignment 2 = distance from BOTTOM of screen
+    
+    # Margin kiri-kanan: User request 170px for 1080p
+    if width == 1080:
+        margin_lr = 170
+    else:
+        margin_lr = int(width * 0.15)
 
     return f"""[Script Info]
 Title: CoClip Subtitles
@@ -66,7 +67,7 @@ WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,Arial,{font_size},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,2.5,0,8,{margin_lr},{margin_lr},{margin_from_top},1
+Style: Default,Arial Black,{font_size},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,110,110,0,0,1,4.5,0,2,{margin_lr},{margin_lr},{margin_bottom},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -179,8 +180,8 @@ def generate_ass_subtitle(
     style: str = "word_highlight",
     video_width: int = 1080,
     video_height: int = 1920,
-    font_size: int = 28,
-    margin_bottom: int = 180,
+    font_size: int = 85,
+    margin_bottom: int = 300,
 ) -> Optional[str]:
     """
     Generate ASS subtitle file for a clip with word-by-word highlighting.
@@ -221,17 +222,29 @@ def generate_ass_subtitle(
                 line_start = line_words[0]["start"]
                 line_end = line_words[-1]["end"]
 
-                # Build line with per-word karaoke timing
-                # Using \kf (fill effect) for smooth word highlighting
+                # Build line with dynamic highlight effect
+                # Using \t (transform) for precise timing of size/color changes
                 text_parts = []
                 for w in line_words:
-                    word_duration_cs = int((w["end"] - w["start"]) * 100)
-                    # \kf = karaoke fill, duration in centiseconds
+                    # Calculate relative start/end times in ms
+                    start_ms = int((w["start"] - line_start) * 1000)
+                    end_ms = int((w["end"] - line_start) * 1000)
+                    
                     word_text = (
                         w["word"].upper() if settings.SUBTITLE_UPPERCASE else w["word"]
                     )
                     escaped = _escape_ass_text(word_text)
-                    text_parts.append(f"{{\\kf{word_duration_cs}}}{escaped}")
+                    
+                    # Effect: pop-up 107% scale + color change
+                    # 1. Initial: Scale 100%, Color White (inactive)
+                    # 2. Active: Scale to 107%, Color Green (pop!)
+                    # 3. After: Scale back to 100%, Color White
+                    highlight_tag = (
+                        f"{{\\fscx100\\fscy100\\1c&HFFFFFF&"
+                        f"\\t({start_ms},{start_ms+50},\\fscx110\\fscy110\\1c&H00FF00&)"
+                        f"\\t({end_ms},{end_ms+50},\\fscx100\\fscy100\\1c&HFFFFFF&)}}"
+                    )
+                    text_parts.append(f"{highlight_tag}{escaped}")
 
                 line_text = " ".join(text_parts)
 

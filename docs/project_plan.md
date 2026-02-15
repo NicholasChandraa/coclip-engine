@@ -17,8 +17,10 @@ Build an automated video clipper application that takes YouTube links or video f
 | **Transcription** | WhisperX (Faster-Whisper + Alignment + Diarization) | Speech-to-text dengan word-level timestamps + speaker detection |
 | **Content Analysis** | Gemini (LangChain) | AI untuk detect viral clips |
 | **Smart Crop** | S3FD Face Detection + Keyframe Tracking | Dynamic face-following crop with smooth transitions |
-| **Video Processing** | FFmpeg | Video cutting, subtitle burning, smart portrait cropping |
+| **Video Processing** | FFmpeg (h264_nvenc GPU encode) | Video cutting, subtitle burning, smart portrait cropping |
 | **Video Download** | yt-dlp | Download video dari YouTube |
+| **Hook Generation** | Gemini (LangChain) — 2nd LLM call | Generate hook text + caption per clip |
+| **TTS** | Piper TTS (multilingual, ONNX, offline) | Hook voiceover — `id_ID`, `en_US`, `zh_CN` (Female voices, zero VRAM) |
 | **Database** | PostgreSQL | Persistent job & clip storage |
 
 ---
@@ -51,7 +53,9 @@ Build an automated video clipper application that takes YouTube links or video f
 │  LangGraph Pipeline (ARQ Worker)                  │
 │                                                   │
 │  transcription → analysis → editing → finalization│
-│  (WhisperX)     (Gemini)   (FFmpeg)               │
+│  (WhisperX)     (Gemini)   (FFmpeg)  (DB+cleanup) │
+│                             +Gemini2              │
+│                             +TTS)                 │
 │                                                   │
 │  Smart crop: S3FD face detect → keyframe tracking │
 │  GPU Memory: WhisperX → unload → S3FD → unload    │
@@ -106,10 +110,20 @@ Smart Crop + FFmpeg Processing:
          4. Pick most prominent speaker (largest face + most visible)
          5. Calculate smart crop position (center on speaker)
  55%  → Unload face detector
- 58%  → For each clip candidate:
+ 58%  → For each clip candidate (parallel, Semaphore=3):
          1. Generate ASS subtitle (word-level karaoke timing)
          2. FFmpeg: cut + smart crop to 9:16 + burn subtitles
- 78%  → All clips generated with subtitles
+ 70%  → Hook generation (2nd Gemini call):
+         1. Generate hook text per clip (attention-grabbing opening line)
+         2. Generate social media caption per clip
+ 75%  → TTS voiceover for hooks:
+         1. Piper TTS: convert hook text → audio (auto-select voice by WhisperX language)
+            - id → id_ID-news_tts-medium (Female)
+            - en → en_US-amy-medium (Female)
+            - zh → zh_CN-huayan-medium (Female)
+            - other → skip TTS, text overlay only
+         2. FFmpeg: overlay hook audio + text at clip start (3-5s)
+ 78%  → All clips generated with subtitles + hooks
  80%  → Route to finalization
 ```
 
@@ -235,9 +249,14 @@ Tunable constants (top of `speaker_detector.py`):
 - [x] DB API endpoints (GET /jobs, GET /jobs/{job_id} for history)
 - [x] Video format customization (TikTok 9:16, Reels, Shorts, Square, Landscape)
 - [x] Auto-crop for aspect ratio conversion (landscape → portrait)
-- [x] Enhanced subtitles (85px font, 440px margin, ALL CAPS, top-aligned)
+- [x] Enhanced subtitles (Arial Black 85px, 170px margin, Smart Layout 110% scale)
 - [x] **Smart crop (S3FD face tracking + keyframe dynamic crop)**
 - [x] **YouTube URL download (yt-dlp integration di API + worker)**
+- [x] **Parallel clip cutting (asyncio.gather + Semaphore=3)**
+- [x] **GPU encoding (h264_nvenc)**
+- [x] **Per-step VRAM management (unload model setelah tiap step)**
+- [ ] Hook generation (2nd Gemini call — hook text + caption per clip)
+- [ ] TTS voiceover (Piper TTS multilingual — id/en/zh, auto-select by WhisperX language)
 - [ ] Thumbnail generation
 - [ ] Next.js frontend (upload UI, clip preview, download)
 - [ ] Authentication (langsung di FastAPI, JWT/session)
@@ -258,5 +277,5 @@ Solusinya install Deno (yang di-recommend yt-dlp):
 # Windows (PowerShell)
 irm https://deno.land/install.ps1 | iex
 
-# Atau via winget
-winget install DenoLand.Deno
+# Tambah install ini juga
+yt-dlp --remote-components ejs:github "https://www.youtube.com/watch?v=vh5VbvP0dPM" --skip-download

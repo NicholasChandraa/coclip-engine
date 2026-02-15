@@ -12,13 +12,6 @@ import uvicorn
 async def lifespan(app: FastAPI):
     logger.info("🚀 Engine is starting up...")
 
-    # Load Whisper model saat startup (optional - bisa di-skip kalau mau lazy loading)
-    try:
-        transcriber.load_model()
-    except Exception as e:
-        logger.warning(f"⚠️ Failed to preload model: {e}")
-        logger.info("📌 Model will be loaded on first request")
-
     # Initialize database tables
     try:
         await init_db()

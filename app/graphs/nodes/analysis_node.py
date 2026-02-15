@@ -114,7 +114,7 @@ async def analysis_node(
 
         # Step 3: Parse response (42% → 50%)
         logger.info(f"📊 [Job {job_id}] Parsing Gemini response...")
-        clip_candidates = _parse_gemini_response(response.content, job_id)
+        clip_candidates = _parse_gemini_response(response.content, job_id, transcription.duration)
         await tracker.update_progress(50, "editing", "Phase 2 complete")
 
         logger.info(
@@ -284,7 +284,7 @@ IMPORTANT:
 Return ONLY valid JSON."""
 
 
-def _parse_gemini_response(response_text: str, job_id: str) -> list[dict]:
+def _parse_gemini_response(response_text: str, job_id: str, video_duration: float = 0) -> list[dict]:
     """
     Parse Gemini JSON response into clip candidates.
 
@@ -323,14 +323,24 @@ def _parse_gemini_response(response_text: str, job_id: str) -> list[dict]:
         # Validate and filter clips
         valid_clips = []
         for clip in clips:
-            if _validate_clip_candidate(clip):
-                valid_clips.append(clip)
-            else:
+            if not _validate_clip_candidate(clip):
                 logger.warning(
-                    f"⚠️ [Job {job_id}] Clip rejected: "
+                    f"⚠️ [Job {job_id}] Clip rejected (invalid fields): "
                     f"start={clip.get('start')}, end={clip.get('end')}, "
                     f"title={clip.get('title', 'N/A')}"
                 )
+                continue
+
+            # Reject clips beyond video duration
+            if video_duration > 0 and clip["end"] > video_duration:
+                logger.warning(
+                    f"⚠️ [Job {job_id}] Clip rejected (beyond duration {video_duration:.0f}s): "
+                    f"start={clip['start']:.0f}, end={clip['end']:.0f}, "
+                    f"title={clip.get('title', 'N/A')}"
+                )
+                continue
+
+            valid_clips.append(clip)
 
         logger.info(f"[Job {job_id}] Parsed {len(valid_clips)}/{len(clips)} valid clips from Gemini")
         return valid_clips

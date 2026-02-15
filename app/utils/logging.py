@@ -28,7 +28,7 @@ def setup_logger(name: str = "coclip"):
         show_level=True,
         markup=True,
     )
-    console_handler.setLevel(logging.INFO)
+    console_handler.setLevel(logging.DEBUG)
 
     # File handler (plain text, same content as console)
     file_handler = logging.FileHandler(log_file, encoding="utf-8")
@@ -47,9 +47,16 @@ def setup_logger(name: str = "coclip"):
         handlers=[console_handler, file_handler],
     )
 
+    # Suppress noisy external logs
+    logging.getLogger("torio").setLevel(logging.WARNING)
+    logging.getLogger("speechbrain").setLevel(logging.WARNING)
+    logging.getLogger("numba").setLevel(logging.WARNING)
+    logging.getLogger("matplotlib").setLevel(logging.WARNING)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
+
     # Create app logger
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     logger.info(f"📝 Logging to file: {log_file}")
 

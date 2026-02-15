@@ -78,9 +78,6 @@ async def transcription_node(
         logger.info(f"📝 [Job {job_id}] Formatting transcription result...")
         transcription_result = transcriber.format_result(final_result, language)
 
-        # Step 6: Unload WhisperX from GPU to free VRAM for Phase 3 (S3FD)
-        transcriber.unload_all()
-
         await tracker.update_progress(25, "analyzing", "Phase 1 complete")
 
         logger.info(

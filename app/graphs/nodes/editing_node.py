@@ -18,6 +18,7 @@ from app.utils.video_formats import get_format, VideoFormat
 from app.utils.logging import logger
 from app.core.config import settings
 from redis import asyncio as aioredis
+from app.utils.filename import sanitize_filename
 
 
 async def _detect_video_resolution(video_path: str) -> Tuple[int, int]:
@@ -276,11 +277,11 @@ async def _cut_clip_ffmpeg(
     cmd.extend(
         [
             "-c:v",
-            "libx264",
+            "h264_nvenc",
             "-preset",
-            "fast",
-            "-crf",
-            "23",
+            "p4",       # balanced speed/quality (p1=fastest, p7=best quality)
+            "-cq",
+            "23",       # constant quality mode (similar to CRF)
             "-c:a",
             "aac",
             "-b:a",
@@ -481,17 +482,16 @@ async def editing_node(
         total_clips = len(clip_candidates)
         errors = []
 
-        for i, candidate in enumerate(clip_candidates):
+        # Parallel clip cutting with semaphore to limit concurrent FFmpeg processes
+        semaphore = asyncio.Semaphore(3)
+        completed_count = 0
+        progress_lock = asyncio.Lock()
+
+        async def _process_single_clip(i, candidate):
+            nonlocal completed_count
             clip_num = i + 1
             clip_start = candidate["start"]
             clip_end = candidate["end"]
-
-            # Progress: distribute 50→78% across clips
-            clip_progress = 50 + int((clip_num / total_clips) * 28)
-            await tracker.update_progress(
-                clip_progress,
-                phase=f"Cutting clip {clip_num}/{total_clips}: {candidate.get('title', '')}",
-            )
 
             # Step A: Generate ASS subtitle for this clip
             subtitle_path = None
@@ -534,23 +534,42 @@ async def editing_node(
                         f"dynamic crop with {len(pos.keyframes)} keyframes"
                     )
 
-            # Step C: Cut clip + burn subtitles with FFmpeg
-            clip_filename = f"clip_{clip_num}.mp4"
+            # Step C: Cut clip + burn subtitles with FFmpeg (limited by semaphore)
+            # Step C: Generate descriptive filename (e.g. "Viral_Moment_1.mp4") with fallback
+            clip_title = candidate.get("title", "")
+            safe_title = sanitize_filename(clip_title)
+            
+            if safe_title:
+                clip_filename = f"{safe_title}_{clip_num}.mp4"
+            else:
+                clip_filename = f"clip_{clip_num}.mp4"
+                
+                
             output_path = os.path.join(job_clips_dir, clip_filename)
 
-            result = await _cut_clip_ffmpeg(
-                input_path=video_path,
-                output_path=output_path,
-                start=clip_start,
-                end=clip_end,
-                job_id=job_id,
-                clip_index=clip_num,
-                subtitle_path=subtitle_path,
-                crop_filter=clip_crop_filter,
-            )
+            async with semaphore:
+                result = await _cut_clip_ffmpeg(
+                    input_path=video_path,
+                    output_path=output_path,
+                    start=clip_start,
+                    end=clip_end,
+                    job_id=job_id,
+                    clip_index=clip_num,
+                    subtitle_path=subtitle_path,
+                    crop_filter=clip_crop_filter,
+                )
+
+            # Update progress after each clip completes
+            async with progress_lock:
+                completed_count += 1
+                clip_progress = 50 + int((completed_count / total_clips) * 28)
+                await tracker.update_progress(
+                    clip_progress,
+                    phase=f"Completed clip {completed_count}/{total_clips}: {candidate.get('title', '')}",
+                )
 
             if result["success"]:
-                clip_metadata = {
+                return {
                     "clip_id": f"{job_id}_clip_{clip_num}",
                     "clip_number": clip_num,
                     "start": clip_start,
@@ -565,12 +584,26 @@ async def editing_node(
                     "has_subtitles": subtitle_path is not None,
                     "subtitle_path": subtitle_path,
                     "status": "ready",
-                }
-                generated_clips.append(clip_metadata)
+                }, None
             else:
                 error_msg = f"Clip {clip_num} failed: {result['error']}"
-                errors.append(error_msg)
                 logger.error(f"❌ [Job {job_id}] {error_msg}")
+                return None, error_msg
+
+        # Launch all clips in parallel (semaphore limits concurrent FFmpeg to 3)
+        logger.info(f"🚀 [Job {job_id}] Cutting {total_clips} clips in parallel (max 3 concurrent)")
+        tasks = [_process_single_clip(i, c) for i, c in enumerate(clip_candidates)]
+        results = await asyncio.gather(*tasks)
+
+        # Collect results
+        for clip_metadata, error in results:
+            if clip_metadata:
+                generated_clips.append(clip_metadata)
+            if error:
+                errors.append(error)
+
+        # Sort by clip_number to maintain order
+        generated_clips.sort(key=lambda x: x["clip_number"])
 
         await tracker.update_progress(80, "finalizing", "Phase 3 complete")
 

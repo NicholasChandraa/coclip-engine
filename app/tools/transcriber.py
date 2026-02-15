@@ -122,12 +122,10 @@ class WhisperXTranscriber:
                             import torch
                             if torch.cuda.is_available():
                                 vram_gb = torch.cuda.get_device_properties(0).total_memory / 1024**3
-                                if vram_gb >= 12:
+                                if vram_gb >= 8:
                                     self._batch_size = 16
-                                elif vram_gb >= 8:
-                                    self._batch_size = 8
                                 else:
-                                    self._batch_size = 5
+                                    self._batch_size = 8
                                 logger.info(f"  VRAM: {vram_gb:.1f}GB → batch_size={self._batch_size}")
 
                         self._model = whisperx.load_model(
@@ -143,32 +141,48 @@ class WhisperXTranscriber:
                         logger.error(traceback.format_exc())
                         raise e
 
+    def _free_vram(self) -> None:
+        """Run gc.collect + empty CUDA cache."""
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
+    def _unload_transcription_model(self) -> None:
+        """Unload WhisperX transcription model to free VRAM for alignment."""
+        if self._model is not None:
+            del self._model
+            self._model = None
+            self._free_vram()
+            logger.info("🗑️ Transcription model unloaded")
+
+    def _unload_align_model(self) -> None:
+        """Unload alignment model to free VRAM for diarization."""
+        if self._align_model is not None:
+            del self._align_model
+            self._align_model = None
+            self._align_metadata = None
+            self._last_language = None
+            self._free_vram()
+            logger.info("🗑️ Alignment model unloaded")
+
+    def _unload_diarize_model(self) -> None:
+        """Unload diarization model to free VRAM."""
+        if self._diarize_model is not None:
+            del self._diarize_model
+            self._diarize_model = None
+            self._free_vram()
+            logger.info("🗑️ Diarization model unloaded")
+
     def unload_all(self) -> None:
         """
         Unload all models from GPU to free VRAM.
         Models will be re-loaded on next job if needed.
         """
-        import torch
-        import gc
-
-        logger.info("🗑️ Unloading WhisperX models from GPU...")
-
-        if self._model is not None:
-            del self._model
-            self._model = None
-
-        if self._align_model is not None:
-            del self._align_model
-            self._align_model = None
-            self._align_metadata = None
-
-        if self._diarize_model is not None:
-            del self._diarize_model
-            self._diarize_model = None
-
-        gc.collect()
+        logger.info("🗑️ Unloading all WhisperX models from GPU...")
+        self._unload_transcription_model()
+        self._unload_align_model()
+        self._unload_diarize_model()
         if torch.cuda.is_available():
-            torch.cuda.empty_cache()
             vram_free = torch.cuda.mem_get_info()[0] / 1024**3
             logger.info(f"✅ WhisperX unloaded. GPU free: {vram_free:.1f}GB")
 
@@ -198,24 +212,13 @@ class WhisperXTranscriber:
                     if torch.cuda.is_available():
                         torch.cuda.empty_cache()
 
-                # Handle Indonesian-specific model
-                align_model_name = None
-                if language_code == "id":
-                    align_model_name = "indonesian-nlp/wav2vec2-large-xlsr-indonesian"
-                    logger.info(f"🇮🇩 Using Indonesian alignment model: {align_model_name}")
-
                 # Load alignment model
-                if align_model_name:
-                    self._align_model, self._align_metadata = whisperx.load_align_model(
-                        language_code=language_code,
-                        device=self._device,
-                        model_name=align_model_name
-                    )
-                else:
-                    self._align_model, self._align_metadata = whisperx.load_align_model(
-                        language_code=language_code,
-                        device=self._device
-                    )
+                kwargs = {"language_code": language_code, "device": self._device}
+                if language_code == "id":
+                    kwargs["model_name"] = "indonesian-nlp/wav2vec2-large-xlsr-indonesian"
+                    logger.info("🇮🇩 Using Indonesian alignment model")
+
+                self._align_model, self._align_metadata = whisperx.load_align_model(**kwargs)
 
                 self._last_language = language_code
                 duration = time.time() - start_time
@@ -287,6 +290,7 @@ class WhisperXTranscriber:
                 result = self._model.transcribe(audio, batch_size=batch_size)
                 duration = time.time() - start
                 logger.info(f"✅ Transcription done in {duration:.2f}s. Language: {result['language']}")
+                self._unload_transcription_model()
                 return result
             except RuntimeError as e:
                 if "out of memory" in str(e).lower() and batch_size > 1:
@@ -297,6 +301,8 @@ class WhisperXTranscriber:
                     logger.warning(f"⚠️ OOM! Retrying with batch_size={batch_size}...")
                 else:
                     raise
+
+        raise RuntimeError("Transcription failed: all batch sizes exhausted")
 
     def step_align(self, segments: list, audio, language: str) -> dict:
         """
@@ -326,6 +332,7 @@ class WhisperXTranscriber:
 
         duration = time.time() - start
         logger.info(f"✅ Alignment done in {duration:.2f}s")
+        self._unload_align_model()
 
         return result
 
@@ -358,6 +365,8 @@ class WhisperXTranscriber:
             logger.info(f"✅ Diarization done in {duration:.2f}s. Speakers: {speakers}")
         except Exception as e:
             logger.warning(f"⚠️ Diarization failed: {e}")
+        finally:
+            self._unload_diarize_model()
 
         return result
 
