@@ -2,14 +2,15 @@
 Speaker Detector Module - Dynamic Face Tracking Smart Crop
 
 Detects faces per frame and produces smooth crop keyframes that follow
-the most prominent face throughout the clip.
+the active speaker throughout the clip.
 
 Pipeline:
   1. Sample frames at regular intervals
-  2. Detect largest face per frame
-  3. Compute crop_x keypoints per sample
-  4. Smooth keypoints to avoid jitter
-  5. FFmpeg renders with animated crop expression
+  2. Detect faces per frame
+  3. Use diarization data to identify active speaker → pick correct face
+  4. Compute crop_x keypoints per sample
+  5. Smooth keypoints to avoid jitter
+  6. FFmpeg renders with animated crop expression
 """
 
 import os
@@ -113,7 +114,8 @@ class SpeakerDetector:
     """
     Dynamic face-tracking smart crop detector.
 
-    Samples frames, detects largest face, produces smoothed crop keyframes.
+    Samples frames, detects faces, uses diarization to follow the active speaker.
+    Falls back to largest face if no diarization data is available.
     """
 
     def __init__(self, device: str = "cuda"):
@@ -375,6 +377,193 @@ class SpeakerDetector:
                 frames.append(None)
         return frames
 
+    # ── Speaker-Diarization Helpers ─────────────────────────────────────────
+
+    def _filter_segments_for_clip(self, segments, clip_start: float, clip_end: float) -> list:
+        """Pre-filter segments to only those overlapping with clip range."""
+        return [
+            seg for seg in segments
+            if seg.end >= clip_start and seg.start <= clip_end and seg.speaker
+        ]
+
+    def _get_active_speaker_at(self, clip_segments: list, timestamp: float) -> Optional[str]:
+        """Return speaker label active at given absolute timestamp.
+
+        Args:
+            clip_segments: Pre-filtered segments (from _filter_segments_for_clip).
+        """
+        for seg in clip_segments:
+            if seg.start <= timestamp <= seg.end:
+                return seg.speaker
+        return None
+
+    def _build_speaker_face_map(
+        self,
+        faces_per_frame: List[List[FaceBBox]],
+        sample_times: List[float],
+        clip_segments: list,
+        frame_width: int,
+        target_width: int,
+    ) -> dict:
+        """
+        Map speaker labels to face X positions using diarization data.
+
+        Strategy (dual-mapping + smoothness test for 2 speakers):
+          1. From multi-face frames, identify left and right face clusters
+          2. Try both possible speaker→face mappings (A=left/B=right, A=right/B=left)
+          3. For each mapping, simulate crop_x per frame based on active speaker
+          4. Pick the mapping with less jitter (smoother crop = correct mapping)
+
+          Rationale: correct mapping → crop stays on one person during their speech,
+          wrong mapping → crop jumps to the wrong person during speech.
+
+        For 1 or 3+ speakers, falls back to single-face direct mapping.
+
+        Returns:
+            dict: {"SPEAKER_00": avg_center_x, "SPEAKER_01": avg_center_x, ...}
+        """
+        unique_speakers = set(seg.speaker for seg in clip_segments if seg.speaker)
+        speaker_list = sorted(unique_speakers)
+
+        # For exactly 2 speakers: use dual-mapping smoothness test
+        if len(unique_speakers) == 2:
+            return self._build_two_speaker_map(
+                faces_per_frame, sample_times, clip_segments,
+                speaker_list, frame_width, target_width,
+            )
+
+        # For 1 or 3+ speakers: direct mapping from single-face frames
+        speaker_xs = {}
+        for sample_time, faces in zip(sample_times, faces_per_frame):
+            if len(faces) != 1:
+                continue
+            speaker = self._get_active_speaker_at(clip_segments, sample_time)
+            if speaker:
+                speaker_xs.setdefault(speaker, []).append(faces[0].center_x)
+
+        speaker_map = {
+            spk: sum(pos) / len(pos) for spk, pos in speaker_xs.items() if pos
+        }
+        if speaker_map:
+            details = ", ".join(
+                f"{spk}=x{int(x)} ({len(speaker_xs[spk])} samples)"
+                for spk, x in speaker_map.items()
+            )
+            logger.info(f"    👥 Speaker→position map (direct): {details}")
+        else:
+            logger.info(f"    👥 Speaker→position map: empty")
+        return speaker_map
+
+    def _build_two_speaker_map(
+        self,
+        faces_per_frame: List[List[FaceBBox]],
+        sample_times: List[float],
+        clip_segments: list,
+        speaker_list: list,
+        frame_width: int,
+        target_width: int,
+    ) -> dict:
+        """
+        Build speaker→face mapping for exactly 2 speakers using smoothness test.
+
+        Try both possible mappings and pick the one that produces less crop jitter.
+        """
+        # Step 1: Collect left/right face positions from multi-face frames
+        left_xs = []
+        right_xs = []
+        for faces in faces_per_frame:
+            if len(faces) >= 2:
+                sorted_faces = sorted(faces, key=lambda f: f.center_x)
+                left_xs.append(sorted_faces[0].center_x)
+                right_xs.append(sorted_faces[-1].center_x)
+
+        if not left_xs or not right_xs:
+            logger.info(f"    👥 No multi-face frames found, falling back to largest face")
+            return {}
+
+        avg_left = sum(left_xs) / len(left_xs)
+        avg_right = sum(right_xs) / len(right_xs)
+
+        # If faces are too close together, can't distinguish
+        if abs(avg_right - avg_left) < 100:
+            logger.info(
+                f"    👥 Faces too close (left=x{int(avg_left)}, right=x{int(avg_right)}, "
+                f"diff={int(avg_right - avg_left)}px), falling back to largest face"
+            )
+            return {}
+
+        spk_a, spk_b = speaker_list[0], speaker_list[1]
+
+        # Step 2: Try both mappings and compute jitter for each
+        mapping_a = {spk_a: avg_left, spk_b: avg_right}  # A=left, B=right
+        mapping_b = {spk_a: avg_right, spk_b: avg_left}  # A=right, B=left
+
+        jitter_a = self._compute_mapping_jitter(
+            faces_per_frame, sample_times, clip_segments,
+            mapping_a, frame_width, target_width,
+        )
+        jitter_b = self._compute_mapping_jitter(
+            faces_per_frame, sample_times, clip_segments,
+            mapping_b, frame_width, target_width,
+        )
+
+        # Step 3: Pick mapping with MORE jitter
+        # In podcasts, reaction shots (close-up of listener) make the WRONG mapping
+        # appear smoother. The CORRECT mapping has more jitter because it actively
+        # switches between speakers while reaction shots show the other person.
+        if jitter_a >= jitter_b:
+            best_map = mapping_a
+            logger.info(
+                f"    👥 Mapping test: A={spk_a}=left,{spk_b}=right "
+                f"(jitter={jitter_a:.0f}) vs B={spk_a}=right,{spk_b}=left "
+                f"(jitter={jitter_b:.0f}) → picked A (higher jitter = correct for podcast)"
+            )
+        else:
+            best_map = mapping_b
+            logger.info(
+                f"    👥 Mapping test: A={spk_a}=left,{spk_b}=right "
+                f"(jitter={jitter_a:.0f}) vs B={spk_a}=right,{spk_b}=left "
+                f"(jitter={jitter_b:.0f}) → picked B (higher jitter = correct for podcast)"
+            )
+
+        details = ", ".join(f"{spk}=x{int(x)}" for spk, x in best_map.items())
+        logger.info(f"    👥 Speaker→position map: {details}")
+        return best_map
+
+    def _compute_mapping_jitter(
+        self,
+        faces_per_frame: List[List[FaceBBox]],
+        sample_times: List[float],
+        clip_segments: list,
+        speaker_map: dict,
+        frame_width: int,
+        target_width: int,
+    ) -> float:
+        """
+        Simulate crop_x trajectory with a given speaker→position mapping.
+        Returns total jitter (sum of frame-to-frame crop_x changes).
+        Less jitter = smoother = more likely correct mapping.
+        """
+        prev_crop_x = (frame_width - target_width) // 2
+        total_jitter = 0.0
+
+        for sample_time, faces in zip(sample_times, faces_per_frame):
+            if not faces:
+                continue
+
+            speaker = self._get_active_speaker_at(clip_segments, sample_time)
+            if speaker and speaker in speaker_map and len(faces) > 1:
+                speaker_x = speaker_map[speaker]
+                target_face = min(faces, key=lambda f: abs(f.center_x - speaker_x))
+            else:
+                target_face = max(faces, key=lambda f: f.area)
+
+            crop_x = self._calc_crop_x(target_face, frame_width, target_width)
+            total_jitter += abs(crop_x - prev_crop_x)
+            prev_crop_x = crop_x
+
+        return total_jitter
+
     # ── Main Detection Pipeline ─────────────────────────────────────────────
 
     def detect_active_speakers(
@@ -385,6 +574,7 @@ class SpeakerDetector:
         frame_height: int,
         target_width: int,
         target_height: int,
+        segments=None,
         sample_interval: float = SAMPLE_INTERVAL,
     ) -> List[SpeakerPosition]:
         """
@@ -392,18 +582,25 @@ class SpeakerDetector:
 
         For each clip:
         1. Extract frames via FFmpeg (fast seeking)
-        2. Detect largest face → compute raw crop_x
-        3. Apply exponential smoothing to avoid jitter
-        4. Return keyframes for FFmpeg animated crop
+        2. Detect faces per frame
+        3. Use diarization (segments) to pick the active speaker's face
+        4. Apply exponential smoothing to avoid jitter
+        5. Return keyframes for FFmpeg animated crop
+
+        Args:
+            segments: TranscriptionSegment list with speaker labels (from WhisperX).
+                      If None, falls back to largest-face selection.
         """
         results = []
         center_x = (frame_width - target_width) // 2
+        has_diarization = segments is not None and len(segments) > 0
 
         total_clips = len(clip_candidates)
         logger.info(
             f"Starting face detection: {total_clips} clips, "
             f"video={frame_width}x{frame_height}, "
-            f"detection_width={min(frame_width, DETECTION_MAX_WIDTH)}px"
+            f"detection_width={min(frame_width, DETECTION_MAX_WIDTH)}px, "
+            f"diarization={'enabled' if has_diarization else 'disabled (largest face)'}"
         )
 
         for clip_idx, clip in enumerate(clip_candidates):
@@ -440,9 +637,8 @@ class SpeakerDetector:
                 f"    Extracted {extracted_ok}/{num_samples} frames in {extract_elapsed:.1f}s"
             )
 
-            # Detect faces on extracted frames
-            raw_keyframes: List[Tuple[float, int, Optional[FaceBBox]]] = []
-            prev_crop_x = center_x
+            # Phase 1: Detect all faces on all frames
+            all_faces_per_frame: List[List[FaceBBox]] = []
             self._stats = {}  # reset per clip
             face_found = 0
             face_miss = 0
@@ -454,15 +650,13 @@ class SpeakerDetector:
             ):
                 if frame is None:
                     frame_fail += 1
-                    raw_keyframes.append((sample_time - start_time, prev_crop_x, None))
+                    all_faces_per_frame.append([])
                     continue
 
                 t0 = time.time()
-                # Frame already resized by FFmpeg, skip resize in detect
                 faces = self._detect_faces_raw(frame)
                 detect_ms = (time.time() - t0) * 1000
 
-                # Log progress every 10 frames
                 if sample_idx % 10 == 0 or sample_idx == num_samples - 1:
                     logger.debug(
                         f"    Detect {sample_idx + 1}/{num_samples} "
@@ -480,15 +674,59 @@ class SpeakerDetector:
                     for f in faces
                 ]
 
-                if not scaled_faces:
+                if scaled_faces:
+                    face_found += 1
+                else:
                     face_miss += 1
+
+                all_faces_per_frame.append(scaled_faces)
+
+            # Phase 2: Build speaker→face position map (if diarization available)
+            speaker_face_map = {}
+            clip_segments = []
+            if has_diarization:
+                clip_segments = self._filter_segments_for_clip(segments, start_time, end_time)
+                if clip_segments:
+                    speaker_face_map = self._build_speaker_face_map(
+                        all_faces_per_frame, sample_times, clip_segments,
+                        frame_width, target_width,
+                    )
+
+            # Phase 3: Select target face per frame and compute crop_x
+            raw_keyframes: List[Tuple[float, int, Optional[FaceBBox]]] = []
+            prev_crop_x = center_x
+
+            for sample_idx, (sample_time, scaled_faces) in enumerate(
+                zip(sample_times, all_faces_per_frame)
+            ):
+                if not scaled_faces:
                     raw_keyframes.append((sample_time - start_time, prev_crop_x, None))
                     continue
 
-                face_found += 1
+                # Pick target face based on active speaker or largest face
                 largest_face = max(scaled_faces, key=lambda f: f.area)
-                crop_x = self._calc_crop_x(largest_face, frame_width, target_width)
-                raw_keyframes.append((sample_time - start_time, crop_x, largest_face))
+                target_face = largest_face
+                pick_reason = "largest"
+
+                if has_diarization and speaker_face_map and len(scaled_faces) > 1:
+                    active_speaker = self._get_active_speaker_at(
+                        clip_segments, sample_time
+                    )
+                    if active_speaker and active_speaker in speaker_face_map:
+                        speaker_x = speaker_face_map[active_speaker]
+                        target_face = min(scaled_faces, key=lambda f: abs(f.center_x - speaker_x))
+                        pick_reason = f"speaker:{active_speaker}"
+
+                        # Log when speaker-aware pick differs from largest face
+                        if sample_idx % 10 == 0 and target_face is not largest_face:
+                            logger.debug(
+                                f"    Frame {sample_idx}: {pick_reason} "
+                                f"(x={int(target_face.center_x)}) "
+                                f"instead of largest (x={int(largest_face.center_x)})"
+                            )
+
+                crop_x = self._calc_crop_x(target_face, frame_width, target_width)
+                raw_keyframes.append((sample_time - start_time, crop_x, target_face))
                 prev_crop_x = crop_x
 
             clip_elapsed = time.time() - detect_start
@@ -531,9 +769,15 @@ class SpeakerDetector:
                 )
             )
 
+            speaker_info = ""
+            if has_diarization and clip_segments:
+                unique_speakers = set(seg.speaker for seg in clip_segments)
+                speaker_info = f", speakers_in_clip={unique_speakers}"
             logger.info(
                 f"  Clip {clip_idx + 1}: {len(smoothed_keyframes)} keyframes, "
-                f"primary crop_x={primary_crop_x}"
+                f"primary crop_x={primary_crop_x}, "
+                f"mode={'speaker-aware' if speaker_face_map else 'largest-face'}"
+                f"{speaker_info}"
             )
 
         return results

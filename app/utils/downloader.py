@@ -7,10 +7,14 @@ Downloads YouTube videos to local storage for pipeline processing.
 import os
 import re
 import asyncio
+import signal
 from typing import Optional, Callable
 from dataclasses import dataclass
 
 from app.utils.logging import logger
+
+# Global reference to active download process for cancellation
+_active_downloads: dict = {}  # job_id -> yt_dlp.YoutubeDL instance
 
 
 @dataclass
@@ -131,8 +135,12 @@ async def download_video(
 
     def _download():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            return info
+            _active_downloads[job_id] = ydl
+            try:
+                info = ydl.extract_info(url, download=True)
+                return info
+            finally:
+                _active_downloads.pop(job_id, None)
 
     logger.info(f"[Job {job_id}] Starting YouTube download: {url}")
 
@@ -169,3 +177,20 @@ async def download_video(
         uploader=uploader,
         file_size=file_size,
     )
+
+
+def cancel_download(job_id: str) -> bool:
+    """Cancel an active download for a job.
+
+    Returns True if a download was found and cancelled.
+    """
+    ydl = _active_downloads.pop(job_id, None)
+    if ydl is not None:
+        try:
+            # yt-dlp checks _download_retcode to abort
+            ydl._download_retcode = 1
+            logger.info(f"[Job {job_id}] Download cancelled")
+            return True
+        except Exception as e:
+            logger.warning(f"[Job {job_id}] Failed to cancel download: {e}")
+    return False

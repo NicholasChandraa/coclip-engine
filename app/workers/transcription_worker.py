@@ -5,6 +5,7 @@ from app.utils.logging import logger
 from typing import Optional
 import os
 import json
+import asyncio
 
 
 async def process_video_task(
@@ -32,6 +33,12 @@ async def process_video_task(
     """
     # Import LangGraph pipeline
     from app.graphs import run_video_processing_pipeline
+
+    # Check if job was aborted before starting (e.g. retry of cancelled job)
+    job_status = await ctx["redis"].get(f"job:{job_id}:status")
+    if job_status and job_status.decode() == "aborted":
+        logger.info(f"⏭️ [Job {job_id}] Skipping aborted job")
+        return
 
     try:
         # Phase 0: Download YouTube video if needed
@@ -114,22 +121,16 @@ async def process_video_task(
 
 async def startup(ctx):
     """
-    ARQ Worker startup hook - preload WhisperX model.
+    ARQ Worker startup hook.
 
     Dipanggil sekali saat worker process start.
+    Models are loaded on-demand per job (lazy loading) to save VRAM.
     """
-    try:
-        from app.tools.transcriber import transcriber
-
-        logger.info("🔧 ARQ Worker starting up...")
-        transcriber.load_model()
-        logger.info(
-            f"✅ Worker ready with WhisperX model loaded! "
-            f"Diarization: {'enabled' if settings.ENABLE_DIARIZATION else 'disabled'}"
-        )
-    except Exception as e:
-        logger.warning(f"⚠️ Failed to preload model at startup: {e}")
-        logger.info("📌 Model will be loaded on first job instead (lazy loading)")
+    logger.info(
+        f"🔧 ARQ Worker ready! "
+        f"Diarization: {'enabled' if settings.ENABLE_DIARIZATION else 'disabled'}, "
+        f"Models: lazy loading (on-demand)"
+    )
 
 
 class WorkerSettings:

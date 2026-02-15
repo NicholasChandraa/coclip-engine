@@ -457,6 +457,7 @@ async def editing_node(
                     frame_height=input_height,
                     target_width=crop_w_in_source,
                     target_height=input_height,
+                    segments=transcription.segments if transcription else None,
                 )
 
                 detector.unload()

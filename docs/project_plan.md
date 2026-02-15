@@ -255,6 +255,8 @@ Tunable constants (top of `speaker_detector.py`):
 - [x] **Parallel clip cutting (asyncio.gather + Semaphore=3)**
 - [x] **GPU encoding (h264_nvenc)**
 - [x] **Per-step VRAM management (unload model setelah tiap step)**
+- [x] **Speaker-aware smart crop (diarization-based face selection, dual-mapping + jitter for podcast)**
+- [x] **Job abort endpoint (cancel download + prevent ARQ retry)**
 - [ ] Hook generation (2nd Gemini call — hook text + caption per clip)
 - [ ] TTS voiceover (Piper TTS multilingual — id/en/zh, auto-select by WhisperX language)
 - [ ] Thumbnail generation
