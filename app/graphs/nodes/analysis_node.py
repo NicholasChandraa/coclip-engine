@@ -39,7 +39,7 @@ def get_gemini_llm():
 
 async def analysis_node(
     state: VideoProcessingState, redis: aioredis.Redis
-) -> Command[Literal["editing", "finalization"]]:
+) -> Command[Literal["hook_generation", "finalization"]]:
     """
     Phase 2: Content analysis using Gemini LLM.
 
@@ -133,10 +133,10 @@ async def analysis_node(
                     },
                     "clip_candidates": clip_candidates,
                     "progress": 50,
-                    "status": "editing",
-                    "current_phase": "Phase 3: Video Editing",
+                    "status": "generating_hooks",
+                    "current_phase": "Phase 3A: Hook Generation",
                 },
-                goto="editing",
+                goto="hook_generation",
             )
         else:
             # No clips found, skip to finalization

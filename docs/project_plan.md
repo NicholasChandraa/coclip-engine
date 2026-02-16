@@ -20,7 +20,7 @@ Build an automated video clipper application that takes YouTube links or video f
 | **Video Processing** | FFmpeg (h264_nvenc GPU encode) | Video cutting, subtitle burning, smart portrait cropping |
 | **Video Download** | yt-dlp | Download video dari YouTube |
 | **Hook Generation** | Gemini (LangChain) — 2nd LLM call | Generate hook text + caption per clip |
-| **TTS** | Piper TTS (multilingual, ONNX, offline) | Hook voiceover — `id_ID`, `en_US`, `zh_CN` (Female voices, zero VRAM) |
+| **TTS** | Piper (EN/ZH) + F5-TTS (ID) | Hook voiceover — `id_ID` (F5-TTS Reporter), `en_US`/`zh_CN` (Piper) |
 | **Database** | PostgreSQL | Persistent job & clip storage |
 
 ---
@@ -258,7 +258,7 @@ Tunable constants (top of `speaker_detector.py`):
 - [x] **Speaker-aware smart crop (diarization-based face selection, dual-mapping + jitter for podcast)**
 - [x] **Job abort endpoint (cancel download + prevent ARQ retry)**
 - [ ] Hook generation (2nd Gemini call — hook text + caption per clip)
-- [ ] TTS voiceover (Piper TTS multilingual — id/en/zh, auto-select by WhisperX language)
+- [x] **TTS voiceover (Combined Piper & F5-TTS — id/en/zh, auto-select by WhisperX language)**
 - [ ] Thumbnail generation
 - [ ] Next.js frontend (upload UI, clip preview, download)
 - [ ] Authentication (langsung di FastAPI, JWT/session)

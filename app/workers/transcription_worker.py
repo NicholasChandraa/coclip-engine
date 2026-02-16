@@ -105,6 +105,22 @@ async def process_video_task(
         raise
 
     finally:
+        # Ensure all GPU models are freed even if pipeline fails
+        try:
+            import torch
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+                logger.info(f"[Job {job_id}] CUDA cache cleared")
+        except Exception:
+            pass
+
+        # Unload any remaining models to free VRAM for next task
+        try:
+            from app.tools.transcriber import transcriber
+            transcriber.unload_all()
+        except Exception:
+            pass
+
         # Cleanup temp file
         # Note: finalization_node also does cleanup, but we keep this as fallback
         if os.path.exists(video_path):

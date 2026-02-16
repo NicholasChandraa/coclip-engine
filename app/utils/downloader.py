@@ -125,7 +125,8 @@ async def download_video(
             logger.info(f"  [Job {job_id}] Download finished, merging...")
 
     ydl_opts = {
-        "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
+        # Prefer MP4 directly to avoid merge/re-encode if possible
+        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
         "outtmpl": output_template,
         "merge_output_format": "mp4",
         "quiet": True,

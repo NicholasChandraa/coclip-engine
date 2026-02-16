@@ -47,7 +47,11 @@ class VideoProcessingState(TypedDict):
     analysis_result: NotRequired[Optional[dict]]  # Gemini analysis output
     clip_candidates: NotRequired[List[dict]]  # Suggested clips with timestamps
 
-    # Phase 3: Video Editing (FFmpeg) - TODO
+    # Phase 3A: Hook Generation (Gemini + TTS)
+    # Each hook: {"clip_index": 0, "hook_text": "...", "caption": "...", "audio_path": "...", "language": "id"}
+    hooks: NotRequired[Optional[List[dict]]]
+
+    # Phase 3B: Video Editing (FFmpeg)
     # Use Annotated reducer to accumulate clips from parallel editing
     clips: Annotated[List[dict], operator.add]  # Generated clip files
 
