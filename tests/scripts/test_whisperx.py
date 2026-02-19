@@ -24,6 +24,30 @@ import sys
 import time
 import argparse
 
+# --- PyTorch 2.6+ Workaround (sama seperti transcriber.py) ---
+import torch
+import torch.serialization
+_original_torch_load = torch.load
+def _patched_torch_load(*args, **kwargs):
+    kwargs['weights_only'] = False
+    try:
+        from omegaconf import DictConfig, ListConfig
+        torch.serialization.add_safe_globals([DictConfig, ListConfig])
+    except:
+        pass
+    return _original_torch_load(*args, **kwargs)
+torch.load = _patched_torch_load
+
+# --- Patch huggingface_hub deprecated 'use_auth_token' ---
+import huggingface_hub
+_original_hf_hub_download = huggingface_hub.hf_hub_download
+def _patched_hf_hub_download(*args, **kwargs):
+    if 'use_auth_token' in kwargs:
+        kwargs['token'] = kwargs.pop('use_auth_token')
+    return _original_hf_hub_download(*args, **kwargs)
+huggingface_hub.hf_hub_download = _patched_hf_hub_download
+# --------------------------------------------------------------
+
 SOURCE_VIDEO = "tests/video/sample_video_1.mp4"
 
 
@@ -190,10 +214,14 @@ def main():
     lang = transcription_result["language"]
     print(f"  Language: {lang}")
 
+    # Handle Indonesian alignment model
+    align_kwargs = {"language_code": lang, "device": args.device}
+    if lang == "id":
+        align_kwargs["model_name"] = "indonesian-nlp/wav2vec2-large-xlsr-indonesian"
+        print(f"  Using Indonesian alignment model")
+
     t0 = time.time()
-    align_model, align_metadata = whisperx.load_align_model(
-        language_code=lang, device=args.device
-    )
+    align_model, align_metadata = whisperx.load_align_model(**align_kwargs)
     align_load_time = time.time() - t0
     print(f"  Align model loaded in {align_load_time:.2f}s")
     print_vram("after align model load")
@@ -244,6 +272,7 @@ def main():
                 )
                 diarize_load_time = time.time() - t0
                 print(f"  Diarize model loaded in {diarize_load_time:.2f}s")
+
                 print_vram("after diarize model load")
 
                 t0 = time.time()

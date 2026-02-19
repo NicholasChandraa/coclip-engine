@@ -39,7 +39,7 @@ def get_gemini_llm():
 
 async def analysis_node(
     state: VideoProcessingState, redis: aioredis.Redis
-) -> Command[Literal["editing", "finalization"]]:
+) -> Command[Literal["hook_generation", "finalization"]]:
     """
     Phase 2: Content analysis using Gemini LLM.
 
@@ -114,7 +114,7 @@ async def analysis_node(
 
         # Step 3: Parse response (42% → 50%)
         logger.info(f"📊 [Job {job_id}] Parsing Gemini response...")
-        clip_candidates = _parse_gemini_response(response.content, job_id)
+        clip_candidates = _parse_gemini_response(response.content, job_id, transcription.duration)
         await tracker.update_progress(50, "editing", "Phase 2 complete")
 
         logger.info(
@@ -133,10 +133,10 @@ async def analysis_node(
                     },
                     "clip_candidates": clip_candidates,
                     "progress": 50,
-                    "status": "editing",
-                    "current_phase": "Phase 3: Video Editing",
+                    "status": "generating_hooks",
+                    "current_phase": "Phase 3A: Hook Generation",
                 },
-                goto="editing",
+                goto="hook_generation",
             )
         else:
             # No clips found, skip to finalization
@@ -217,17 +217,18 @@ def _create_analysis_system_prompt() -> str:
 Your task is to analyze video transcripts and identify segments that are ENGAGING, COMPLETE, and make sense as STANDALONE content.
 
 **CRITICAL RULES:**
-- Every clip MUST tell a complete story/topic. A viewer who has NEVER seen the full video must fully understand what is being discussed.
-- ALWAYS include the setup/introduction of a topic BEFORE the punchline or key moment. Don't start a clip in the middle of a thought.
-- If a topic takes 2 minutes to fully explain, the clip should be 2 minutes. DO NOT cut short just to keep it under 60 seconds.
-- It's much better to have a longer clip with full context than a short clip that confuses viewers.
+1. **NO CLIFFHANGERS**: The clip MUST include the resolution, answer, or punchline. If a problem is stated, the solution must be shown.
+2. **CONTEXT IS KING**: A viewer who has NEVER seen the full video must fully understand what is being discussed.
+3. **SETUP + PAYOFF**: Always include the setup (introduction) AND the payoff (conclusion).
+4. **IGNORE TIME LIMITS FOR QUALITY**: If a topic takes 2 minutes to resolve, the clip MUST be 2 minutes. DO NOT cut it short to fit an arbitrary time limit.
+5. **START EARLY, END LATE**: Start a few seconds before the topic begins and end a few seconds after it finishes to ensure natural transitions.
 
 **Clip Quality Criteria:**
-1. **Context Completeness** (0-10): Can a new viewer fully understand this clip without watching the full video? Does it include the setup, explanation, and conclusion of the topic?
+1. **Context Completeness** (0-10): Does it tell a full story? (Setup -> Conflict -> Resolution)
 2. **Hook Factor** (0-10): Does the opening grab attention?
 3. **Emotional Impact** (0-10): Funny, shocking, inspirational, relatable?
-4. **Shareability** (0-10): Would viewers share this with friends?
-5. **Standalone Value** (0-10): Does this clip deliver value on its own?
+4. **Shareability** (0-10): Would viewers share this?
+5. **Stand-Alone Value** (0-10): Does it make sense without the rest of the video?
 
 **Output Format (JSON):**
 ```json
@@ -237,7 +238,7 @@ Your task is to analyze video transcripts and identify segments that are ENGAGIN
       "start": 15.5,
       "end": 105.2,
       "title": "Catchy Title (max 60 chars)",
-      "reasoning": "Why this clip works as standalone content",
+      "reasoning": "This clip works because it sets up the problem of X and delivers the solution Y...",
       "context_completeness": 9,
       "hook_factor": 8,
       "emotional_impact": 8,
@@ -251,14 +252,10 @@ Your task is to analyze video transcripts and identify segments that are ENGAGIN
 ```
 
 **Instructions:**
-- Identify as many good clips as possible (aim for 1 clip per 3-5 minutes of video)
-- Each clip should be 30-180 seconds (longer is fine if the topic needs it)
-- NEVER cut a topic in the middle. Always include the full discussion from start to finish.
-- Start each clip a few seconds BEFORE the topic begins (to include natural transitions)
-- End each clip a few seconds AFTER the topic concludes (to avoid abrupt cuts)
-- Prioritize clips with viral_score >= 7.0
-- Avoid overlapping clips
-- If no good content found, return empty clips array"""
+- Identify as many good clips as possible.
+- Prioritize **completeness** over quantity.
+- If a section is "hanging" or incomplete, EXTEND the end time until the thought is finished.
+- Return empty array if no suitable content is found."""
 
 
 def _create_analysis_user_prompt(transcript: str, duration: float) -> str:
@@ -270,21 +267,20 @@ def _create_analysis_user_prompt(transcript: str, duration: float) -> str:
     return f"""Analyze this video transcript and identify the best clips for social media:
 
 **Video Duration:** {duration:.1f} seconds ({minutes:.1f} minutes)
-**Target:** Find {min_clips}-{max_clips} clips (more is better, as long as quality is good)
+**Target:** Find {min_clips}-{max_clips} clips (quality > quantity)
 **Transcript:**
 {transcript}
 
 IMPORTANT:
-- Each clip MUST contain a COMPLETE topic/story from beginning to end.
-- A viewer who has never seen the full video must understand the full context.
-- Clips can be 30 seconds to 3 minutes — use whatever length the topic needs.
-- DO NOT cut topics short. Include the full discussion.
-- For a {minutes:.0f}-minute video, there should be MANY good clips. Don't be too selective.
+- **THE MOST IMPORTANT RULE:** The clip MUST include the **resolution** or **answer**.
+- Do NOT cut off the speaker before they finish their main point.
+- If they ask a question, the clip MUST contain the answer.
+- It is better to have a longer clip (up to 3 mins) than a short incomplete one.
 
 Return ONLY valid JSON."""
 
 
-def _parse_gemini_response(response_text: str, job_id: str) -> list[dict]:
+def _parse_gemini_response(response_text: str, job_id: str, video_duration: float = 0) -> list[dict]:
     """
     Parse Gemini JSON response into clip candidates.
 
@@ -323,14 +319,24 @@ def _parse_gemini_response(response_text: str, job_id: str) -> list[dict]:
         # Validate and filter clips
         valid_clips = []
         for clip in clips:
-            if _validate_clip_candidate(clip):
-                valid_clips.append(clip)
-            else:
+            if not _validate_clip_candidate(clip):
                 logger.warning(
-                    f"⚠️ [Job {job_id}] Clip rejected: "
+                    f"⚠️ [Job {job_id}] Clip rejected (invalid fields): "
                     f"start={clip.get('start')}, end={clip.get('end')}, "
                     f"title={clip.get('title', 'N/A')}"
                 )
+                continue
+
+            # Reject clips beyond video duration
+            if video_duration > 0 and clip["end"] > video_duration:
+                logger.warning(
+                    f"⚠️ [Job {job_id}] Clip rejected (beyond duration {video_duration:.0f}s): "
+                    f"start={clip['start']:.0f}, end={clip['end']:.0f}, "
+                    f"title={clip.get('title', 'N/A')}"
+                )
+                continue
+
+            valid_clips.append(clip)
 
         logger.info(f"[Job {job_id}] Parsed {len(valid_clips)}/{len(clips)} valid clips from Gemini")
         return valid_clips

@@ -57,6 +57,12 @@ class Settings(BaseModel):
     ENABLE_SMART_CROP: bool = os.getenv("ENABLE_SMART_CROP", "true").lower() == "true"
     CROP_MODE: str = os.getenv("CROP_MODE", "smart")  # "smart" | "center" | "none"
 
+    # Hook Generation
+    ENABLE_HOOKS: bool = os.getenv("ENABLE_HOOKS", "true").lower() == "true"
+
+    # TTS
+    TTS_DATA_DIR: str = os.path.join(os.getcwd(), "model-tts")
+
 
 settings = Settings()
 

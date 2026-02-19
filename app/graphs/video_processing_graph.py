@@ -17,6 +17,7 @@ from app.graphs.nodes import (
     analysis_node,
     editing_node,
     finalization_node,
+    hook_generation_node,
 )
 from app.utils.logging import logger
 
@@ -26,7 +27,7 @@ def create_video_processing_graph(redis: aioredis.Redis, job_id: str):
     Create and compile LangGraph for video processing pipeline.
 
     Graph flow:
-    START → transcription → analysis → editing → finalization → END
+    START → transcription → analysis → hook_generation → editing → finalization → END
 
     With conditional routing:
     - If transcription fails or has no content → skip to finalization
@@ -52,6 +53,9 @@ def create_video_processing_graph(redis: aioredis.Redis, job_id: str):
     async def analysis_wrapper(state):
         return await analysis_node(state, redis)
 
+    async def hook_generation_wrapper(state):
+        return await hook_generation_node(state, redis)
+
     async def editing_wrapper(state):
         return await editing_node(state, redis)
 
@@ -61,6 +65,7 @@ def create_video_processing_graph(redis: aioredis.Redis, job_id: str):
     # Add nodes with async wrappers
     graph.add_node("transcription", transcription_wrapper)
     graph.add_node("analysis", analysis_wrapper)
+    graph.add_node("hook_generation", hook_generation_wrapper)
     graph.add_node("editing", editing_wrapper)
     graph.add_node("finalization", finalization_wrapper)
 
@@ -69,7 +74,8 @@ def create_video_processing_graph(redis: aioredis.Redis, job_id: str):
 
     # Conditional edges are handled by Command API in nodes
     # transcription_node returns Command(goto="analysis" or "finalization")
-    # analysis_node returns Command(goto="editing" or "finalization")
+    # analysis_node returns Command(goto="hook_generation" or "finalization")
+    # hook_generation_node returns Command(goto="editing")
     # editing_node returns Command(goto="finalization")
 
     # finalization is terminal → END

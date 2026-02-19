@@ -1,8 +1,8 @@
 """
 Video editing node for LangGraph video processing pipeline.
 
-Implements Phase 3: FFmpeg video editing (50% → 80%)
-Cuts video clips and burns word-level subtitles using WhisperX timestamps.
+Implements Phase 3B: FFmpeg video editing (58% → 80%)
+Cuts video clips, burns word-level subtitles, and prepends hook intros.
 """
 
 import os
@@ -18,6 +18,7 @@ from app.utils.video_formats import get_format, VideoFormat
 from app.utils.logging import logger
 from app.core.config import settings
 from redis import asyncio as aioredis
+from app.utils.filename import sanitize_filename
 
 
 async def _detect_video_resolution(video_path: str) -> Tuple[int, int]:
@@ -276,11 +277,11 @@ async def _cut_clip_ffmpeg(
     cmd.extend(
         [
             "-c:v",
-            "libx264",
+            "h264_nvenc",
             "-preset",
-            "fast",
-            "-crf",
-            "23",
+            "p4",       # balanced speed/quality (p1=fastest, p7=best quality)
+            "-cq",
+            "23",       # constant quality mode (similar to CRF)
             "-c:a",
             "aac",
             "-b:a",
@@ -338,17 +339,267 @@ async def _cut_clip_ffmpeg(
         return {"success": False, "error": str(e)}
 
 
+async def _get_audio_duration(audio_path: str) -> float:
+    """Get duration of a WAV audio file in seconds."""
+    try:
+        import wave
+        with wave.open(audio_path, "rb") as wf:
+            frames = wf.getnframes()
+            rate = wf.getframerate()
+            return frames / rate
+    except Exception:
+        return 4.0  # default fallback
+
+
+async def _detect_clip_fps(clip_path: str) -> float:
+    """Detect frame rate of a video clip using ffprobe."""
+    cmd = [
+        "ffprobe", "-v", "error",
+        "-select_streams", "v:0",
+        "-show_entries", "stream=r_frame_rate",
+        "-of", "json",
+        clip_path,
+    ]
+    try:
+        process = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, _ = await process.communicate()
+        if process.returncode == 0:
+            data = json.loads(stdout.decode())
+            r_str = data.get("streams", [{}])[0].get("r_frame_rate", "30/1")
+            num, den = r_str.split("/")
+            return float(num) / float(den)
+    except Exception:
+        pass
+    return 30.0
+
+
+async def _create_hook_intro(
+    hook: dict,
+    main_clip_path: str,
+    output_dir: str,
+    clip_index: int,
+    job_id: str,
+    target_width: int,
+    target_height: int,
+    clip_fps: float = 30.0,
+) -> Optional[str]:
+    """
+    Create a hook intro segment: blurred freeze frame + text overlay + voiceover.
+    Single FFmpeg call — no intermediate PNG file.
+
+    Args:
+        hook: Hook dict with hook_text and audio_path
+        main_clip_path: Path to the main clip (for extracting first frame)
+        output_dir: Directory to write temp files
+        clip_index: Clip number for naming
+        job_id: Job ID for logging
+        target_width: Output video width
+        target_height: Output video height
+        clip_fps: Source video frame rate (pre-detected, avoids ffprobe per clip)
+
+    Returns:
+        Path to intro video, or None on failure
+    """
+    hook_text = hook.get("hook_text", "")
+    audio_path = hook.get("audio_path", "")
+
+    if not hook_text:
+        return None
+
+    intro_path = os.path.join(output_dir, f"hook_intro_{clip_index}.mp4")
+
+    try:
+        # Determine intro duration from audio (or default 4s)
+        if audio_path and os.path.exists(audio_path):
+            tts_duration = await _get_audio_duration(audio_path)
+            hook_duration = 1.0 + tts_duration + 1.0  # 1.0s padding before + after TTS
+        else:
+            hook_duration = 4.0
+
+        # Text wrapping (uppercase, Arial Black)
+        safe_text = hook_text.upper().replace("'", "\u2019").replace(":", "\\:")
+        max_chars_per_line = 15
+        words = safe_text.split()
+        lines = []
+        current_line = ""
+        for word in words:
+            if len(current_line) + len(word) + 1 > max_chars_per_line and current_line:
+                lines.append(current_line)
+                current_line = word
+            else:
+                current_line = f"{current_line} {word}" if current_line else word
+        if current_line:
+            lines.append(current_line)
+        wrapped_text = "\n".join(lines)
+
+        font_size = int(target_height * 0.044)
+        drawtext_filter = (
+            f"drawtext=text='{wrapped_text}'"
+            f":font='Arial Black'"
+            f":fontsize={font_size}"
+            f":fontcolor=white"
+            f":borderw=4.5:bordercolor=black"
+            f":x=(w-text_w)/2:y=(h-text_h)/2"
+        )
+
+        has_audio = audio_path and os.path.exists(audio_path)
+        sfx_path = os.path.join(os.getcwd(), "music", "sound-effect-1.mp3")
+        has_sfx = os.path.exists(sfx_path)
+
+        # Single FFmpeg call: extract first frame from clip + blur + text + audio mix
+        # Input [0] = main clip (we take 1 frame), [1] = TTS or silence, [2] = SFX
+        intro_cmd = ["ffmpeg", "-y", "-i", main_clip_path]
+
+        if has_audio:
+            intro_cmd.extend(["-i", audio_path])
+        else:
+            intro_cmd.extend(["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"])
+
+        if has_sfx:
+            intro_cmd.extend(["-i", sfx_path])
+
+        # Video filter: take 1 frame, blur, loop, overlay text
+        # Use trim+loop to freeze first frame without intermediate PNG
+        video_filter = f"trim=0:1/clip_fps,loop=-1:1,boxblur=20:5,{drawtext_filter}"
+
+        # Audio filter_complex
+        if has_sfx and has_audio:
+            audio_filter = (
+                f"[0:v]trim=0:0.04,loop=-1:1,setpts=N/FRAME_RATE/TB,boxblur=20:5,{drawtext_filter}[vout];"
+                "[1:a]adelay=1000|1000,volume=3.0,aresample=48000[tts];"
+                "[2:a]atrim=0:2,volume=0.7,aresample=48000[sfx];"
+                "[tts][sfx]amix=inputs=2:duration=longest[aout]"
+            )
+            intro_cmd.extend([
+                "-filter_complex", audio_filter,
+                "-map", "[vout]", "-map", "[aout]",
+            ])
+        elif has_sfx:
+            audio_filter = (
+                f"[0:v]trim=0:0.04,loop=-1:1,setpts=N/FRAME_RATE/TB,boxblur=20:5,{drawtext_filter}[vout];"
+                "[2:a]atrim=0:2,volume=0.7,aresample=48000[sfx];"
+                "[1:a]volume=3.0[tts_v];"
+                "[tts_v][sfx]amix=inputs=2:duration=longest[aout]"
+            )
+            intro_cmd.extend([
+                "-filter_complex", audio_filter,
+                "-map", "[vout]", "-map", "[aout]",
+            ])
+        elif has_audio:
+            audio_filter = (
+                f"[0:v]trim=0:0.04,loop=-1:1,setpts=N/FRAME_RATE/TB,boxblur=20:5,{drawtext_filter}[vout];"
+                "[1:a]adelay=1000|1000,volume=3.0,aresample=48000[aout]"
+            )
+            intro_cmd.extend([
+                "-filter_complex", audio_filter,
+                "-map", "[vout]", "-map", "[aout]",
+            ])
+        else:
+            # Silent, no SFX — simple video filter
+            intro_cmd.extend(["-vf", video_filter])
+
+        intro_cmd.extend([
+            "-t", str(hook_duration),
+            "-c:v", "h264_nvenc",
+            "-preset", "p4",
+            "-cq", "23",
+            "-c:a", "aac",
+            "-b:a", "128k",
+            "-ar", "48000",
+            "-pix_fmt", "yuv420p",
+            "-r", str(clip_fps),
+            "-shortest",
+            "-movflags", "+faststart",
+            intro_path,
+        ])
+
+        process = await asyncio.create_subprocess_exec(
+            *intro_cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, stderr = await process.communicate()
+
+        if process.returncode != 0:
+            logger.warning(
+                f"[Job {job_id}] Hook intro creation failed for clip {clip_index}: "
+                f"{stderr.decode()[-300:]}"
+            )
+            return None
+
+        logger.info(f"[Job {job_id}] Hook intro created: {intro_path} ({hook_duration:.1f}s)")
+        return intro_path
+
+    except Exception as e:
+        logger.warning(f"[Job {job_id}] Hook intro error for clip {clip_index}: {e}")
+        return None
+
+
+async def _concat_intro_and_clip(
+    intro_path: str, main_clip_path: str, output_path: str, job_id: str
+) -> Optional[str]:
+    """
+    Concatenate hook intro + main clip using FFmpeg concat demuxer.
+
+    Returns path to final concatenated video, or None on failure.
+    """
+    concat_list_path = main_clip_path + ".concat.txt"
+    try:
+        # Write concat list file
+        with open(concat_list_path, "w", encoding="utf-8") as f:
+            f.write(f"file '{os.path.abspath(intro_path).replace(os.sep, '/')}'\n")
+            f.write(f"file '{os.path.abspath(main_clip_path).replace(os.sep, '/')}'\n")
+
+        # Stream copy (no re-encode) — intro already has matching codec params
+        concat_cmd = [
+            "ffmpeg", "-y",
+            "-f", "concat",
+            "-safe", "0",
+            "-i", concat_list_path,
+            "-c", "copy",
+            "-movflags", "+faststart",
+            output_path,
+        ]
+
+        process = await asyncio.create_subprocess_exec(
+            *concat_cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, stderr = await process.communicate()
+
+        if process.returncode != 0:
+            logger.warning(f"[Job {job_id}] Concat failed: {stderr.decode()[-300:]}")
+            return None
+
+        logger.info(f"[Job {job_id}] Concat complete: {output_path}")
+        return output_path
+
+    except Exception as e:
+        logger.warning(f"[Job {job_id}] Concat error: {e}")
+        return None
+    finally:
+        # Clean up concat list
+        if os.path.exists(concat_list_path):
+            os.remove(concat_list_path)
+
+
 async def editing_node(
     state: VideoProcessingState, redis: aioredis.Redis
 ) -> Command[Literal["finalization"]]:
     """
-    Phase 3: Video editing using FFmpeg with subtitle burning.
+    Phase 3B: Video editing using FFmpeg with subtitle burning + hook intros.
 
-    Pipeline steps (50% → 80%):
+    Pipeline steps (58% → 80%):
     1. Create output directory for job clips
     2. Generate ASS subtitles per clip (word-level from WhisperX)
     3. Cut each clip + burn subtitles using FFmpeg
-    4. Collect metadata and route to finalization
+    4. Prepend hook intro (if available) to each clip
+    5. Collect metadata and route to finalization
 
     Args:
         state: Current LangGraph state
@@ -360,6 +611,7 @@ async def editing_node(
     job_id = state["job_id"]
     video_path = state.get("video_path", "")
     clip_candidates = state.get("clip_candidates", [])
+    hooks = state.get("hooks") or []
     transcription: Optional[TranscriptionResultDetailed] = state.get(
         "transcription_result"
     )
@@ -368,8 +620,8 @@ async def editing_node(
     tracker = create_progress_tracker(redis, job_id)
 
     try:
-        logger.info(f"🎬 [Job {job_id}] Starting Phase 3: Video Editing + Subtitles")
-        await tracker.update_progress(50, "editing", "Phase 3: Video Editing")
+        logger.info(f"🎬 [Job {job_id}] Starting Phase 3B: Video Editing + Subtitles")
+        await tracker.update_progress(58, "editing", "Phase 3B: Video Editing")
 
         # Validate input
         if not video_path or not os.path.exists(video_path):
@@ -456,6 +708,7 @@ async def editing_node(
                     frame_height=input_height,
                     target_width=crop_w_in_source,
                     target_height=input_height,
+                    segments=transcription.segments if transcription else None,
                 )
 
                 detector.unload()
@@ -476,22 +729,25 @@ async def editing_node(
             input_width, input_height, target_format
         )
 
+        # Detect source fps once (used for hook intro matching)
+        source_fps = await _detect_clip_fps(video_path)
+        logger.info(f"[Job {job_id}] Source video fps: {source_fps:.2f}")
+
         # Cut each clip
         generated_clips = []
         total_clips = len(clip_candidates)
         errors = []
 
-        for i, candidate in enumerate(clip_candidates):
+        # Parallel clip cutting with semaphore to limit concurrent FFmpeg processes
+        semaphore = asyncio.Semaphore(3)
+        completed_count = 0
+        progress_lock = asyncio.Lock()
+
+        async def _process_single_clip(i, candidate, hooks_list):
+            nonlocal completed_count
             clip_num = i + 1
             clip_start = candidate["start"]
             clip_end = candidate["end"]
-
-            # Progress: distribute 50→78% across clips
-            clip_progress = 50 + int((clip_num / total_clips) * 28)
-            await tracker.update_progress(
-                clip_progress,
-                phase=f"Cutting clip {clip_num}/{total_clips}: {candidate.get('title', '')}",
-            )
 
             # Step A: Generate ASS subtitle for this clip
             subtitle_path = None
@@ -534,23 +790,76 @@ async def editing_node(
                         f"dynamic crop with {len(pos.keyframes)} keyframes"
                     )
 
-            # Step C: Cut clip + burn subtitles with FFmpeg
-            clip_filename = f"clip_{clip_num}.mp4"
+            # Step C: Cut clip + burn subtitles with FFmpeg (limited by semaphore)
+            # Step C: Generate descriptive filename (e.g. "Viral_Moment_1.mp4") with fallback
+            clip_title = candidate.get("title", "")
+            safe_title = sanitize_filename(clip_title)
+            
+            if safe_title:
+                clip_filename = f"{safe_title}_{clip_num}.mp4"
+            else:
+                clip_filename = f"clip_{clip_num}.mp4"
+                
+                
             output_path = os.path.join(job_clips_dir, clip_filename)
 
-            result = await _cut_clip_ffmpeg(
-                input_path=video_path,
-                output_path=output_path,
-                start=clip_start,
-                end=clip_end,
-                job_id=job_id,
-                clip_index=clip_num,
-                subtitle_path=subtitle_path,
-                crop_filter=clip_crop_filter,
-            )
+            async with semaphore:
+                # Step C: Cut clip + burn subtitles
+                result = await _cut_clip_ffmpeg(
+                    input_path=video_path,
+                    output_path=output_path,
+                    start=clip_start,
+                    end=clip_end,
+                    job_id=job_id,
+                    clip_index=clip_num,
+                    subtitle_path=subtitle_path,
+                    crop_filter=clip_crop_filter,
+                )
+
+                # Step D: Prepend hook intro (if available)
+                if result["success"]:
+                    hook = next(
+                        (h for h in hooks_list if h.get("clip_index") == i),
+                        None,
+                    )
+                    if hook and hook.get("audio_path") and os.path.exists(hook.get("audio_path", "")):
+                        intro_path = await _create_hook_intro(
+                            hook=hook,
+                            main_clip_path=output_path,
+                            output_dir=job_clips_dir,
+                            clip_index=clip_num,
+                            job_id=job_id,
+                            target_width=target_format.width,
+                            target_height=target_format.height,
+                            clip_fps=source_fps,
+                        )
+                        if intro_path:
+                            final_path = os.path.join(
+                                job_clips_dir, f"final_{clip_filename}"
+                            )
+                            concat_result = await _concat_intro_and_clip(
+                                intro_path, output_path, final_path, job_id
+                            )
+                            if concat_result:
+                                os.remove(output_path)
+                                os.rename(final_path, output_path)
+                                logger.info(
+                                    f"[Job {job_id}] Clip {clip_num}: hook intro prepended"
+                                )
+                            if os.path.exists(intro_path):
+                                os.remove(intro_path)
+
+            # Update progress after each clip completes
+            async with progress_lock:
+                completed_count += 1
+                clip_progress = 58 + int((completed_count / total_clips) * 22)
+                await tracker.update_progress(
+                    clip_progress,
+                    phase=f"Completed clip {completed_count}/{total_clips}: {candidate.get('title', '')}",
+                )
 
             if result["success"]:
-                clip_metadata = {
+                return {
                     "clip_id": f"{job_id}_clip_{clip_num}",
                     "clip_number": clip_num,
                     "start": clip_start,
@@ -565,12 +874,26 @@ async def editing_node(
                     "has_subtitles": subtitle_path is not None,
                     "subtitle_path": subtitle_path,
                     "status": "ready",
-                }
-                generated_clips.append(clip_metadata)
+                }, None
             else:
                 error_msg = f"Clip {clip_num} failed: {result['error']}"
-                errors.append(error_msg)
                 logger.error(f"❌ [Job {job_id}] {error_msg}")
+                return None, error_msg
+
+        # Launch all clips in parallel (semaphore limits concurrent FFmpeg to 3)
+        logger.info(f"🚀 [Job {job_id}] Cutting {total_clips} clips in parallel (max 3 concurrent)")
+        tasks = [_process_single_clip(i, c, hooks) for i, c in enumerate(clip_candidates)]
+        results = await asyncio.gather(*tasks)
+
+        # Collect results
+        for clip_metadata, error in results:
+            if clip_metadata:
+                generated_clips.append(clip_metadata)
+            if error:
+                errors.append(error)
+
+        # Sort by clip_number to maintain order
+        generated_clips.sort(key=lambda x: x["clip_number"])
 
         await tracker.update_progress(80, "finalizing", "Phase 3 complete")
 
@@ -599,7 +922,7 @@ async def editing_node(
 
         return Command(
             update={
-                "progress": 50,
+                "progress": 58,
                 "status": "failed",
                 "current_phase": "Failed",
                 "errors": [error_msg],

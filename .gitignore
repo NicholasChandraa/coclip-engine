@@ -35,4 +35,6 @@ logs/
 Thumbs.db
 
 # Models
+model-asd/
+model-tts/
 models/

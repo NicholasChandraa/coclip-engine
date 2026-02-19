@@ -275,6 +275,54 @@ async def get_job_status(job_id: str):
         await redis.close()
 
 
+@router.post("/transcribe/abort/{job_id}")
+async def abort_job(job_id: str):
+    """
+    Abort a running or queued job.
+
+    Cancels active download (if downloading) and marks job as aborted
+    so ARQ won't retry it.
+
+    Args:
+        job_id: Job ID to abort
+
+    Returns:
+        dict with abort status
+    """
+    redis = await get_redis_connection()
+
+    try:
+        status = await redis.get(f"job:{job_id}:status")
+        if not status:
+            raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+
+        status = status.decode()
+        if status in ("completed", "failed", "aborted"):
+            return {"job_id": job_id, "message": f"Job already {status}", "aborted": False}
+
+        # Cancel active download if any
+        from app.utils.downloader import cancel_download
+        download_cancelled = cancel_download(job_id)
+
+        # Mark as aborted in Redis (prevents retry)
+        await redis.set(f"job:{job_id}:status", "aborted")
+
+        logger.info(
+            f"🛑 [Job {job_id}] Aborted (was: {status}, "
+            f"download_cancelled: {download_cancelled})"
+        )
+
+        return {
+            "job_id": job_id,
+            "message": f"Job aborted (was: {status})",
+            "aborted": True,
+            "download_cancelled": download_cancelled,
+        }
+
+    finally:
+        await redis.close()
+
+
 @router.get("/transcribe/result/{job_id}")
 async def get_full_result(job_id: str):
     """
