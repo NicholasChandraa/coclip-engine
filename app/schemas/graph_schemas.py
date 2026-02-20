@@ -30,6 +30,7 @@ class VideoProcessingState(TypedDict):
 
     # ===== Input Fields =====
     job_id: str  # Unique job identifier
+    user_id: NotRequired[Optional[str]]  # User ID dari auth-service
     video_path: str  # Path to video file
     source: str  # "upload" or "youtube"
     source_url: NotRequired[Optional[str]]  # YouTube URL (if source="youtube")

@@ -1,7 +1,8 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from app.core.config import settings
 from app.utils.logging import logger
+from app.middleware.auth import CurrentUser, get_current_user
 from app.schemas.transcription import (
     SegmentPreview,
     YouTubeRequest,
@@ -34,7 +35,10 @@ async def get_redis_connection():
 
 # Endpoint
 @router.post("/transcribe-async", response_model=TranscribeAsyncResponse)
-async def transcribe_async(file: UploadFile = File(...)):
+async def transcribe_async(
+    file: UploadFile = File(...),
+    current_user: CurrentUser = Depends(get_current_user),
+):
     """
     Async transcription endpoint - Upload file dan return job_id instantly.
 
@@ -58,7 +62,7 @@ async def transcribe_async(file: UploadFile = File(...)):
     """
 
     # Step 1: Validasi File Type
-    logger.info(f"📤 Upload request: {file.filename} ({file.content_type})")
+    logger.info(f"📤 Upload request: {file.filename} ({file.content_type}) by user={current_user.user_id}")
 
     if not file.content_type or (
         not file.content_type.startswith("audio/")
@@ -74,9 +78,7 @@ async def transcribe_async(file: UploadFile = File(...)):
 
     # Step 2: Generate Job ID & Save File
     job_id = str(uuid.uuid4())
-    file_ext = os.path.splitext(file.filename)[
-        1
-    ]  # split file name misal audio.mp3 maka akan diambil ".mp3"
+    file_ext = os.path.splitext(file.filename)[1] # split file name misal audio.mp3 maka akan diambil ".mp3"
     temp_path = os.path.join(settings.TEMP_DIR, f"{job_id}{file_ext}")
 
     # Memastikan temp directory ada
@@ -102,8 +104,13 @@ async def transcribe_async(file: UploadFile = File(...)):
         )
 
         # Enqueue job to ARQ
-        job = await redis_pool.enqueue_job(
-            "process_video_task", job_id, temp_path  # Function name di worker
+        await redis_pool.enqueue_job(
+            "process_video_task",
+            job_id,
+            temp_path,
+            "upload",
+            "",
+            current_user.user_id,
         )
 
         # Set initial status di redis
@@ -111,6 +118,7 @@ async def transcribe_async(file: UploadFile = File(...)):
         await redis.set(f"job:{job_id}:status", "queued")
         await redis.set(f"job:{job_id}:progress", "0")
         await redis.set(f"job:{job_id}:filename", file.filename)
+        await redis.set(f"job:{job_id}:user_id", current_user.user_id)
         await redis.close()
 
         logger.info(f"✅ [Job {job_id}] Enqueued to ARQ worker")
@@ -134,7 +142,10 @@ async def transcribe_async(file: UploadFile = File(...)):
 
 
 @router.post("/transcribe-youtube", response_model=TranscribeAsyncResponse)
-async def transcribe_youtube(request: YouTubeRequest):
+async def transcribe_youtube(
+    request: YouTubeRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+):
     """
     Submit YouTube URL for async video processing.
 
@@ -153,7 +164,7 @@ async def transcribe_youtube(request: YouTubeRequest):
     from app.utils.downloader import validate_youtube_url
 
     url = request.url.strip()
-    logger.info(f"🔗 YouTube request: {url}")
+    logger.info(f"🔗 YouTube request: {url} by user={current_user.user_id}")
 
     # Validate URL
     if not validate_youtube_url(url):
@@ -182,6 +193,7 @@ async def transcribe_youtube(request: YouTubeRequest):
             "",  # no video_path yet, worker downloads it
             "youtube",  # source
             url,  # youtube_url
+            current_user.user_id,
         )
 
         # Set initial status
@@ -189,6 +201,7 @@ async def transcribe_youtube(request: YouTubeRequest):
         await redis.set(f"job:{job_id}:status", "queued")
         await redis.set(f"job:{job_id}:progress", "0")
         await redis.set(f"job:{job_id}:filename", url)
+        await redis.set(f"job:{job_id}:user_id", current_user.user_id)
         await redis.close()
 
         logger.info(f"✅ [Job {job_id}] YouTube job enqueued: {url}")
@@ -208,26 +221,14 @@ async def transcribe_youtube(request: YouTubeRequest):
 
 
 @router.get("/transcribe/status/{job_id}", response_model=JobStatusResponse)
-async def get_job_status(job_id: str):
+async def get_job_status(
+    job_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+):
     """
     Check job status endpoint - untuk polling dari frontend.
 
     Frontend bisa call endpoint ini setiap 2-5 detik untuk cek progress.
-
-    Args:
-        job_id: Job ID yang di-return dari /transcribe-async
-
-    Returns:
-        JobStatusResponse dengan status, progress, dan result (kalau completed)
-
-    Raises:
-        HTTPException 404: Job not found
-
-    Status values:
-        - queued: Job in queue, waiting for worker
-        - processing: Worker sedang process
-        - completed: Processing selesai, result available
-        - failed: Error occurred
     """
     redis = await get_redis_connection()
 
@@ -237,6 +238,11 @@ async def get_job_status(job_id: str):
 
         if not status:
             raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+
+        # Validasi ownership
+        job_user_id = await redis.get(f"job:{job_id}:user_id")
+        if job_user_id and job_user_id.decode() != current_user.user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
 
         status = status.decode()
 
@@ -276,18 +282,12 @@ async def get_job_status(job_id: str):
 
 
 @router.post("/transcribe/abort/{job_id}")
-async def abort_job(job_id: str):
+async def abort_job(
+    job_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+):
     """
     Abort a running or queued job.
-
-    Cancels active download (if downloading) and marks job as aborted
-    so ARQ won't retry it.
-
-    Args:
-        job_id: Job ID to abort
-
-    Returns:
-        dict with abort status
     """
     redis = await get_redis_connection()
 
@@ -295,6 +295,11 @@ async def abort_job(job_id: str):
         status = await redis.get(f"job:{job_id}:status")
         if not status:
             raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+
+        # Validasi ownership
+        job_user_id = await redis.get(f"job:{job_id}:user_id")
+        if job_user_id and job_user_id.decode() != current_user.user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
 
         status = status.decode()
         if status in ("completed", "failed", "aborted"):
@@ -308,8 +313,8 @@ async def abort_job(job_id: str):
         await redis.set(f"job:{job_id}:status", "aborted")
 
         logger.info(
-            f"🛑 [Job {job_id}] Aborted (was: {status}, "
-            f"download_cancelled: {download_cancelled})"
+            f"🛑 [Job {job_id}] Aborted by user={current_user.user_id} "
+            f"(was: {status}, download_cancelled: {download_cancelled})"
         )
 
         return {
@@ -324,22 +329,13 @@ async def abort_job(job_id: str):
 
 
 @router.get("/transcribe/result/{job_id}")
-async def get_full_result(job_id: str):
+async def get_full_result(
+    job_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+):
     """
     Get full transcription result (all segments).
-
-    Call endpoint ini kalau mau ambil SEMUA segments, bukan cuma preview.
-
-    Args:
-    job_id: Job ID
-
-    Returns:
-    TranscriptionResult dengan semua segments
-
-    Raises:
-    HTTPException 404: Job not found or not completed
     """
-
     redis = await get_redis_connection()
 
     try:
@@ -347,6 +343,11 @@ async def get_full_result(job_id: str):
 
         if not status:
             raise HTTPException(status_code=404, detail="Job not found")
+
+        # Validasi ownership
+        job_user_id = await redis.get(f"job:{job_id}:user_id")
+        if job_user_id and job_user_id.decode() != current_user.user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
 
         status = status.decode()
 
@@ -387,17 +388,25 @@ async def get_full_result(job_id: str):
 
 
 @router.get("/transcribe/clips/{job_id}/{clip_number}")
-async def download_clip(job_id: str, clip_number: int):
+async def download_clip(
+    job_id: str,
+    clip_number: int,
+    current_user: CurrentUser = Depends(get_current_user),
+):
     """
     Download a generated clip file.
-
-    Args:
-        job_id: Job ID
-        clip_number: Clip number (1-based)
-
-    Returns:
-        MP4 file as download
     """
+    # Validasi ownership via DB
+    from sqlalchemy import select
+    from app.core.database import async_session
+    from app.models import Job
+
+    async with async_session() as session:
+        result = await session.execute(select(Job).where(Job.id == job_id))
+        job = result.scalar_one_or_none()
+        if job and job.user_id and job.user_id != current_user.user_id:
+            raise HTTPException(status_code=403, detail="Access denied")
+
     clip_path = os.path.join(settings.CLIPS_DIR, job_id, f"clip_{clip_number}.mp4")
 
     if not os.path.exists(clip_path):
@@ -407,7 +416,7 @@ async def download_clip(job_id: str, clip_number: int):
             detail=f"Clip {clip_number} for job {job_id} not found",
         )
 
-    logger.info(f"📥 Clip download: job={job_id}, clip={clip_number}")
+    logger.info(f"📥 Clip download: job={job_id}, clip={clip_number} by user={current_user.user_id}")
     return FileResponse(
         path=clip_path,
         media_type="video/mp4",
@@ -419,16 +428,13 @@ async def download_clip(job_id: str, clip_number: int):
 
 
 @router.get("/jobs")
-async def list_jobs(limit: int = 20, offset: int = 0):
+async def list_jobs(
+    limit: int = 20,
+    offset: int = 0,
+    current_user: CurrentUser = Depends(get_current_user),
+):
     """
-    List all processed jobs from database (persistent).
-
-    Args:
-        limit: Max results (default 20)
-        offset: Pagination offset
-
-    Returns:
-        List of job records with clip counts
+    List jobs milik user yang sedang login (dari database).
     """
     from sqlalchemy import select
     from sqlalchemy.orm import selectinload
@@ -440,6 +446,7 @@ async def list_jobs(limit: int = 20, offset: int = 0):
             stmt = (
                 select(Job)
                 .options(selectinload(Job.clips))
+                .where(Job.user_id == current_user.user_id)
                 .order_by(Job.created_at.desc())
                 .limit(limit)
                 .offset(offset)
@@ -456,15 +463,12 @@ async def list_jobs(limit: int = 20, offset: int = 0):
 
 
 @router.get("/jobs/{job_id}")
-async def get_job_detail(job_id: str):
+async def get_job_detail(
+    job_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+):
     """
     Get job detail with all clips from database.
-
-    Args:
-        job_id: Job ID
-
-    Returns:
-        Job record with full clip metadata
     """
     from sqlalchemy import select
     from sqlalchemy.orm import selectinload
@@ -479,6 +483,9 @@ async def get_job_detail(job_id: str):
 
             if not job:
                 raise HTTPException(status_code=404, detail="Job not found in database")
+
+            if job.user_id and job.user_id != current_user.user_id:
+                raise HTTPException(status_code=403, detail="Access denied")
 
             job_data = job.to_dict()
             job_data["clips"] = [clip.to_dict() for clip in job.clips]

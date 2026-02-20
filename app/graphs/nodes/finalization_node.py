@@ -93,6 +93,7 @@ async def finalization_node(state: VideoProcessingState, redis: aioredis.Redis) 
                     # Create/update Job record
                     job = Job(
                         id=job_id,
+                        user_id=state.get("user_id"),
                         video_name=(
                             os.path.basename(video_path) if video_path else "unknown"
                         ),

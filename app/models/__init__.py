@@ -7,7 +7,7 @@ Tables:
 """
 
 from datetime import datetime, timezone
-from sqlalchemy import String, Float, Integer, Boolean, Text, DateTime, ForeignKey, JSON
+from sqlalchemy import String, Float, Integer, Boolean, Text, DateTime, ForeignKey, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Optional, List
 from app.core.database import Base
@@ -19,6 +19,7 @@ class Job(Base):
     __tablename__ = "jobs"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)  # UUID job_id
+    user_id: Mapped[Optional[str]] = mapped_column(String(36), nullable=True, index=True)  # UUID dari auth-service
     video_name: Mapped[str] = mapped_column(String(255))
     language: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
     duration: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
@@ -42,6 +43,7 @@ class Job(Base):
     def to_dict(self) -> dict:
         return {
             "id": self.id,
+            "user_id": self.user_id,
             "video_name": self.video_name,
             "source": self.source,
             "source_url": self.source_url,

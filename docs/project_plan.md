@@ -257,11 +257,87 @@ Tunable constants (top of `speaker_detector.py`):
 - [x] **Per-step VRAM management (unload model setelah tiap step)**
 - [x] **Speaker-aware smart crop (diarization-based face selection, dual-mapping + jitter for podcast)**
 - [x] **Job abort endpoint (cancel download + prevent ARQ retry)**
-- [ ] Hook generation (2nd Gemini call — hook text + caption per clip)
+- [x] **Hook generation (2nd Gemini call — hook text + caption per clip)**
 - [x] **TTS voiceover (Combined Piper & F5-TTS — id/en/zh, auto-select by WhisperX language)**
 - [ ] Thumbnail generation
 - [ ] Next.js frontend (upload UI, clip preview, download)
 - [ ] Authentication (langsung di FastAPI, JWT/session)
+
+---
+
+## Roadmap: Social Media Upload & Frontend
+
+### Frontend (Next.js)
+
+Prioritas implementasi:
+1. **Phase 1 — Basic** *(sekarang)*: Upload form + progress bar + clip gallery + download
+2. **Phase 2 — Manual Upload**: User review & select clips, lalu upload ke platform pilihan
+3. **Phase 3 — Auto-Pilot**: Upload otomatis dengan approval window sebelum publish
+
+---
+
+### Upload Mode
+
+#### Mode 1: Auto-Pilot
+```
+Upload video → Pilih Auto-Pilot → Cek akun connected?
+                                        ↓ Belum        ↓ Sudah
+                                   OAuth connect    Pipeline jalan
+                                        ↓
+                                   Pipeline jalan
+                                        ↓
+                              Auto upload ke platform
+```
+- User set platform tujuan di awal (YT / IG / TikTok)
+- Kalau akun belum di-connect, diarahkan OAuth dulu baru pipeline jalan
+- Kalau sudah connect, langsung pipeline → upload tanpa interupsi
+- Begitu pipeline selesai, semua clip langsung diupload tanpa review
+- Cocok untuk content creator yang workflow-nya sudah terpola
+
+#### Mode 2: Manual Review
+```
+Upload video → Pipeline → Clip gallery → User pilih clip → Edit metadata → Upload
+```
+- User preview tiap clip, centang mana yang mau diupload
+- Bisa edit judul, caption, dan hashtag per clip sebelum publish
+- Cocok untuk konten yang butuh kurasi lebih hati-hati
+
+---
+
+### Platform Upload
+
+| Platform | API | Status | Catatan |
+|---|---|---|---|
+| **YouTube** | YouTube Data API v3 | Planned | Paling mudah, OAuth2 standar |
+| **Instagram** | Meta Graph API (Reels) | Planned | Butuh Business/Creator account + app review Meta |
+| **TikTok** | Content Posting API | Planned | Butuh app approval dari TikTok dulu |
+
+Urutan implementasi: **YouTube → Instagram → TikTok**
+
+---
+
+### Backend Tambahan yang Dibutuhkan
+
+| Fitur | Keterangan |
+|---|---|
+| `upload_mode` field di Job | `auto` atau `manual` |
+| `scheduled_at` | Timestamp untuk auto-pilot delay |
+| Platform OAuth tokens | Simpan per user di PostgreSQL (encrypted) |
+| Upload worker (ARQ) | Job queue terpisah khusus upload, bukan pipeline |
+| Upload status tracking | Status per clip per platform (pending/uploading/done/failed) |
+| Notification system | Notif approval window untuk Mode 1 |
+
+---
+
+### Connected Accounts (OAuth Flow)
+
+```
+Settings page → "Connect Account" → OAuth redirect → Callback → Simpan token di DB
+```
+
+- Token di-refresh otomatis sebelum kadaluarsa
+- User bisa disconnect kapan saja
+- Support multi-account per platform (opsional, future)
 
 ---
 
@@ -270,6 +346,16 @@ Tunable constants (top of `speaker_detector.py`):
 - **S3FD Face Detector**: Used for accurate face detection in video frames
 - **Internal Module**: [`app/utils/speaker_detector.py`](../app/utils/speaker_detector.py) - Face tracking smart crop
 - **Pretrained Weights**: S3FD Face Detector at `models/loconet_repo/model/faceDetector/s3fd/sfd_face.pth`
+
+- **F5-TTS Indonesian Fine-tune**: Model TTS bahasa Indonesia berbasis F5-TTS
+  - **HuggingFace**: https://huggingface.co/Eempostor/F5-TTS-INDO-FINETUNE-V2
+  - **Package**: Install via `uv pip install f5-tts`
+  - **Model files** (download manual ke `data/tts/f5-tts-indo/`):
+    - `f5_tts_indo_v2.pt` — checkpoint model
+    - `vocab.txt` — vocabulary file
+    - `ref_reporter.mp3` — reference audio (voice cloning anchor)
+  - **Usage**: Dipakai di `app/utils/tts_engine.py` → `_synthesize_id()` untuk hook voiceover bahasa Indonesia
+  - **Config**: `dim=1024, depth=22, heads=16, ff_mult=2, text_dim=512, conv_layers=4`
 
 
 ## Information

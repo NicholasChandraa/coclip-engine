@@ -32,6 +32,14 @@ class Settings(BaseModel):
     # Gemini
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
 
+    # JWT (shared secret dengan auth-service)
+    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "")
+
+    # CORS
+    CORS_ALLOWED_ORIGINS: list = os.getenv(
+        "CORS_ALLOWED_ORIGINS", "http://localhost:3000"
+    ).split(",")
+
     # Redis Configuration (untuk ARQ job queue)
     REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost")
     REDIS_PORT: int = int(os.getenv("REDIS_PORT", "6379"))

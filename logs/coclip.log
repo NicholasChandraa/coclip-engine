@@ -1463,3 +1463,142 @@ Return ONLY valid JSON....
 2026-02-16 19:18:40 | DEBUG    | pydub.converter:logging_utils.py:9 | subprocess.call(['ffmpeg', '-y', '-i', 'D:\\Project-Project\\Project-AI\\coclip\\engine\\model-tts\\f5-tts-indo\\ref_reporter.mp3', '-acodec', 'pcm_s16le', '-vn', '-f', 'wav', '-'])
 2026-02-16 19:18:46 | INFO     | coclip:tts_engine.py:81 | TTS END [id]
 2026-02-16 19:18:46 | INFO     | coclip:tts_engine.py:45 | F5-TTS model and vocoder unloaded from GPU
+2026-02-19 11:26:33 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 11:26:33 | INFO     | coclip:config.py:72 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-19 11:26:33 | INFO     | coclip:tts_engine.py:68 | TTS START [id]
+2026-02-19 11:26:37 | ERROR    | coclip:tts_engine.py:210 | F5-TTS [id] synthesis failed: No module named 'f5_tts'
+2026-02-19 11:26:37 | ERROR    | coclip:tts_engine.py:213 | Traceback (most recent call last):
+  File "C:\NichoFolder\model_clip\coclip-engine\app\utils\tts_engine.py", line 151, in _synthesize_id
+    from f5_tts.model import DiT
+ModuleNotFoundError: No module named 'f5_tts'
+
+2026-02-19 11:26:37 | ERROR    | coclip:tts_engine.py:84 | TTS synthesis failed for 'id': No module named 'f5_tts'
+2026-02-19 11:40:31 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 11:40:32 | INFO     | coclip:config.py:72 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-19 11:40:32 | INFO     | coclip:tts_engine.py:68 | TTS START [id]
+2026-02-19 11:40:46 | DEBUG    | datasets:config.py:54 | PyTorch version 2.6.0+cu124 available.
+2026-02-19 11:41:10 | INFO     | coclip:tts_engine.py:164 | Loading F5-TTS model for Indonesian...
+2026-02-19 11:41:10 | ERROR    | coclip:tts_engine.py:210 | F5-TTS [id] synthesis failed: [Errno 2] No such file or directory: 'C:\\NichoFolder\\model_clip\\coclip-engine\\model-tts\\f5-tts-indo\\vocab.txt'
+2026-02-19 11:41:10 | ERROR    | coclip:tts_engine.py:213 | Traceback (most recent call last):
+  File "C:\NichoFolder\model_clip\coclip-engine\app\utils\tts_engine.py", line 171, in _synthesize_id
+    self._f5_model = load_model(
+                     ^^^^^^^^^^^
+  File "C:\NichoFolder\model_clip\coclip-engine\.venv\Lib\site-packages\f5_tts\infer\utils_infer.py", line 254, in load_model
+    vocab_char_map, vocab_size = get_tokenizer(vocab_file, tokenizer)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\NichoFolder\model_clip\coclip-engine\.venv\Lib\site-packages\f5_tts\model\utils.py", line 136, in get_tokenizer
+    with open(dataset_name, "r", encoding="utf-8") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\NichoFolder\\model_clip\\coclip-engine\\model-tts\\f5-tts-indo\\vocab.txt'
+
+2026-02-19 11:41:10 | ERROR    | coclip:tts_engine.py:84 | TTS synthesis failed for 'id': [Errno 2] No such file or directory: 'C:\\NichoFolder\\model_clip\\coclip-engine\\model-tts\\f5-tts-indo\\vocab.txt'
+2026-02-19 14:54:33 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 14:54:34 | INFO     | coclip:config.py:72 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-19 14:54:34 | INFO     | coclip:tts_engine.py:68 | TTS START [id]
+2026-02-19 14:54:46 | DEBUG    | datasets:config.py:54 | PyTorch version 2.6.0+cu124 available.
+2026-02-19 14:55:06 | INFO     | coclip:tts_engine.py:164 | Loading F5-TTS model for Indonesian...
+2026-02-19 14:55:08 | DEBUG    | filelock:_api.py:331 | Attempting to acquire lock 3110713463056 on C:\Users\nicholaschandra\.cache\huggingface\hub\.locks\models--charactr--vocos-mel-24khz\538262138a8b43863802f279909f26ec31c766b3.lock
+2026-02-19 14:55:08 | DEBUG    | filelock:_api.py:334 | Lock 3110713463056 acquired on C:\Users\nicholaschandra\.cache\huggingface\hub\.locks\models--charactr--vocos-mel-24khz\538262138a8b43863802f279909f26ec31c766b3.lock
+2026-02-19 14:55:09 | DEBUG    | filelock:_api.py:364 | Attempting to release lock 3110713463056 on C:\Users\nicholaschandra\.cache\huggingface\hub\.locks\models--charactr--vocos-mel-24khz\538262138a8b43863802f279909f26ec31c766b3.lock
+2026-02-19 14:55:09 | DEBUG    | filelock:_api.py:367 | Lock 3110713463056 released on C:\Users\nicholaschandra\.cache\huggingface\hub\.locks\models--charactr--vocos-mel-24khz\538262138a8b43863802f279909f26ec31c766b3.lock
+2026-02-19 14:55:09 | DEBUG    | filelock:_api.py:331 | Attempting to acquire lock 3112516246800 on C:\Users\nicholaschandra\.cache\huggingface\hub\.locks\models--charactr--vocos-mel-24khz\97ec976ad1fd67a33ab2682d29c0ac7df85234fae875aefcc5fb215681a91b2a.lock
+2026-02-19 14:55:09 | DEBUG    | filelock:_api.py:334 | Lock 3112516246800 acquired on C:\Users\nicholaschandra\.cache\huggingface\hub\.locks\models--charactr--vocos-mel-24khz\97ec976ad1fd67a33ab2682d29c0ac7df85234fae875aefcc5fb215681a91b2a.lock
+2026-02-19 14:55:09 | WARNING  | huggingface_hub.file_download:file_download.py:1736 | Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, install the package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+2026-02-19 14:55:15 | DEBUG    | filelock:_api.py:364 | Attempting to release lock 3112516246800 on C:\Users\nicholaschandra\.cache\huggingface\hub\.locks\models--charactr--vocos-mel-24khz\97ec976ad1fd67a33ab2682d29c0ac7df85234fae875aefcc5fb215681a91b2a.lock
+2026-02-19 14:55:15 | DEBUG    | filelock:_api.py:367 | Lock 3112516246800 released on C:\Users\nicholaschandra\.cache\huggingface\hub\.locks\models--charactr--vocos-mel-24khz\97ec976ad1fd67a33ab2682d29c0ac7df85234fae875aefcc5fb215681a91b2a.lock
+2026-02-19 14:55:15 | INFO     | coclip:tts_engine.py:185 | F5-TTS [id] synthesizing: Halo, ini adalah pengujian integrasi F5-TTS menggu...
+2026-02-19 14:55:16 | DEBUG    | pydub.converter:logging_utils.py:9 | subprocess.call(['ffmpeg', '-y', '-i', 'C:\\NichoFolder\\model_clip\\coclip-engine\\model-tts\\f5-tts-indo\\ref_reporter.mp3', '-acodec', 'pcm_s16le', '-vn', '-f', 'wav', '-'])
+2026-02-19 14:55:21 | INFO     | coclip:tts_engine.py:81 | TTS END [id]
+2026-02-19 14:55:21 | INFO     | coclip:tts_engine.py:45 | F5-TTS model and vocoder unloaded from GPU
+2026-02-19 14:57:02 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 14:57:02 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-19 14:57:02 | INFO     | coclip:speaker_detector.py:130 | Loading face detector...
+2026-02-19 14:57:03 | INFO     | coclip:speaker_detector.py:147 |   PyTorch 2.6.0+cu124, CUDA available: True
+2026-02-19 14:57:03 | INFO     | coclip:speaker_detector.py:151 |   GPU: NVIDIA GeForce RTX 3060, VRAM: 12.0GB
+2026-02-19 14:57:03 | WARNING  | coclip:speaker_detector.py:172 |   S3FD not available, using OpenCV: [WinError 3] The system cannot find the path specified: 'C:\\NichoFolder\\model_clip\\coclip-engine\\model-asd\\loconet_repo'
+2026-02-19 14:57:03 | INFO     | coclip:speaker_detector.py:133 | Face detector loaded
+2026-02-19 14:57:03 | INFO     | coclip:speaker_detector.py:599 | Starting face detection: 1 clips, video=640x360, detection_width=640px, diarization=disabled (largest face)
+2026-02-19 14:57:03 | INFO     | coclip:speaker_detector.py:624 |   Clip 1/1: 60.0s (300.0-360.0), 121 samples
+2026-02-19 14:57:03 | INFO     | coclip:speaker_detector.py:631 |     Extracting 121 frames via FFmpeg...
+2026-02-19 14:57:03 | INFO     | coclip:speaker_detector.py:636 |     Extracted 121/121 frames in 0.3s
+2026-02-19 14:57:04 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 1/121 (179ms, faces=0)
+2026-02-19 14:57:04 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 11/121 (14ms, faces=0)
+2026-02-19 14:57:04 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 21/121 (15ms, faces=0)
+2026-02-19 14:57:04 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 31/121 (15ms, faces=0)
+2026-02-19 14:57:04 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 41/121 (15ms, faces=0)
+2026-02-19 14:57:04 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 51/121 (16ms, faces=0)
+2026-02-19 14:57:04 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 61/121 (14ms, faces=0)
+2026-02-19 14:57:05 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 71/121 (15ms, faces=1)
+2026-02-19 14:57:05 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 81/121 (15ms, faces=0)
+2026-02-19 14:57:05 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 91/121 (16ms, faces=1)
+2026-02-19 14:57:05 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 101/121 (16ms, faces=1)
+2026-02-19 14:57:05 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 111/121 (16ms, faces=1)
+2026-02-19 14:57:05 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 121/121 (16ms, faces=0)
+2026-02-19 14:57:05 | INFO     | coclip:speaker_detector.py:735 |   Clip 1/1 done in 2.3s (extract=0.3s, detect=2.0s): face_found=32, face_miss=89, frame_fail=0, s3fd_errors=0
+2026-02-19 14:57:05 | INFO     | coclip:speaker_detector.py:776 |   Clip 1: 121 keyframes, primary crop_x=211, mode=largest-face
+2026-02-19 14:57:05 | INFO     | coclip:speaker_detector.py:140 | Face detector unloaded
+2026-02-19 14:58:40 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 14:58:40 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-19 14:58:40 | INFO     | coclip:speaker_detector.py:130 | Loading face detector...
+2026-02-19 14:58:41 | INFO     | coclip:speaker_detector.py:147 |   PyTorch 2.6.0+cu124, CUDA available: True
+2026-02-19 14:58:41 | INFO     | coclip:speaker_detector.py:151 |   GPU: NVIDIA GeForce RTX 3060, VRAM: 12.0GB
+2026-02-19 14:58:42 | INFO     | coclip:speaker_detector.py:170 |   S3FD face detector loaded on cuda
+2026-02-19 14:58:42 | INFO     | coclip:speaker_detector.py:133 | Face detector loaded
+2026-02-19 14:58:42 | INFO     | coclip:speaker_detector.py:599 | Starting face detection: 1 clips, video=640x360, detection_width=640px, diarization=disabled (largest face)
+2026-02-19 14:58:42 | INFO     | coclip:speaker_detector.py:624 |   Clip 1/1: 60.0s (300.0-360.0), 121 samples
+2026-02-19 14:58:42 | INFO     | coclip:speaker_detector.py:631 |     Extracting 121 frames via FFmpeg...
+2026-02-19 14:58:43 | INFO     | coclip:speaker_detector.py:636 |     Extracted 121/121 frames in 0.3s
+2026-02-19 14:58:43 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 1/121 (408ms, faces=1)
+2026-02-19 14:58:43 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 11/121 (50ms, faces=1)
+2026-02-19 14:58:44 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 21/121 (37ms, faces=2)
+2026-02-19 14:58:44 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 31/121 (66ms, faces=1)
+2026-02-19 14:58:45 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 41/121 (55ms, faces=1)
+2026-02-19 14:58:45 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 51/121 (55ms, faces=1)
+2026-02-19 14:58:46 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 61/121 (61ms, faces=1)
+2026-02-19 14:58:46 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 71/121 (38ms, faces=1)
+2026-02-19 14:58:47 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 81/121 (52ms, faces=1)
+2026-02-19 14:58:48 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 91/121 (41ms, faces=1)
+2026-02-19 14:58:48 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 101/121 (36ms, faces=1)
+2026-02-19 14:58:49 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 111/121 (43ms, faces=1)
+2026-02-19 14:58:49 | DEBUG    | coclip:speaker_detector.py:661 |     Detect 121/121 (60ms, faces=1)
+2026-02-19 14:58:49 | INFO     | coclip:speaker_detector.py:735 |   Clip 1/1 done in 6.9s (extract=0.3s, detect=6.6s): face_found=121, face_miss=0, frame_fail=0, s3fd_errors=0
+2026-02-19 14:58:49 | INFO     | coclip:speaker_detector.py:776 |   Clip 1: 121 keyframes, primary crop_x=279, mode=largest-face
+2026-02-19 14:58:49 | INFO     | coclip:speaker_detector.py:140 | Face detector unloaded
+2026-02-19 15:18:21 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 15:18:21 | INFO     | coclip:config.py:72 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-19 15:18:21 | INFO     | coclip:subtitle_generator.py:297 | 📝 [Job test_short] Generated subtitle: tests/output/preview_short.ass (1 lines, 5 words)
+2026-02-19 15:18:21 | INFO     | coclip:subtitle_generator.py:297 | 📝 [Job test_single] Generated subtitle: tests/output/preview_single.ass (1 lines, 4 words)
+2026-02-19 15:18:21 | INFO     | coclip:subtitle_generator.py:297 | 📝 [Job test_long] Generated subtitle: tests/output/preview_long.ass (5 lines, 24 words)
+2026-02-19 15:23:36 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 15:23:36 | INFO     | coclip:config.py:72 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-19 15:23:36 | INFO     | coclip:tts_engine.py:68 | TTS START [id]
+2026-02-19 15:23:40 | DEBUG    | datasets:config.py:54 | PyTorch version 2.6.0+cu124 available.
+2026-02-19 15:23:42 | INFO     | coclip:tts_engine.py:164 | Loading F5-TTS model for Indonesian...
+2026-02-19 15:23:45 | INFO     | coclip:tts_engine.py:185 | F5-TTS [id] synthesizing: Kamu harus tau ini! Rahasia yang jarang orang baha...
+2026-02-19 15:23:45 | DEBUG    | pydub.converter:logging_utils.py:9 | subprocess.call(['ffmpeg', '-y', '-i', 'C:\\NichoFolder\\model_clip\\coclip-engine\\model-tts\\f5-tts-indo\\ref_reporter.mp3', '-acodec', 'pcm_s16le', '-vn', '-f', 'wav', '-'])
+2026-02-19 15:23:48 | INFO     | coclip:tts_engine.py:81 | TTS END [id]
+2026-02-19 15:23:48 | INFO     | coclip:tts_engine.py:45 | F5-TTS model and vocoder unloaded from GPU
+2026-02-19 15:23:58 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 15:23:58 | INFO     | coclip:config.py:72 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-19 15:23:58 | INFO     | coclip:tts_engine.py:68 | TTS START [id]
+2026-02-19 15:24:02 | DEBUG    | datasets:config.py:54 | PyTorch version 2.6.0+cu124 available.
+2026-02-19 15:24:03 | INFO     | coclip:tts_engine.py:164 | Loading F5-TTS model for Indonesian...
+2026-02-19 15:24:06 | INFO     | coclip:tts_engine.py:185 | F5-TTS [id] synthesizing: Kamu harus tau ini! Rahasia yang jarang orang baha...
+2026-02-19 15:24:06 | DEBUG    | pydub.converter:logging_utils.py:9 | subprocess.call(['ffmpeg', '-y', '-i', 'C:\\NichoFolder\\model_clip\\coclip-engine\\model-tts\\f5-tts-indo\\ref_reporter.mp3', '-acodec', 'pcm_s16le', '-vn', '-f', 'wav', '-'])
+2026-02-19 15:24:08 | INFO     | coclip:tts_engine.py:81 | TTS END [id]
+2026-02-19 15:24:08 | INFO     | coclip:tts_engine.py:45 | F5-TTS model and vocoder unloaded from GPU
+2026-02-19 17:01:53 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 17:01:56 | INFO     | coclip:config.py:75 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-19 17:01:56 | INFO     | coclip:database.py:22 | Database engine: postgresql+asyncpg@localhost:5433/model_clip (pool=5, overflow=10)
+2026-02-19 17:01:56 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-19 17:01:56 | INFO     | coclip:main.py:13 | 🚀 Engine is starting up...
+2026-02-19 17:01:56 | ERROR    | coclip:database.py:45 | ❌ Failed to create tables: database "model_clip" does not exist
+2026-02-19 17:01:56 | WARNING  | coclip:main.py:19 | ⚠️ Database init failed: database "model_clip" does not exist
+2026-02-19 17:01:56 | INFO     | coclip:main.py:20 | 📌 DB features will be unavailable
+2026-02-19 17:02:19 | INFO     | coclip:logging.py:61 | 📝 Logging to file: C:\NichoFolder\model_clip\coclip-engine\logs\coclip.log
+2026-02-19 17:02:20 | INFO     | coclip:config.py:75 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-19 17:02:20 | INFO     | coclip:database.py:22 | Database engine: postgresql+asyncpg@localhost:5434/model_clip (pool=5, overflow=10)
+2026-02-19 17:02:20 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-19 17:02:20 | INFO     | coclip:main.py:13 | 🚀 Engine is starting up...
+2026-02-19 17:02:20 | INFO     | coclip:database.py:43 | ✅ Database tables initialized (jobs, clips)
+2026-02-19 17:03:29 | INFO     | coclip:main.py:23 | 🛑 Engine is shutting down...

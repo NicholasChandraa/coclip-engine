@@ -9,7 +9,7 @@ import asyncio
 
 
 async def process_video_task(
-    ctx, job_id: str, video_path: str, source: str = "upload", youtube_url: str = ""
+    ctx, job_id: str, video_path: str, source: str = "upload", youtube_url: str = "", user_id: str = ""
 ):
     """
     Background task for full pipeline processing using LangGraph.
@@ -73,6 +73,7 @@ async def process_video_task(
             video_path=video_path,
             source=source,
             source_url=youtube_url,
+            user_id=user_id,
         )
 
         _pipeline_elapsed = _time.time() - _pipeline_start

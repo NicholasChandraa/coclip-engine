@@ -97,6 +97,7 @@ async def run_video_processing_pipeline(
     video_path: str,
     source: str = "upload",
     source_url: str = "",
+    user_id: str = "",
 ):
     """
     Execute video processing pipeline with LangGraph.
@@ -121,6 +122,8 @@ async def run_video_processing_pipeline(
     initial_state["source"] = source
     if source_url:
         initial_state["source_url"] = source_url
+    if user_id:
+        initial_state["user_id"] = user_id
 
     # Config with thread_id for checkpointing
     config = {"configurable": {"thread_id": job_id}}

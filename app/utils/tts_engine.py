@@ -159,6 +159,22 @@ class TTSEngine:
             device = "cuda" if torch.cuda.is_available() else "cpu"
             model_dir = os.path.join(settings.TTS_DATA_DIR, "f5-tts-indo")
 
+            # 0. Auto-download model files from HuggingFace if missing
+            _f5_files = ["f5_tts_indo_v2.pt", "vocab.txt", "ref_reporter.mp3"]
+            _missing = [f for f in _f5_files if not os.path.exists(os.path.join(model_dir, f))]
+            if _missing:
+                logger.info(f"F5-TTS model files missing: {_missing}, downloading from HuggingFace...")
+                from huggingface_hub import hf_hub_download
+                os.makedirs(model_dir, exist_ok=True)
+                for _fname in _missing:
+                    logger.info(f"Downloading {_fname}...")
+                    hf_hub_download(
+                        repo_id="Eempostor/F5-TTS-INDO-FINETUNE-V2",
+                        filename=_fname,
+                        local_dir=model_dir,
+                    )
+                logger.info("F5-TTS model files downloaded successfully")
+
             # 1. Load Model & Vocoder if not ready
             if self._f5_model is None:
                 logger.info("Loading F5-TTS model for Indonesian...")
