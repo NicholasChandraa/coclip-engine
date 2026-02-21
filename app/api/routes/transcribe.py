@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, Form, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from app.core.config import settings
 from app.utils.logging import logger
@@ -16,6 +16,7 @@ from redis import asyncio as aioredis
 import os
 import uuid
 import json
+from typing import Optional
 
 
 # ============= Router Setup =============
@@ -37,6 +38,7 @@ async def get_redis_connection():
 @router.post("/transcribe-async", response_model=TranscribeAsyncResponse)
 async def transcribe_async(
     file: UploadFile = File(...),
+    job_name: Optional[str] = Form(None),
     current_user: CurrentUser = Depends(get_current_user),
 ):
     """
@@ -119,6 +121,10 @@ async def transcribe_async(
         await redis.set(f"job:{job_id}:progress", "0")
         await redis.set(f"job:{job_id}:filename", file.filename)
         await redis.set(f"job:{job_id}:user_id", current_user.user_id)
+        # Simpan display title: custom name > original filename (tanpa ekstensi)
+        display_name = (job_name.strip() if job_name and job_name.strip()
+                        else os.path.splitext(file.filename)[0])
+        await redis.set(f"job:{job_id}:title", display_name)
         await redis.close()
 
         logger.info(f"✅ [Job {job_id}] Enqueued to ARQ worker")
@@ -202,6 +208,9 @@ async def transcribe_youtube(
         await redis.set(f"job:{job_id}:progress", "0")
         await redis.set(f"job:{job_id}:filename", url)
         await redis.set(f"job:{job_id}:user_id", current_user.user_id)
+        # Simpan custom title kalau user isi (kalau tidak, worker akan set dari YouTube title)
+        if request.job_name and request.job_name.strip():
+            await redis.set(f"job:{job_id}:title", request.job_name.strip())
         await redis.close()
 
         logger.info(f"✅ [Job {job_id}] YouTube job enqueued: {url}")
@@ -396,31 +405,48 @@ async def download_clip(
     """
     Download a generated clip file.
     """
-    # Validasi ownership via DB
     from sqlalchemy import select
     from app.core.database import async_session
-    from app.models import Job
+    from app.models import Job, Clip
 
     async with async_session() as session:
-        result = await session.execute(select(Job).where(Job.id == job_id))
-        job = result.scalar_one_or_none()
+        # Validasi ownership
+        job_result = await session.execute(select(Job).where(Job.id == job_id))
+        job = job_result.scalar_one_or_none()
         if job and job.user_id and job.user_id != current_user.user_id:
             raise HTTPException(status_code=403, detail="Access denied")
 
-    clip_path = os.path.join(settings.CLIPS_DIR, job_id, f"clip_{clip_number}.mp4")
+        # Ambil file_path dari DB Clip record
+        clip_result = await session.execute(
+            select(Clip).where(Clip.job_id == job_id, Clip.clip_number == clip_number)
+        )
+        clip = clip_result.scalar_one_or_none()
 
-    if not os.path.exists(clip_path):
+    if clip and clip.file_path and os.path.exists(clip.file_path):
+        clip_path = clip.file_path
+    else:
+        # Fallback: cari file apapun yang namanya diakhiri _{clip_number}.mp4
+        job_clips_dir = os.path.join(settings.CLIPS_DIR, job_id)
+        clip_path = None
+        if os.path.isdir(job_clips_dir):
+            for fname in os.listdir(job_clips_dir):
+                if fname.endswith(f"_{clip_number}.mp4"):
+                    clip_path = os.path.join(job_clips_dir, fname)
+                    break
+
+    if not clip_path or not os.path.exists(clip_path):
         logger.warning(f"⚠️ Clip download 404: job={job_id}, clip={clip_number}")
         raise HTTPException(
             status_code=404,
             detail=f"Clip {clip_number} for job {job_id} not found",
         )
 
+    filename = os.path.basename(clip_path)
     logger.info(f"📥 Clip download: job={job_id}, clip={clip_number} by user={current_user.user_id}")
     return FileResponse(
         path=clip_path,
         media_type="video/mp4",
-        filename=f"{job_id}_clip_{clip_number}.mp4",
+        filename=filename,
     )
 
 
@@ -443,6 +469,14 @@ async def list_jobs(
 
     try:
         async with async_session() as session:
+            from sqlalchemy import func
+            count_stmt = (
+                select(func.count())
+                .select_from(Job)
+                .where(Job.user_id == current_user.user_id)
+            )
+            total_count = await session.scalar(count_stmt)
+
             stmt = (
                 select(Job)
                 .options(selectinload(Job.clips))
@@ -455,9 +489,42 @@ async def list_jobs(
             jobs = result.scalars().all()
 
             return {
-                "total": len(jobs),
+                "total": total_count,
                 "jobs": [job.to_dict() for job in jobs],
             }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.delete("/jobs/{job_id}", status_code=204)
+async def delete_job(
+    job_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+):
+    """
+    Delete a job and all its clips (clips cascade via FK).
+    """
+    from sqlalchemy import select
+    from app.core.database import async_session
+    from app.models import Job
+
+    try:
+        async with async_session() as session:
+            stmt = select(Job).where(Job.id == job_id)
+            result = await session.execute(stmt)
+            job = result.scalar_one_or_none()
+
+            if not job:
+                raise HTTPException(status_code=404, detail="Job not found")
+
+            if job.user_id and job.user_id != current_user.user_id:
+                raise HTTPException(status_code=403, detail="Access denied")
+
+            await session.delete(job)
+            await session.commit()
+
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 

@@ -5,7 +5,7 @@ from app.utils.logging import logger
 from app.tools.transcriber import transcriber
 from app.core.config import settings
 from app.core.database import init_db
-from app.api.routes import transcribe
+from app.api.routes import transcribe, jobs
 import uvicorn
 
 
@@ -37,6 +37,9 @@ app.add_middleware(
 # Include routers
 app.include_router(
     transcribe.router, prefix=settings.API_V1_STR, tags=["Transcription"]
+)
+app.include_router(
+    jobs.router, prefix=settings.API_V1_STR, tags=["Jobs"]
 )
 
 

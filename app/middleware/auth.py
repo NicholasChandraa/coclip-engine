@@ -2,19 +2,17 @@
 JWT authentication dependency untuk FastAPI.
 
 Memvalidasi token yang diissue oleh auth-service menggunakan
-shared secret key (HMAC-SHA256).
+shared secret key (HMAC-SHA256). Token dibaca dari HttpOnly cookie
+`access_token` yang di-set oleh auth-service.
 """
 
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Optional
 
 import jwt
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi import HTTPException, Query, Request, status
 
 from app.core.config import settings
-
-security = HTTPBearer()
 
 
 @dataclass
@@ -26,17 +24,37 @@ class CurrentUser:
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    request: Request,
+    token_query: Optional[str] = Query(None, alias="token"),
 ) -> CurrentUser:
     """
-    FastAPI dependency untuk validasi JWT dari auth-service.
+    FastAPI dependency untuk validasi JWT.
+    Urutan cek: Authorization header → query param ?token= → cookie.
 
     Usage:
         @router.get("/endpoint")
         async def endpoint(current_user: CurrentUser = Depends(get_current_user)):
             ...
     """
-    token = credentials.credentials
+    # 1. Authorization header (engineFetch dengan cross-origin)
+    token = None
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header[7:]
+
+    # 2. Query param ?token= (untuk <video src> dan <img src> yang tidak bisa set header)
+    if not token and token_query:
+        token = token_query
+
+    # 3. Cookie (same-origin / local dev)
+    if not token:
+        token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
 
     try:
         payload = jwt.decode(
@@ -48,13 +66,11 @@ async def get_current_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired",
-            headers={"WWW-Authenticate": "Bearer"},
         )
     except jwt.InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
-            headers={"WWW-Authenticate": "Bearer"},
         )
 
     user_id = payload.get("user_id")
@@ -62,7 +78,6 @@ async def get_current_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token: missing user_id",
-            headers={"WWW-Authenticate": "Bearer"},
         )
 
     return CurrentUser(

@@ -10,6 +10,7 @@ from langgraph.types import Command
 from app.schemas.graph_schemas import VideoProcessingState
 from app.tools.transcriber import transcriber
 from app.utils.progress_tracker import create_progress_tracker
+from app.utils.abort_checker import AbortError, check_aborted, raise_if_aborted
 from app.utils.logging import logger
 from redis import asyncio as aioredis
 
@@ -37,6 +38,11 @@ async def transcription_node(
     job_id = state["job_id"]
     video_path = state["video_path"]
 
+    # Abort check sebelum mulai
+    if await check_aborted(redis, job_id):
+        logger.info(f"⏭️ [Job {job_id}] Aborted before transcription")
+        return Command(update={"status": "aborted"}, goto="finalization")
+
     # Initialize progress tracker
     tracker = create_progress_tracker(redis, job_id)
 
@@ -49,6 +55,9 @@ async def transcription_node(
         audio = transcriber.load_audio(video_path)
         await tracker.update_progress(2, phase="Audio loaded")
 
+        # Checkpoint setelah load audio
+        await raise_if_aborted(redis, job_id, "after audio load")
+
         # Step 2: WhisperX Transcription (2% → 10%)
         logger.info(f"🎤 [Job {job_id}] Running WhisperX transcription...")
         raw_result = transcriber.step_transcribe(audio)
@@ -57,10 +66,16 @@ async def transcription_node(
             10, phase=f"Transcription complete (lang: {language})"
         )
 
+        # Checkpoint setelah transcription
+        await raise_if_aborted(redis, job_id, "after transcription")
+
         # Step 3: Alignment (10% → 18%)
         logger.info(f"🎯 [Job {job_id}] Aligning for word-level timestamps...")
         aligned_result = transcriber.step_align(raw_result["segments"], audio, language)
         await tracker.update_progress(18, phase="Word alignment complete")
+
+        # Checkpoint setelah alignment
+        await raise_if_aborted(redis, job_id, "after alignment")
 
         # Step 4: Diarization (18% → 23%) [conditional]
         from app.core.config import settings
@@ -87,7 +102,6 @@ async def transcription_node(
 
         # Check if we have valid transcription to proceed
         if transcription_result.segments and len(transcription_result.segments) > 0:
-            # Command API: Update state + route to analysis
             return Command(
                 update={
                     "transcription_result": transcription_result,
@@ -98,7 +112,6 @@ async def transcription_node(
                 goto="analysis",
             )
         else:
-            # No content found, skip to finalization
             logger.warning(
                 f"⚠️ [Job {job_id}] No transcription segments found, skipping analysis"
             )
@@ -113,12 +126,14 @@ async def transcription_node(
                 goto="finalization",
             )
 
+    except AbortError:
+        return Command(update={"status": "aborted"}, goto="finalization")
+
     except Exception as e:
         error_msg = f"Transcription failed: {str(e)}"
         logger.error(f"❌ [Job {job_id}] {error_msg}", exc_info=True)
         await tracker.set_error(error_msg)
 
-        # Return error state and skip to finalization
         return Command(
             update={
                 "progress": 0,
@@ -126,5 +141,5 @@ async def transcription_node(
                 "current_phase": "Failed",
                 "errors": [error_msg],
             },
-            goto="finalization",  # Go to finalization for cleanup
+            goto="finalization",
         )

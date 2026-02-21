@@ -7,7 +7,7 @@ Tables:
 """
 
 from datetime import datetime, timezone
-from sqlalchemy import String, Float, Integer, Boolean, Text, DateTime, ForeignKey, Index
+from sqlalchemy import String, Float, Integer, Boolean, Text, DateTime, ForeignKey, Index, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Optional, List
 from app.core.database import Base
@@ -76,6 +76,9 @@ class Clip(Base):
     reasoning: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     viral_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     suggested_caption: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    hook_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    transcript_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    tags: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
     file_path: Mapped[str] = mapped_column(String(500))
     file_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     has_subtitles: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -99,6 +102,9 @@ class Clip(Base):
             "reasoning": self.reasoning,
             "viral_score": self.viral_score,
             "suggested_caption": self.suggested_caption,
+            "hook_text": self.hook_text,
+            "transcript_text": self.transcript_text,
+            "tags": self.tags,
             "file_path": self.file_path,
             "file_size": self.file_size,
             "has_subtitles": self.has_subtitles,

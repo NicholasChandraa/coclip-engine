@@ -37,6 +37,7 @@ class TranscriptionSegment(BaseModel):
 class YouTubeRequest(BaseModel):
     """Request body untuk YouTube URL transcription."""
     url: str  # YouTube video URL
+    job_name: Optional[str] = None  # Optional custom name (fallback: YouTube title)
 
 
 class TranscribeAsyncResponse(BaseModel):

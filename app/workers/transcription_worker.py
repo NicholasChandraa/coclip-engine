@@ -54,6 +54,10 @@ async def process_video_task(
                 job_id=job_id,
             )
             video_path = result.file_path
+            # Simpan YouTube title ke Redis hanya kalau user belum set custom name
+            existing_title = await ctx["redis"].get(f"job:{job_id}:title")
+            if not existing_title:
+                await ctx["redis"].set(f"job:{job_id}:title", result.title)
             logger.info(
                 f"✅ [Job {job_id}] YouTube download complete: "
                 f"'{result.title}' ({result.file_size / 1024 / 1024:.1f} MB)"

@@ -14,6 +14,7 @@ from langchain_core.output_parsers import JsonOutputParser
 
 from app.schemas.graph_schemas import VideoProcessingState
 from app.utils.progress_tracker import create_progress_tracker
+from app.utils.abort_checker import AbortError, check_aborted, raise_if_aborted
 from app.utils.logging import logger
 from app.core.config import settings
 from redis import asyncio as aioredis
@@ -56,6 +57,12 @@ async def analysis_node(
         Command with updated state and routing decision
     """
     job_id = state["job_id"]
+
+    # Abort check sebelum mulai
+    if await check_aborted(redis, job_id):
+        logger.info(f"⏭️ [Job {job_id}] Aborted before analysis")
+        return Command(update={"status": "aborted"}, goto="finalization")
+
     transcription = state.get("transcription_result")
 
     # Initialize progress tracker
@@ -112,6 +119,9 @@ async def analysis_node(
         logger.debug(f"[Job {job_id}] Response: {response.content}...")
         await tracker.update_progress(42, phase="Gemini analysis complete")
 
+        # Checkpoint setelah Gemini
+        await raise_if_aborted(redis, job_id, "after Gemini analysis")
+
         # Step 3: Parse response (42% → 50%)
         logger.info(f"📊 [Job {job_id}] Parsing Gemini response...")
         clip_candidates = _parse_gemini_response(response.content, job_id, transcription.duration)
@@ -157,6 +167,9 @@ async def analysis_node(
                 },
                 goto="finalization",
             )
+
+    except AbortError:
+        return Command(update={"status": "aborted"}, goto="finalization")
 
     except Exception as e:
         error_msg = f"Content analysis failed: {str(e)}"
@@ -245,7 +258,8 @@ Your task is to analyze video transcripts and identify segments that are ENGAGIN
       "shareability": 9,
       "standalone_value": 9,
       "viral_score": 8.6,
-      "suggested_caption": "Engaging caption for social media"
+      "suggested_caption": "Engaging caption for social media",
+      "tags": ["#AI", "#Tech", "#Innovation"]
     }
   ]
 }
@@ -254,6 +268,7 @@ Your task is to analyze video transcripts and identify segments that are ENGAGIN
 **Instructions:**
 - Identify as many good clips as possible.
 - Prioritize **completeness** over quantity.
+- Generate 3-5 highly relevant **tags** (hashtags) for social media ranking for each clip.
 - If a section is "hanging" or incomplete, EXTEND the end time until the thought is finished.
 - Return empty array if no suitable content is found."""
 
@@ -276,6 +291,7 @@ IMPORTANT:
 - Do NOT cut off the speaker before they finish their main point.
 - If they ask a question, the clip MUST contain the answer.
 - It is better to have a longer clip (up to 3 mins) than a short incomplete one.
+- Remember to include the `tags` array in the JSON output!
 
 Return ONLY valid JSON."""
 

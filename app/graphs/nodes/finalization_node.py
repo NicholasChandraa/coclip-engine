@@ -45,6 +45,23 @@ async def finalization_node(state: VideoProcessingState, redis: aioredis.Redis) 
     tracker = create_progress_tracker(redis, job_id)
 
     try:
+        # Handle aborted job — skip saving, langsung cleanup
+        if current_status == "aborted":
+            logger.info(f"🛑 [Job {job_id}] Job aborted — cleaning up temp files")
+            if video_path and os.path.exists(video_path):
+                try:
+                    if "temp" in video_path.lower() or "tmp" in video_path.lower():
+                        os.remove(video_path)
+                        logger.info(f"🗑️ [Job {job_id}] Cleaned up temp file: {video_path}")
+                except Exception as e:
+                    logger.warning(f"⚠️ [Job {job_id}] Cleanup failed: {e}")
+            await redis.set(f"job:{job_id}:status", "aborted")
+            return {
+                "progress": 0,
+                "status": "aborted",
+                "current_phase": "Aborted",
+            }
+
         logger.info(f"🏁 [Job {job_id}] Starting Phase 4: Finalization")
         await tracker.update_progress(80, "finalizing", "Phase 4: Finalization")
 
@@ -90,13 +107,20 @@ async def finalization_node(state: VideoProcessingState, redis: aioredis.Redis) 
                         else "failed"
                     )
 
+                    # Ambil display name: custom/YouTube title > basename video
+                    title_raw = await redis.get(f"job:{job_id}:title")
+                    if title_raw:
+                        video_name = title_raw.decode()
+                    elif video_path:
+                        video_name = os.path.basename(video_path)
+                    else:
+                        video_name = "unknown"
+
                     # Create/update Job record
                     job = Job(
                         id=job_id,
                         user_id=state.get("user_id"),
-                        video_name=(
-                            os.path.basename(video_path) if video_path else "unknown"
-                        ),
+                        video_name=video_name,
                         source=state.get("source", "upload"),
                         source_url=state.get("source_url"),
                         language=transcription.language if transcription else None,
@@ -125,6 +149,9 @@ async def finalization_node(state: VideoProcessingState, redis: aioredis.Redis) 
                             reasoning=clip_data.get("reasoning"),
                             viral_score=clip_data.get("viral_score"),
                             suggested_caption=clip_data.get("suggested_caption"),
+                            hook_text=clip_data.get("hook_text"),
+                            transcript_text=clip_data.get("transcript_text"),
+                            tags=clip_data.get("tags"),
                             file_path=clip_data.get("file_path", ""),
                             file_size=clip_data.get("file_size"),
                             has_subtitles=clip_data.get("has_subtitles", False),

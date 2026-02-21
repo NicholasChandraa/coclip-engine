@@ -14,6 +14,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from app.schemas.graph_schemas import VideoProcessingState
 from app.utils.progress_tracker import create_progress_tracker
+from app.utils.abort_checker import AbortError, check_aborted, raise_if_aborted
 from app.utils.tts_engine import TTSEngine
 from app.utils.logging import logger
 from app.core.config import settings
@@ -38,6 +39,12 @@ async def hook_generation_node(
         Command with hooks data routing to editing
     """
     job_id = state["job_id"]
+
+    # Abort check sebelum mulai
+    if await check_aborted(redis, job_id):
+        logger.info(f"⏭️ [Job {job_id}] Aborted before hook generation")
+        return Command(update={"status": "aborted"}, goto="finalization")
+
     tracker = create_progress_tracker(redis, job_id)
 
     # Skip if hooks disabled
@@ -79,6 +86,9 @@ async def hook_generation_node(
         segments = transcription.segments if transcription else []
         hooks_data = await _generate_hooks_batch(clip_candidates, language, job_id, segments)
         await tracker.update_progress(54, phase="Hook texts generated")
+
+        # Checkpoint setelah Gemini hooks
+        await raise_if_aborted(redis, job_id, "after hook text generation")
 
         if not hooks_data:
             logger.warning(f"[Job {job_id}] Gemini hook generation returned empty, skipping hooks")
@@ -125,6 +135,9 @@ async def hook_generation_node(
             },
             goto="editing",
         )
+
+    except AbortError:
+        return Command(update={"status": "aborted"}, goto="finalization")
 
     except Exception as e:
         error_msg = f"Hook generation failed: {str(e)}"

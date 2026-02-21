@@ -13,6 +13,7 @@ from langgraph.types import Command
 from app.schemas.graph_schemas import VideoProcessingState
 from app.schemas.transcription import TranscriptionResultDetailed
 from app.utils.progress_tracker import create_progress_tracker
+from app.utils.abort_checker import AbortError, check_aborted, raise_if_aborted
 from app.utils.subtitle_generator import generate_ass_subtitle
 from app.utils.video_formats import get_format, VideoFormat
 from app.utils.logging import logger
@@ -64,6 +65,62 @@ async def _detect_video_resolution(video_path: str) -> Tuple[int, int]:
     except Exception as e:
         logger.warning(f"ffprobe error: {e}, using default 1920x1080")
         return (1920, 1080)
+
+
+async def _detect_audio_sample_rate(video_path: str) -> int:
+    """
+    Detect audio sample rate using ffprobe.
+    
+    Args:
+        video_path: Path to video file
+        
+    Returns:
+        Sample rate in Hz (e.g., 44100, 48000). Falls back to 48000 on error.
+    """
+    cmd = [
+        "ffprobe",
+        "-v",
+        "error",
+        "-select_streams",
+        "a:0",
+        "-show_entries",
+        "stream=sample_rate",
+        "-of",
+        "json",
+        video_path,
+    ]
+
+    try:
+        process = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, stderr = await process.communicate()
+
+        if process.returncode == 0:
+            data = json.loads(stdout.decode())
+            stream = data.get("streams", [{}])[0]
+            # Some files might not have sample_rate or return "N/A"
+            rate_str = stream.get("sample_rate", "48000")
+            if rate_str and rate_str.isdigit():
+                return int(rate_str)
+        return 48000
+    except Exception as e:
+        logger.warning(f"ffprobe audio det error: {e}, using default 48000")
+        return 48000
+
+
+def escape_ffmpeg_text(text: str) -> str:
+    """Melakukan escaping ketat pada karakter khusus agar FFmpeg drawtext tidak rusak."""
+    if not text:
+        return ""
+    # Backslash harus luput duluan supaya tidak numpuk
+    text = text.replace('\\', '\\\\')
+    text = text.replace(':', '\\:')
+    text = text.replace("'", "\\'")
+    text = text.replace('%', '\\%')
+    return text
 
 
 def _calculate_crop_filter(
@@ -228,6 +285,7 @@ async def _cut_clip_ffmpeg(
     clip_index: int,
     subtitle_path: Optional[str] = None,
     crop_filter: Optional[str] = None,
+    sample_rate: int = 48000,
 ) -> dict:
     """
     Cut a single clip using FFmpeg async subprocess, optionally burning subtitles.
@@ -282,10 +340,13 @@ async def _cut_clip_ffmpeg(
             "p4",       # balanced speed/quality (p1=fastest, p7=best quality)
             "-cq",
             "23",       # constant quality mode (similar to CRF)
+            "-video_track_timescale", "90000",
             "-c:a",
             "aac",
             "-b:a",
             "128k",
+            "-ac", "2",
+            "-ar", str(sample_rate),
             "-movflags",
             "+faststart",
             "-y",
@@ -386,6 +447,7 @@ async def _create_hook_intro(
     target_width: int,
     target_height: int,
     clip_fps: float = 30.0,
+    sample_rate: int = 48000,
 ) -> Optional[str]:
     """
     Create a hook intro segment: blurred freeze frame + text overlay + voiceover.
@@ -400,6 +462,7 @@ async def _create_hook_intro(
         target_width: Output video width
         target_height: Output video height
         clip_fps: Source video frame rate (pre-detected, avoids ffprobe per clip)
+        sample_rate: Source video audio sample rate (pre-detected)
 
     Returns:
         Path to intro video, or None on failure
@@ -435,10 +498,13 @@ async def _create_hook_intro(
         if current_line:
             lines.append(current_line)
         wrapped_text = "\n".join(lines)
+        
+        # Apply paranoid escaping for FFmpeg drawtext syntax
+        escaped_text = escape_ffmpeg_text(wrapped_text)
 
         font_size = int(target_height * 0.044)
         drawtext_filter = (
-            f"drawtext=text='{wrapped_text}'"
+            f"drawtext=text='{escaped_text}'"
             f":font='Arial Black'"
             f":fontsize={font_size}"
             f":fontcolor=white"
@@ -457,7 +523,7 @@ async def _create_hook_intro(
         if has_audio:
             intro_cmd.extend(["-i", audio_path])
         else:
-            intro_cmd.extend(["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"])
+            intro_cmd.extend(["-f", "lavfi", "-i", f"anullsrc=r={sample_rate}:cl=stereo"])
 
         if has_sfx:
             intro_cmd.extend(["-i", sfx_path])
@@ -470,8 +536,8 @@ async def _create_hook_intro(
         if has_sfx and has_audio:
             audio_filter = (
                 f"[0:v]trim=0:0.04,loop=-1:1,setpts=N/FRAME_RATE/TB,boxblur=20:5,{drawtext_filter}[vout];"
-                "[1:a]adelay=1000|1000,volume=3.0,aresample=48000[tts];"
-                "[2:a]atrim=0:2,volume=0.7,aresample=48000[sfx];"
+                f"[1:a]adelay=1000|1000,volume=3.0,aresample={sample_rate}[tts];"
+                f"[2:a]atrim=0:2,volume=0.7,aresample={sample_rate}[sfx];"
                 "[tts][sfx]amix=inputs=2:duration=longest[aout]"
             )
             intro_cmd.extend([
@@ -481,7 +547,7 @@ async def _create_hook_intro(
         elif has_sfx:
             audio_filter = (
                 f"[0:v]trim=0:0.04,loop=-1:1,setpts=N/FRAME_RATE/TB,boxblur=20:5,{drawtext_filter}[vout];"
-                "[2:a]atrim=0:2,volume=0.7,aresample=48000[sfx];"
+                f"[2:a]atrim=0:2,volume=0.7,aresample={sample_rate}[sfx];"
                 "[1:a]volume=3.0[tts_v];"
                 "[tts_v][sfx]amix=inputs=2:duration=longest[aout]"
             )
@@ -492,7 +558,7 @@ async def _create_hook_intro(
         elif has_audio:
             audio_filter = (
                 f"[0:v]trim=0:0.04,loop=-1:1,setpts=N/FRAME_RATE/TB,boxblur=20:5,{drawtext_filter}[vout];"
-                "[1:a]adelay=1000|1000,volume=3.0,aresample=48000[aout]"
+                f"[1:a]adelay=1000|1000,volume=3.0,aresample={sample_rate}[aout]"
             )
             intro_cmd.extend([
                 "-filter_complex", audio_filter,
@@ -507,9 +573,11 @@ async def _create_hook_intro(
             "-c:v", "h264_nvenc",
             "-preset", "p4",
             "-cq", "23",
+            "-video_track_timescale", "90000",
             "-c:a", "aac",
             "-b:a", "128k",
-            "-ar", "48000",
+            "-ac", "2",
+            "-ar", str(sample_rate),
             "-pix_fmt", "yuv420p",
             "-r", str(clip_fps),
             "-shortest",
@@ -543,24 +611,28 @@ async def _concat_intro_and_clip(
     intro_path: str, main_clip_path: str, output_path: str, job_id: str
 ) -> Optional[str]:
     """
-    Concatenate hook intro + main clip using FFmpeg concat demuxer.
+    Concatenate hook intro + main clip using FFmpeg filter_complex.
+    This safely decodes and re-encodes both streams to guarantee 100%
+    perfect audio-video synchronization, fixing the "chipmunk" Demuxer bugs.
 
     Returns path to final concatenated video, or None on failure.
     """
-    concat_list_path = main_clip_path + ".concat.txt"
     try:
-        # Write concat list file
-        with open(concat_list_path, "w", encoding="utf-8") as f:
-            f.write(f"file '{os.path.abspath(intro_path).replace(os.sep, '/')}'\n")
-            f.write(f"file '{os.path.abspath(main_clip_path).replace(os.sep, '/')}'\n")
-
-        # Stream copy (no re-encode) — intro already has matching codec params
+        # Use filter_complex to concatenate streams safely
         concat_cmd = [
             "ffmpeg", "-y",
-            "-f", "concat",
-            "-safe", "0",
-            "-i", concat_list_path,
-            "-c", "copy",
+            "-i", intro_path,
+            "-i", main_clip_path,
+            "-filter_complex", "[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[outv][outa]",
+            "-map", "[outv]",
+            "-map", "[outa]",
+            "-c:v", "h264_nvenc",
+            "-preset", "p4",
+            "-cq", "23",
+            "-video_track_timescale", "90000",
+            "-c:a", "aac",
+            "-b:a", "128k",
+            "-ac", "2",
             "-movflags", "+faststart",
             output_path,
         ]
@@ -582,10 +654,6 @@ async def _concat_intro_and_clip(
     except Exception as e:
         logger.warning(f"[Job {job_id}] Concat error: {e}")
         return None
-    finally:
-        # Clean up concat list
-        if os.path.exists(concat_list_path):
-            os.remove(concat_list_path)
 
 
 async def editing_node(
@@ -609,6 +677,12 @@ async def editing_node(
         Command with generated clips routing to finalization
     """
     job_id = state["job_id"]
+
+    # Abort check sebelum mulai
+    if await check_aborted(redis, job_id):
+        logger.info(f"⏭️ [Job {job_id}] Aborted before editing")
+        return Command(update={"status": "aborted"}, goto="finalization")
+
     video_path = state.get("video_path", "")
     clip_candidates = state.get("clip_candidates", [])
     hooks = state.get("hooks") or []
@@ -729,9 +803,10 @@ async def editing_node(
             input_width, input_height, target_format
         )
 
-        # Detect source fps once (used for hook intro matching)
+        # Detect source fps and sample rate once (used for hook intro matching)
         source_fps = await _detect_clip_fps(video_path)
-        logger.info(f"[Job {job_id}] Source video fps: {source_fps:.2f}")
+        source_sample_rate = await _detect_audio_sample_rate(video_path)
+        logger.info(f"[Job {job_id}] Source matching: {source_fps:.2f} FPS / {source_sample_rate} Hz")
 
         # Cut each clip
         generated_clips = []
@@ -745,6 +820,9 @@ async def editing_node(
 
         async def _process_single_clip(i, candidate, hooks_list):
             nonlocal completed_count
+            # Abort check per clip
+            if await check_aborted(redis, job_id):
+                return None, f"Clip {i + 1} aborted"
             clip_num = i + 1
             clip_start = candidate["start"]
             clip_end = candidate["end"]
@@ -814,6 +892,7 @@ async def editing_node(
                     clip_index=clip_num,
                     subtitle_path=subtitle_path,
                     crop_filter=clip_crop_filter,
+                    sample_rate=source_sample_rate,
                 )
 
                 # Step D: Prepend hook intro (if available)
@@ -859,6 +938,16 @@ async def editing_node(
                 )
 
             if result["success"]:
+                # Get the hook text from hooks list if available
+                hook = next((h for h in hooks_list if h.get("clip_index") == i), None)
+                hook_text = hook.get("hook_text", "") if hook else ""
+                
+                # Get the full transcript text for this clip timeframe
+                transcript_text = ""
+                if segments:
+                    clip_segs = [s.text.strip() for s in segments if s.end >= clip_start and s.start <= clip_end]
+                    transcript_text = " ".join(clip_segs)
+
                 return {
                     "clip_id": f"{job_id}_clip_{clip_num}",
                     "clip_number": clip_num,
@@ -869,6 +958,9 @@ async def editing_node(
                     "reasoning": candidate.get("reasoning", ""),
                     "viral_score": candidate.get("viral_score", 0),
                     "suggested_caption": candidate.get("suggested_caption", ""),
+                    "hook_text": hook_text,
+                    "transcript_text": transcript_text,
+                    "tags": candidate.get("tags", []),
                     "file_path": output_path,
                     "file_size": result["file_size"],
                     "has_subtitles": subtitle_path is not None,
@@ -914,6 +1006,9 @@ async def editing_node(
             update["errors"] = errors
 
         return Command(update=update, goto="finalization")
+
+    except AbortError:
+        return Command(update={"status": "aborted"}, goto="finalization")
 
     except Exception as e:
         error_msg = f"Video editing failed: {str(e)}"
