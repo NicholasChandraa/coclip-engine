@@ -6,6 +6,8 @@ from pathlib import Path
 
 import httpx
 
+from datetime import datetime, timezone
+
 YOUTUBE_UPLOAD_URL = "https://www.googleapis.com/upload/youtube/v3/videos"
 CHUNK_SIZE = 5 * 1024 * 1024  # 5 MB chunks
 
@@ -17,6 +19,7 @@ async def upload_to_youtube(
     description: str,
     tags: list[str],
     privacy: str,  # "public" | "unlisted" | "private"
+    scheduled_time: datetime | None = None,
 ) -> dict:
     """Upload a video file to YouTube via resumable upload.
 
@@ -26,6 +29,18 @@ async def upload_to_youtube(
     file_path = Path(clip_path)
     file_size = file_path.stat().st_size
 
+    status_payload = {
+        "privacyStatus": privacy,
+        "selfDeclaredMadeForKids": False,
+    }
+
+    if scheduled_time:
+        # YouTube requires scheduled videos to have privacyStatus declared as private.
+        status_payload["privacyStatus"] = "private"
+        # Ensure the datetime is UTC and format it exactly how YouTube expects: YYYY-MM-DDThh:mm:ss.000Z
+        utc_time = scheduled_time.astimezone(timezone.utc)
+        status_payload["publishAt"] = utc_time.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
     metadata = {
         "snippet": {
             "title": title,
@@ -33,10 +48,7 @@ async def upload_to_youtube(
             "tags": [t.lstrip("#") for t in (tags or [])],
             "categoryId": "22",  # People & Blogs
         },
-        "status": {
-            "privacyStatus": privacy,
-            "selfDeclaredMadeForKids": False,
-        },
+        "status": status_payload,
     }
 
     async with httpx.AsyncClient(timeout=30.0) as client:
@@ -51,6 +63,8 @@ async def upload_to_youtube(
             },
             json=metadata,
         )
+        if not init_resp.is_success:
+            print(f"YouTube API Error Response: {init_resp.text}")
         init_resp.raise_for_status()
         upload_url = init_resp.headers["Location"]
 

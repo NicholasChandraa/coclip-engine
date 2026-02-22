@@ -18151,3 +18151,763 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2026-02-22 18:23:32 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
 2026-02-22 18:23:33 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
 2026-02-22 18:23:34 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=14 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:31:23 | INFO     | coclip:logging.py:61 | 📝 Logging to file: D:\Project-Project\Project-AI\coclip\engine\logs\coclip.log
+2026-02-22 18:31:23 | INFO     | coclip:database.py:22 | Database engine: postgresql+asyncpg@localhost:5433/model_clip (pool=5, overflow=10)
+2026-02-22 18:31:23 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-22 18:34:44 | INFO     | coclip:logging.py:61 | 📝 Logging to file: D:\Project-Project\Project-AI\coclip\engine\logs\coclip.log
+2026-02-22 18:34:44 | INFO     | coclip:logging.py:61 | 📝 Logging to file: D:\Project-Project\Project-AI\coclip\engine\logs\coclip.log
+2026-02-22 18:34:44 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-22 18:34:44 | INFO     | arq.worker:worker.py:355 | Starting worker for 1 functions: process_video_task
+2026-02-22 18:34:44 | INFO     | arq.worker:connections.py:314 | redis_version=7.0.15 mem_usage=1.13M clients_connected=1 db_keys=1
+2026-02-22 18:34:44 | INFO     | coclip:transcription_worker.py:150 | 🔧 ARQ Worker ready! Diarization: enabled, Models: lazy loading (on-demand)
+2026-02-22 18:34:48 | INFO     | coclip:config.py:84 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-22 18:34:49 | INFO     | coclip:database.py:22 | Database engine: postgresql+asyncpg@localhost:5433/model_clip (pool=5, overflow=10)
+2026-02-22 18:34:49 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-22 18:34:49 | INFO     | coclip:main.py:14 | 🚀 Engine is starting up...
+2026-02-22 18:34:49 | INFO     | coclip:database.py:43 | ✅ Database tables initialized (jobs, clips)
+2026-02-22 18:35:13 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:13 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:13 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:13 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=14 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:13 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:22 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:22 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=9 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:22 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=12 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:22 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=10 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:22 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=13 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:32 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:32 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:32 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:32 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:39 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:42 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:42 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:42 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:42 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:35:48 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:37:36 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:37:36 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:38:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:38:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:38:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:41:05 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:41:09 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:41:09 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:23 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=9 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:23 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=12 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:23 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=13 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:23 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=10 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:23 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=14 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:46:32 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:29 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=6 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:29 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:30 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=14 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:34 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:34 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=5 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=6 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=9 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=8 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=7 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=10 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=11 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=12 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=13 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=15 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:51:36 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:13 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:13 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:15 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=6 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:15 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:15 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:15 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:15 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:15 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:15 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:15 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=14 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:52:21 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:53:43 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='auth.coclip.site' port=80 local_address=None timeout=10.0 socket_options=None
+2026-02-22 18:53:43 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E99695D10>
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'GET']>
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'GET']>
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'GET']>
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 22 Feb 2026 11:53:43 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'access-control-allow-credentials', b'true'), (b'access-control-allow-headers', b'Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Accept, Origin, Cache-Control, X-Requested-With, X-Service-Token, X-Skip-Refresh'), (b'access-control-allow-methods', b'GET, POST, PUT, PATCH, DELETE, OPTIONS'), (b'access-control-max-age', b'86400'), (b'x-request-id', b'9e49a69a-4807-429a-a31b-5b28a400411e'), (b'cf-cache-status', b'DYNAMIC'), (b'Nel', b'{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'), (b'Report-To', b'{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=do66Zh9lG8YxyIZiR%2FHcIQSARhZBuU5OMc0USjYxHgPaa0yASXReM2ZovYs8EiK%2Bb3cuddlvIZgfvbt8JwHQQ9TOLhVCGU4Xq3b56a3EY5A%3D"}]}'), (b'Content-Encoding', b'zstd'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9d1e48dc4bf30900-LAX'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2026-02-22 18:53:43 | INFO     | httpx:_client.py:1740 | HTTP Request: GET http://auth.coclip.site/api/v1/internal/social/token/98e48f55-fe8e-4e50-983b-7e88f3443d9a/youtube "HTTP/1.1 200 OK"
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'GET']>
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:43 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:43 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:53:43 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:53:44 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='www.googleapis.com' port=443 local_address=None timeout=30.0 socket_options=None
+2026-02-22 18:53:44 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E99717990>
+2026-02-22 18:53:44 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.started ssl_context=<ssl.SSLContext object at 0x0000021E996FC8C0> server_hostname='www.googleapis.com' timeout=30.0
+2026-02-22 18:53:44 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E997934D0>
+2026-02-22 18:53:44 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'POST']>
+2026-02-22 18:53:44 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:44 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'POST']>
+2026-02-22 18:53:44 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:44 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'POST']>
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Location', b'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:45 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:46 | INFO     | httpx:_client.py:1740 | HTTP Request: POST https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status "HTTP/1.1 200 OK"
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'POST']>
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:46 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:53:46 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:53:46 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='www.googleapis.com' port=443 local_address=None timeout=120.0 socket_options=None
+2026-02-22 18:53:46 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E997A1610>
+2026-02-22 18:53:46 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.started ssl_context=<ssl.SSLContext object at 0x0000021E996FFF50> server_hostname='www.googleapis.com' timeout=120.0
+2026-02-22 18:53:46 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A7C9B10>
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:46 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-5242879'), (b'X-Range-MD5', b'c1c526cc90a43a5488d2041f25cc04e6'), (b'X-Goog-Running-Hash', b'crc32c=XrUuRg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:47 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:47 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:47 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-10485759'), (b'X-Range-MD5', b'2a11ff26b6d14070d4ad5a6a231deaa0'), (b'X-Goog-Running-Hash', b'crc32c=wl+QJA=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:48 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:49 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:49 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-15728639'), (b'X-Range-MD5', b'4099fbd5aca6c30e5f9b8adf67cf1c75'), (b'X-Goog-Running-Hash', b'crc32c=oijnJQ=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:50 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:50 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:50 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-20971519'), (b'X-Range-MD5', b'912351ccd9b12f31deee8cc2da57aedb'), (b'X-Goog-Running-Hash', b'crc32c=g6ytNg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:51 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:52 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:52 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-26214399'), (b'X-Range-MD5', b'5cc69e60bc2db8296abcb7cb03e5a4ea'), (b'X-Goog-Running-Hash', b'crc32c=kmAAzg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:53 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:53 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:53 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-31457279'), (b'X-Range-MD5', b'db3cfb9ff3bda1a190f713b85c801851'), (b'X-Goog-Running-Hash', b'crc32c=Ik4dVA=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:54 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:55 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:55 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-36700159'), (b'X-Range-MD5', b'5a30b1554d5ed47ff25f7751d410b3b8'), (b'X-Goog-Running-Hash', b'crc32c=SKMBVg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:56 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:56 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:56 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-41943039'), (b'X-Range-MD5', b'6935dba2b4b1bc9e325c315ab3f90b12'), (b'X-Goog-Running-Hash', b'crc32c=zcGZuw=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:57 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:57 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:57 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-47185919'), (b'X-Range-MD5', b'8ff3040de10238ff4dd3416093026cb0'), (b'X-Goog-Running-Hash', b'crc32c=GZGi3Q=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:53:58 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:53:59 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:53:59 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-52428799'), (b'X-Range-MD5', b'48b339aaba31e8568d3706b15f50ef10'), (b'X-Goog-Running-Hash', b'crc32c=GeLabQ=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:00 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:00 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:00 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-57671679'), (b'X-Range-MD5', b'9758ee558c9cee4f4b44ea12fcdfd644'), (b'X-Goog-Running-Hash', b'crc32c=fK+syw=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:01 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:02 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:02 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-62914559'), (b'X-Range-MD5', b'f87bc5414ca14945c98052702facfeb8'), (b'X-Goog-Running-Hash', b'crc32c=/TsSSg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:03 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:03 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:03 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-68157439'), (b'X-Range-MD5', b'9d619178af58ea59f36e321dab9cb1fd'), (b'X-Goog-Running-Hash', b'crc32c=p61OUQ=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:04 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:04 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:04 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-73400319'), (b'X-Range-MD5', b'4dd891e1ac85f5b5e4396a6c41863a02'), (b'X-Goog-Running-Hash', b'crc32c=8pYWGg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:06 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:06 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:06 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-78643199'), (b'X-Range-MD5', b'05baf5b669fb4263aabce3c7e5180914'), (b'X-Goog-Running-Hash', b'crc32c=hmpgVA=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:07 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:08 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:08 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-83886079'), (b'X-Range-MD5', b'e94fb675e4357382734bdc860aee58dd'), (b'X-Goog-Running-Hash', b'crc32c=J+yC6g=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:09 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:09 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:09 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Range', b'bytes=0-89128959'), (b'X-Range-MD5', b'f6cc70af4e068c7eed60a197be8ba97c'), (b'X-Goog-Running-Hash', b'crc32c=3fEJsg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:10 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:11 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:11 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:13 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=UTF-8'), (b'X-GUploader-UploadID', b'AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Encoding', b'gzip'), (b'X-GUploader-Response-Body-Transformations', b'gzipped'), (b'Warning', b'214 UploadServer gzipped'), (b'Date', b'Sun, 22 Feb 2026 11:54:13 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'), (b'Transfer-Encoding', b'chunked')])
+2026-02-22 18:54:13 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWxlKSBB414OOQI0E20IZ8VetvFFoXxKvSmtX0-hRsXmnfcTRdV9qWA4HEPh4lXTLRKrlAaRkExAwuNwai-0vjeLmOipmjjj9Yf1Nn19rF4 "HTTP/1.1 200 OK"
+2026-02-22 18:54:13 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:13 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:13 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:13 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:13 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:54:13 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:54:13 | INFO     | coclip:social.py:163 | Upload completed: https://www.youtube.com/watch?v=YOo1rurgu6c
+2026-02-22 18:54:17 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='auth.coclip.site' port=80 local_address=None timeout=10.0 socket_options=None
+2026-02-22 18:54:17 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E99725250>
+2026-02-22 18:54:17 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'GET']>
+2026-02-22 18:54:17 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:17 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'GET']>
+2026-02-22 18:54:17 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:17 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'GET']>
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 22 Feb 2026 11:54:17 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'access-control-allow-credentials', b'true'), (b'access-control-allow-headers', b'Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Accept, Origin, Cache-Control, X-Requested-With, X-Service-Token, X-Skip-Refresh'), (b'access-control-allow-methods', b'GET, POST, PUT, PATCH, DELETE, OPTIONS'), (b'access-control-max-age', b'86400'), (b'x-request-id', b'3a5120da-b3aa-435d-bab0-8e41bf52fd11'), (b'cf-cache-status', b'DYNAMIC'), (b'Nel', b'{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'), (b'Report-To', b'{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=WG0GPTBnxLFqYLLFv47%2FK%2B%2Fx%2BezmDH7eV3xn9Uo5D0P%2FCWxMVkfMWAJlOynAjkEZGzwZZCSsmk29Zk%2FccVLFDewF8h8NLYB3dUScIpQz%2BLg%3D"}]}'), (b'Content-Encoding', b'zstd'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9d1e49b23e533511-LAX'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2026-02-22 18:54:18 | INFO     | httpx:_client.py:1740 | HTTP Request: GET http://auth.coclip.site/api/v1/internal/social/token/98e48f55-fe8e-4e50-983b-7e88f3443d9a/youtube "HTTP/1.1 200 OK"
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'GET']>
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:18 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:54:18 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:54:18 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='www.googleapis.com' port=443 local_address=None timeout=30.0 socket_options=None
+2026-02-22 18:54:18 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A832890>
+2026-02-22 18:54:18 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.started ssl_context=<ssl.SSLContext object at 0x0000021E995FE720> server_hostname='www.googleapis.com' timeout=30.0
+2026-02-22 18:54:18 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A837B10>
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'POST']>
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'POST']>
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:18 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'POST']>
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Location', b'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Content-Type', b'application/json; charset=UTF-8'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:20 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:21 | INFO     | httpx:_client.py:1740 | HTTP Request: POST https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status "HTTP/1.1 200 OK"
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'POST']>
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:21 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:54:21 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:54:21 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='www.googleapis.com' port=443 local_address=None timeout=120.0 socket_options=None
+2026-02-22 18:54:21 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A80F710>
+2026-02-22 18:54:21 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.started ssl_context=<ssl.SSLContext object at 0x0000021E995FFEC0> server_hostname='www.googleapis.com' timeout=120.0
+2026-02-22 18:54:21 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A7FBCD0>
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:21 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-5242879'), (b'X-Range-MD5', b'1be6abde7f58b2e29a1dc9d3224b3365'), (b'X-Goog-Running-Hash', b'crc32c=Yfwzng=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:22 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:23 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:23 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-10485759'), (b'X-Range-MD5', b'd36b7370ddc41badc62aabab84fb6720'), (b'X-Goog-Running-Hash', b'crc32c=KfUeYg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:24 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:24 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:24 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:25 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-15728639'), (b'X-Range-MD5', b'a99b63d0b6052ad04f161ccf1e48b05e'), (b'X-Goog-Running-Hash', b'crc32c=Jeq4Eg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:25 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:25 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:25 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:25 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:25 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:25 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:26 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:26 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:26 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:26 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:26 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-20971519'), (b'X-Range-MD5', b'962b73c92bb29badea2af4cf0ff6868b'), (b'X-Goog-Running-Hash', b'crc32c=CimX9g=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:27 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:27 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:27 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-26214399'), (b'X-Range-MD5', b'fdae7d9b987cf939a0e87a879dea5bb7'), (b'X-Goog-Running-Hash', b'crc32c=bgthGw=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:28 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:28 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:28 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-31457279'), (b'X-Range-MD5', b'024ba0cb0ccd50f98078794ccd6426e8'), (b'X-Goog-Running-Hash', b'crc32c=QXoTqQ=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:30 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:30 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:30 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-36700159'), (b'X-Range-MD5', b'8375740929c6236d0104bfda733f806f'), (b'X-Goog-Running-Hash', b'crc32c=Wda8AA=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:31 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:31 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:31 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-41943039'), (b'X-Range-MD5', b'200453f77e479d7c05fa24a716d01013'), (b'X-Goog-Running-Hash', b'crc32c=R7E9qQ=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:33 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:33 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:33 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:34 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-47185919'), (b'X-Range-MD5', b'8fecddacb0cfa6487fa4084be06c4268'), (b'X-Goog-Running-Hash', b'crc32c=mFHUKg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:34 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:34 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:34 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-52428799'), (b'X-Range-MD5', b'038a247c2719617603cf3d46f17ca14e'), (b'X-Goog-Running-Hash', b'crc32c=M22CGg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:35 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:36 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:36 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-57671679'), (b'X-Range-MD5', b'f039a24c0f32f79f9b115ea380a0ad45'), (b'X-Goog-Running-Hash', b'crc32c=KomoPQ=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:37 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:37 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:37 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-62914559'), (b'X-Range-MD5', b'7e34a36d1a983321a3aeef2f2bedb296'), (b'X-Goog-Running-Hash', b'crc32c=gk0v2g=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:38 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:39 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:39 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-68157439'), (b'X-Range-MD5', b'6731f11c5ed4957cad07648617761864'), (b'X-Goog-Running-Hash', b'crc32c=Q6H7Hw=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:40 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:40 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:40 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-73400319'), (b'X-Range-MD5', b'5b12fb22c8fb05f9be9b6702b89b8df7'), (b'X-Goog-Running-Hash', b'crc32c=61Gc7Q=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:41 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:42 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:42 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-78643199'), (b'X-Range-MD5', b'5f9e0f5fdf8e696b050fc98b7d7539a6'), (b'X-Goog-Running-Hash', b'crc32c=KkLBYw=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:43 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:43 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:43 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-83886079'), (b'X-Range-MD5', b'96935e6c0105157ec84afb44d5a0f6b2'), (b'X-Goog-Running-Hash', b'crc32c=nSGy+A=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:44 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:45 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:45 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-89128959'), (b'X-Range-MD5', b'2575f010ac02b89b989a0172a75a5706'), (b'X-Goog-Running-Hash', b'crc32c=nLmnrg=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:46 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:47 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:47 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 308, b'Resume Incomplete', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Range', b'bytes=0-94371839'), (b'X-Range-MD5', b'3e561c9ede9eaf5c78c905891c028d49'), (b'X-Goog-Running-Hash', b'crc32c=Y8akhQ=='), (b'Content-Length', b'0'), (b'Date', b'Sun, 22 Feb 2026 11:54:48 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000')])
+2026-02-22 18:54:48 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 308 Resume Incomplete"
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:48 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'PUT']>
+2026-02-22 18:54:51 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=UTF-8'), (b'X-GUploader-UploadID', b'AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Encoding', b'gzip'), (b'X-GUploader-Response-Body-Transformations', b'gzipped'), (b'Warning', b'214 UploadServer gzipped'), (b'Date', b'Sun, 22 Feb 2026 11:54:51 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'), (b'Transfer-Encoding', b'chunked')])
+2026-02-22 18:54:51 | INFO     | httpx:_client.py:1740 | HTTP Request: PUT https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status&upload_id=AGQBYWyWTrWK8BeYNwIESOPUoe-lsYwoRUp_8kNi6Yebcf_atw2r_pI_jNmaoe0mDS4_9EPYMU6SEZp5YZqH0WBtihjrVGTOe_R-HhgKKMGkvg "HTTP/1.1 200 OK"
+2026-02-22 18:54:51 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'PUT']>
+2026-02-22 18:54:51 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:51 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:51 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:51 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:54:51 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:54:51 | INFO     | coclip:social.py:163 | Upload completed: https://www.youtube.com/watch?v=gBz4zFzUHE0
+2026-02-22 18:54:54 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='auth.coclip.site' port=80 local_address=None timeout=10.0 socket_options=None
+2026-02-22 18:54:54 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A87C450>
+2026-02-22 18:54:54 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'GET']>
+2026-02-22 18:54:54 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:54 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'GET']>
+2026-02-22 18:54:54 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:54 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'GET']>
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 22 Feb 2026 11:54:55 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'access-control-allow-credentials', b'true'), (b'access-control-allow-headers', b'Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Accept, Origin, Cache-Control, X-Requested-With, X-Service-Token, X-Skip-Refresh'), (b'access-control-allow-methods', b'GET, POST, PUT, PATCH, DELETE, OPTIONS'), (b'access-control-max-age', b'86400'), (b'x-request-id', b'7e8e8788-02e0-47cd-894a-ac1039f97b57'), (b'cf-cache-status', b'DYNAMIC'), (b'Nel', b'{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'), (b'Report-To', b'{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=0eQ4rGK650vpPv2q39ppASW87RS5Qj0roANhw3Zag5BDDVjCTKwy033liIf0A5jJ9o1D5YYEQORZESuVcBPfqUmiIaLcjhzk709XFOzQ5M4%3D"}]}'), (b'Content-Encoding', b'zstd'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9d1e4a9c99715f80-LAX'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2026-02-22 18:54:55 | INFO     | httpx:_client.py:1740 | HTTP Request: GET http://auth.coclip.site/api/v1/internal/social/token/98e48f55-fe8e-4e50-983b-7e88f3443d9a/youtube "HTTP/1.1 200 OK"
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'GET']>
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:55 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:54:55 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:54:55 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='www.googleapis.com' port=443 local_address=None timeout=30.0 socket_options=None
+2026-02-22 18:54:55 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A80F690>
+2026-02-22 18:54:55 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.started ssl_context=<ssl.SSLContext object at 0x0000021E9A83D1C0> server_hostname='www.googleapis.com' timeout=30.0
+2026-02-22 18:54:55 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A833190>
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'POST']>
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'POST']>
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:54:55 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'POST']>
+2026-02-22 18:54:56 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 400, b'Bad Request', [(b'Content-Type', b'application/json; charset=UTF-8'), (b'X-GUploader-UploadID', b'AGQBYWzw0ikIzy_5slSTPV3GWlnUODWBB0YB08krWtZ0L3l04GlIKk-IYCbU7MtXGSpxarlsg6Hh4fmMrfba7UQ5Ax2Oci1lUQhaYKJeHQmpGQ'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Encoding', b'gzip'), (b'X-GUploader-Response-Body-Transformations', b'gzipped'), (b'Warning', b'214 UploadServer gzipped'), (b'Date', b'Sun, 22 Feb 2026 11:54:56 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'), (b'Transfer-Encoding', b'chunked')])
+2026-02-22 18:54:56 | INFO     | httpx:_client.py:1740 | HTTP Request: POST https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status "HTTP/1.1 400 Bad Request"
+2026-02-22 18:54:56 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'POST']>
+2026-02-22 18:54:56 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:54:56 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:54:56 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:54:56 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:54:56 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:54:56 | ERROR    | coclip:social.py:165 | Upload failed for 011ffa34-5330-4286-803a-4e3daa737946: Client error '400 Bad Request' for url 'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-02-22 18:55:00 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='auth.coclip.site' port=80 local_address=None timeout=10.0 socket_options=None
+2026-02-22 18:55:00 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A7F4390>
+2026-02-22 18:55:00 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'GET']>
+2026-02-22 18:55:00 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:55:00 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'GET']>
+2026-02-22 18:55:00 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:55:00 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'GET']>
+2026-02-22 18:55:01 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 22 Feb 2026 11:55:01 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'access-control-allow-credentials', b'true'), (b'access-control-allow-headers', b'Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Accept, Origin, Cache-Control, X-Requested-With, X-Service-Token, X-Skip-Refresh'), (b'access-control-allow-methods', b'GET, POST, PUT, PATCH, DELETE, OPTIONS'), (b'access-control-max-age', b'86400'), (b'x-request-id', b'2c791bfa-a74b-41f3-a78d-43a94c02db09'), (b'cf-cache-status', b'DYNAMIC'), (b'Nel', b'{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'), (b'Report-To', b'{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=iSqO7PDes0%2F48peoocVWmRgWXKWF%2F2FqlUe2KBYXSC%2FhW0565EUZ%2FnH%2BVS9Ls4fgT2F0QkMpbMlmb6Fa2Yn7J5VGmIzlYJ3CYcFboLxHEPw%3D"}]}'), (b'Content-Encoding', b'zstd'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9d1e4ac209cf46c7-LAX'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2026-02-22 18:55:01 | INFO     | httpx:_client.py:1740 | HTTP Request: GET http://auth.coclip.site/api/v1/internal/social/token/98e48f55-fe8e-4e50-983b-7e88f3443d9a/youtube "HTTP/1.1 200 OK"
+2026-02-22 18:55:01 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'GET']>
+2026-02-22 18:55:01 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:55:01 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:55:01 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:55:01 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:55:01 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:55:02 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='www.googleapis.com' port=443 local_address=None timeout=30.0 socket_options=None
+2026-02-22 18:55:02 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9977F990>
+2026-02-22 18:55:02 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.started ssl_context=<ssl.SSLContext object at 0x0000021E996FF260> server_hostname='www.googleapis.com' timeout=30.0
+2026-02-22 18:55:02 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x0000021E9A85E750>
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'POST']>
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'POST']>
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'POST']>
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 400, b'Bad Request', [(b'Content-Type', b'application/json; charset=UTF-8'), (b'X-GUploader-UploadID', b'AGQBYWxvHzTbPPKGEa3KlU_FnUEREgVdJCWpXHM-3lE863-4iuC45r0FmgzE6K30veJkosTdDkdq6c0pGIQqNfKNuTuJADWNCjSq0qqhmdP1rQ'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Encoding', b'gzip'), (b'X-GUploader-Response-Body-Transformations', b'gzipped'), (b'Warning', b'214 UploadServer gzipped'), (b'Date', b'Sun, 22 Feb 2026 11:55:02 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'), (b'Transfer-Encoding', b'chunked')])
+2026-02-22 18:55:02 | INFO     | httpx:_client.py:1740 | HTTP Request: POST https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status "HTTP/1.1 400 Bad Request"
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'POST']>
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 18:55:02 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 18:55:02 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 18:55:02 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 18:55:02 | ERROR    | coclip:social.py:165 | Upload failed for 740f8cd3-08f9-4aea-8af7-623c05da8725: Client error '400 Bad Request' for url 'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-02-22 18:56:35 | INFO     | coclip:logging.py:61 | 📝 Logging to file: D:\Project-Project\Project-AI\coclip\engine\logs\coclip.log
+2026-02-22 18:56:38 | INFO     | coclip:config.py:84 | Settings loaded: device=cuda, compute=int8, format=tiktok, smart_crop=True, diarization=True
+2026-02-22 18:56:38 | INFO     | coclip:database.py:22 | Database engine: postgresql+asyncpg@localhost:5433/model_clip (pool=5, overflow=10)
+2026-02-22 18:56:39 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-22 18:56:39 | INFO     | coclip:main.py:14 | 🚀 Engine is starting up...
+2026-02-22 18:56:39 | INFO     | coclip:database.py:43 | ✅ Database tables initialized (jobs, clips)
+2026-02-22 18:56:43 | INFO     | coclip:logging.py:61 | 📝 Logging to file: D:\Project-Project\Project-AI\coclip\engine\logs\coclip.log
+2026-02-22 18:56:43 | DEBUG    | asyncio:proactor_events.py:633 | Using proactor: IocpProactor
+2026-02-22 18:56:43 | INFO     | arq.worker:worker.py:355 | Starting worker for 1 functions: process_video_task
+2026-02-22 18:56:43 | INFO     | arq.worker:connections.py:314 | redis_version=7.0.15 mem_usage=1.15M clients_connected=8 db_keys=2
+2026-02-22 18:56:43 | INFO     | coclip:transcription_worker.py:150 | 🔧 ARQ Worker ready! Diarization: enabled, Models: lazy loading (on-demand)
+2026-02-22 18:56:50 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:56:50 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:56:50 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:56:50 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=14 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:56:50 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:56:50 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:56:50 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=14 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:56:50 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:56:58 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:56:59 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:57:00 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 18:57:03 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:02:33 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='auth.coclip.site' port=80 local_address=None timeout=10.0 socket_options=None
+2026-02-22 19:02:33 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001E47F2FEA90>
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'GET']>
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'GET']>
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'GET']>
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 22 Feb 2026 12:02:33 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'access-control-allow-credentials', b'true'), (b'access-control-allow-headers', b'Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Accept, Origin, Cache-Control, X-Requested-With, X-Service-Token, X-Skip-Refresh'), (b'access-control-allow-methods', b'GET, POST, PUT, PATCH, DELETE, OPTIONS'), (b'access-control-max-age', b'86400'), (b'x-request-id', b'b97d42e4-7d57-4b6b-9482-5fd0de2c796b'), (b'cf-cache-status', b'DYNAMIC'), (b'Nel', b'{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'), (b'Report-To', b'{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=9So7kzww07i4AHDb3oWq%2BFTjZvZu%2FJEyxeDgVK8GN2feA93VxeqZlt2WEhoEVCtSORLexOaa%2FOYdJ%2Bp7vgyMU09JPKAtwaaq%2F6IjQPeCrfA%3D"}]}'), (b'Content-Encoding', b'zstd'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9d1e55cdca8a49c8-SIN'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2026-02-22 19:02:33 | INFO     | httpx:_client.py:1740 | HTTP Request: GET http://auth.coclip.site/api/v1/internal/social/token/98e48f55-fe8e-4e50-983b-7e88f3443d9a/youtube "HTTP/1.1 200 OK"
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'GET']>
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 19:02:33 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 19:02:33 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 19:02:33 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 19:02:34 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='www.googleapis.com' port=443 local_address=None timeout=30.0 socket_options=None
+2026-02-22 19:02:34 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001E47F23D050>
+2026-02-22 19:02:34 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.started ssl_context=<ssl.SSLContext object at 0x000001E47F2E7380> server_hostname='www.googleapis.com' timeout=30.0
+2026-02-22 19:02:34 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001E47F3E5A90>
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'POST']>
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'POST']>
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'POST']>
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 400, b'Bad Request', [(b'Content-Type', b'application/json; charset=UTF-8'), (b'X-GUploader-UploadID', b'AGQBYWxd0MHQU5QY7u6c9ES-D0xTBsCrCc2t6MLjxibMJvQro7frdGTKBMWF8kXmUzUJqjX8OsWcYyH3XrbYCwsXXkHsu64yxdwSUBhqnBGAQ-s'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Encoding', b'gzip'), (b'X-GUploader-Response-Body-Transformations', b'gzipped'), (b'Warning', b'214 UploadServer gzipped'), (b'Date', b'Sun, 22 Feb 2026 12:02:34 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'), (b'Transfer-Encoding', b'chunked')])
+2026-02-22 19:02:34 | INFO     | httpx:_client.py:1740 | HTTP Request: POST https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status "HTTP/1.1 400 Bad Request"
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'POST']>
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 19:02:34 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 19:02:34 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 19:02:34 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 19:02:34 | ERROR    | coclip:social.py:165 | Upload failed for dc2741ec-2d42-414a-a539-612a23a9ad9e: Client error '400 Bad Request' for url 'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-02-22 19:02:37 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='auth.coclip.site' port=80 local_address=None timeout=10.0 socket_options=None
+2026-02-22 19:02:37 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001E47F3350D0>
+2026-02-22 19:02:37 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'GET']>
+2026-02-22 19:02:37 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 19:02:37 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'GET']>
+2026-02-22 19:02:37 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 19:02:37 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'GET']>
+2026-02-22 19:02:37 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 22 Feb 2026 12:02:37 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'access-control-allow-credentials', b'true'), (b'access-control-allow-headers', b'Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Accept, Origin, Cache-Control, X-Requested-With, X-Service-Token, X-Skip-Refresh'), (b'access-control-allow-methods', b'GET, POST, PUT, PATCH, DELETE, OPTIONS'), (b'access-control-max-age', b'86400'), (b'x-request-id', b'a7f08679-72e5-4615-845e-52531d77d82e'), (b'cf-cache-status', b'DYNAMIC'), (b'Nel', b'{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'), (b'Report-To', b'{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=DNYtNtGihm7731JKe12jiER7cDxKjjRxV44s7aNAxUK94qYI8sMAeN%2BsOcRn4o0xw8L3FrXk%2Fwwo8nLHUS5WX%2FipGSal9oY0oLIUi6s6MZU%3D"}]}'), (b'Content-Encoding', b'zstd'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9d1e55e88fe00dbe-SIN'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2026-02-22 19:02:37 | INFO     | httpx:_client.py:1740 | HTTP Request: GET http://auth.coclip.site/api/v1/internal/social/token/98e48f55-fe8e-4e50-983b-7e88f3443d9a/youtube "HTTP/1.1 200 OK"
+2026-02-22 19:02:37 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'GET']>
+2026-02-22 19:02:37 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 19:02:38 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 19:02:38 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 19:02:38 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 19:02:38 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 19:02:38 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.started host='www.googleapis.com' port=443 local_address=None timeout=30.0 socket_options=None
+2026-02-22 19:02:38 | DEBUG    | httpcore.connection:_trace.py:87 | connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001E47F356C50>
+2026-02-22 19:02:38 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.started ssl_context=<ssl.SSLContext object at 0x000001E47F2E47A0> server_hostname='www.googleapis.com' timeout=30.0
+2026-02-22 19:02:38 | DEBUG    | httpcore.connection:_trace.py:87 | start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001E47F357050>
+2026-02-22 19:02:38 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.started request=<Request [b'POST']>
+2026-02-22 19:02:38 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_headers.complete
+2026-02-22 19:02:38 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.started request=<Request [b'POST']>
+2026-02-22 19:02:38 | DEBUG    | httpcore.http11:_trace.py:87 | send_request_body.complete
+2026-02-22 19:02:38 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.started request=<Request [b'POST']>
+2026-02-22 19:02:39 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_headers.complete return_value=(b'HTTP/1.1', 400, b'Bad Request', [(b'Content-Type', b'application/json; charset=UTF-8'), (b'X-GUploader-UploadID', b'AGQBYWzmiVQaMlZbccUByBnBJkBtxAtdo2Ejh1fvu41uklrLKFr-Qw3kQLc9_Yt16d_0KFBrO1JCDTv4Eyp6GCApPI4iwiCdQqckPqR-lsLJ0Q'), (b'Vary', b'Origin'), (b'Vary', b'X-Origin'), (b'Vary', b'Referer'), (b'Content-Encoding', b'gzip'), (b'X-GUploader-Response-Body-Transformations', b'gzipped'), (b'Warning', b'214 UploadServer gzipped'), (b'Date', b'Sun, 22 Feb 2026 12:02:38 GMT'), (b'Server', b'UploadServer'), (b'Alt-Svc', b'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'), (b'Transfer-Encoding', b'chunked')])
+2026-02-22 19:02:39 | INFO     | httpx:_client.py:1740 | HTTP Request: POST https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status "HTTP/1.1 400 Bad Request"
+2026-02-22 19:02:39 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.started request=<Request [b'POST']>
+2026-02-22 19:02:39 | DEBUG    | httpcore.http11:_trace.py:87 | receive_response_body.complete
+2026-02-22 19:02:39 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.started
+2026-02-22 19:02:39 | DEBUG    | httpcore.http11:_trace.py:87 | response_closed.complete
+2026-02-22 19:02:39 | DEBUG    | httpcore.connection:_trace.py:87 | close.started
+2026-02-22 19:02:39 | DEBUG    | httpcore.connection:_trace.py:87 | close.complete
+2026-02-22 19:02:39 | ERROR    | coclip:social.py:165 | Upload failed for 5fa11f7a-aca6-42d3-827f-eb70d7628f90: Client error '400 Bad Request' for url 'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-02-22 19:03:12 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:03:12 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:06:18 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:06:23 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:33 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:33 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=14 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:33 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:33 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:33 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:33 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=12 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=9 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=10 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=13 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:35 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=12 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:41 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:41 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=3 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:07:44 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:09:17 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=f838bc09-0d0c-4ac7-8b31-7fb20fa4bcb2, clip=2 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:11:07 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=1cf0c853-0570-472c-b183-814cd85b684b, clip=4 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:11:07 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=1 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a
+2026-02-22 19:11:07 | INFO     | coclip:transcribe.py:445 | 📥 Clip download: job=7eb7d147-7601-43e3-99ab-e4903effb07f, clip=14 by user=98e48f55-fe8e-4e50-983b-7e88f3443d9a

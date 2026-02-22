@@ -137,6 +137,7 @@ class ClipUpload(Base):
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     tags: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
     privacy: Mapped[str] = mapped_column(String(20), default="private")  # public|unlisted|private
+    scheduled_time: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )

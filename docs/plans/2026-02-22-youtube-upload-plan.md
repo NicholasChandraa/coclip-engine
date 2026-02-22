@@ -1828,16 +1828,16 @@ git commit -m "feat(frontend): add YouTube upload section to ClipDetailModal"
 
 After all tasks are complete, verify the full flow:
 
-1. Start auth-service — verify `social_accounts` table created in auth DB
-2. Start engine — verify `clip_uploads` table created in engine DB
-3. Start frontend — go to `/settings`
-4. Click **Connect YouTube** → redirected to Google OAuth
-5. Authorize → redirected to `/settings?connected=youtube` → see channel name
-6. Open a completed job with clips → open ClipDetailModal
-7. Fill in title, description, privacy=unlisted → click Upload
-8. Watch status change to uploading → completed
-9. Click YouTube link → verify video uploaded correctly
-10. Go back to Settings → click Disconnect → YouTube row shows "Not connected"
+1. [x] Start auth-service — verify `social_accounts` table created in auth DB
+2. [x] Start engine — verify `clip_uploads` table created in engine DB
+3. [x] Start frontend — go to `/settings`
+4. [x] Click **Connect YouTube** → redirected to Google OAuth
+5. [x] Authorize → redirected to `/settings?connected=youtube` → see channel name
+6. [x] Open a completed job with clips → open ClipDetailModal
+7. [x] Fill in title, description, privacy=unlisted → click Upload
+8. [x] Watch status change to uploading → completed
+9. [x] Click YouTube link → verify video uploaded correctly
+10. [x] Go back to Settings → click Disconnect → YouTube row shows "Not connected"
 
 ---
 

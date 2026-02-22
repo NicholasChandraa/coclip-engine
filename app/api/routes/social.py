@@ -26,6 +26,7 @@ class UploadRequest(BaseModel):
     description: str | None = None
     tags: list[str] | None = None
     privacy: str = "private"  # public | unlisted | private
+    scheduled_time: datetime | None = None
 
 
 @router.post("/social/upload")
@@ -58,6 +59,7 @@ async def start_upload(
             description=req.description,
             tags=req.tags,
             privacy=req.privacy,
+            scheduled_time=req.scheduled_time,
         )
         session.add(upload)
         await session.commit()
@@ -142,7 +144,6 @@ async def _run_upload(
     """Background task: upload video and update ClipUpload status."""
     async with async_session() as session:
         try:
-            logger.info(f"Starting YouTube upload for upload_id={upload_id}")
             result = await upload_to_youtube(
                 access_token=access_token,
                 clip_path=clip_path,
@@ -150,6 +151,7 @@ async def _run_upload(
                 description=req.description or "",
                 tags=req.tags or [],
                 privacy=req.privacy,
+                scheduled_time=req.scheduled_time,
             )
             upload = await session.get(ClipUpload, upload_id)
             if upload:

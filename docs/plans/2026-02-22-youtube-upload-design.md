@@ -164,13 +164,13 @@ AUTH_SERVICE_TOKEN=            # shared service token
 
 ## Implementation Order
 
-1. Auth-service: `social_accounts` model + GORM migration
-2. Auth-service: OAuth handler (start + callback) + token encryption util
-3. Auth-service: accounts list/delete endpoints
-4. Auth-service: internal token endpoint (with auto-refresh)
-5. Engine: `clip_uploads` model + migration
-6. Engine: YouTube upload utility (resumable upload)
-7. Engine: `/social/upload` + `/social/upload/:id` endpoints
-8. Frontend: `social-api.ts` helper
-9. Frontend: Settings page
-10. Frontend: ClipDetailModal upload section
+1. [x] Auth-service: `social_accounts` model + GORM migration
+2. [x] Auth-service: OAuth handler (start + callback) + token encryption util
+3. [x] Auth-service: accounts list/delete endpoints
+4. [x] Auth-service: internal token endpoint (with auto-refresh)
+5. [x] Engine: `clip_uploads` model + migration
+6. [x] Engine: YouTube upload utility (resumable upload)
+7. [x] Engine: `/social/upload` + `/social/upload/:id` endpoints
+8. [x] Frontend: `social-api.ts` helper
+9. [x] Frontend: Settings page
+10. [x] Frontend: ClipDetailModal upload section

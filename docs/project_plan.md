@@ -263,7 +263,7 @@ Tunable constants (top of `speaker_detector.py`):
 - [x] **Authentication (Go auth-service — JWT + HttpOnly cookie + Redis session cache)**
 - [x] **Cloudflare Tunnel (persistent domain coclip.site — auth/engine/frontend subdomains)**
 - [ ] Thumbnail generation
-- [ ] **Social media upload — YouTube** (OAuth2 + YouTube Data API v3)
+- [x] **Social media upload — YouTube** (OAuth2 + YouTube Data API v3)
 - [ ] **Social media upload — Instagram** (Meta Graph API Reels — butuh App Review)
 - [ ] **Social media upload — TikTok** (Content Posting API — butuh approval)
 
@@ -275,35 +275,19 @@ Tunable constants (top of `speaker_detector.py`):
 
 Prioritas implementasi:
 1. **Phase 1 — Basic** ✅ *(selesai)*: Upload form + progress bar + clip gallery + download
-2. **Phase 2 — Manual Upload** *(next)*: User review & select clips, lalu upload ke platform pilihan
-3. **Phase 3 — Auto-Pilot** *(future)*: Upload otomatis dengan approval window sebelum publish
+2. **Phase 2 — Manual Upload** ✅ *(selesai)*: User review & select clips, lalu upload ke platform pilihan
 
 ---
 
 ### Upload Mode
 
-#### Mode 1: Auto-Pilot
-```
-Upload video → Pilih Auto-Pilot → Cek akun connected?
-                                        ↓ Belum        ↓ Sudah
-                                   OAuth connect    Pipeline jalan
-                                        ↓
-                                   Pipeline jalan
-                                        ↓
-                              Auto upload ke platform
-```
-- User set platform tujuan di awal (YT / IG / TikTok)
-- Kalau akun belum di-connect, diarahkan OAuth dulu baru pipeline jalan
-- Kalau sudah connect, langsung pipeline → upload tanpa interupsi
-- Begitu pipeline selesai, semua clip langsung diupload tanpa review
-- Cocok untuk content creator yang workflow-nya sudah terpola
-
-#### Mode 2: Manual Review *(planned)*
+#### Mode: Manual Review
 ```
 Upload video → Pipeline → Clip gallery → User pilih clip → Edit metadata → Upload
 ```
 - User preview tiap clip, centang mana yang mau diupload
 - Bisa edit judul, caption, dan hashtag per clip sebelum publish
+- Tersedia opsi *Bulk Upload* dengan penjadwalan waktu khusus per klip
 - Cocok untuk konten yang butuh kurasi lebih hati-hati
 
 ---
@@ -324,13 +308,13 @@ Urutan implementasi: **YouTube → Instagram → TikTok**
 
 | Fitur | Status | Keterangan |
 |---|---|---|
-| `SocialAccount` model di DB | `[ ]` | Simpan OAuth token per user per platform (encrypted) |
-| `ClipUpload` model di DB | `[ ]` | Track status upload per clip per platform |
-| `/social/auth/{platform}/start` endpoint | `[ ]` | Return OAuth URL, simpan state ke Redis |
-| `/social/auth/{platform}/callback` endpoint | `[ ]` | Exchange code → simpan token |
-| `/social/accounts` endpoint | `[ ]` | List/disconnect connected accounts |
-| `/social/upload` endpoint | `[ ]` | Trigger upload clip ke platform pilihan |
-| YouTube uploader utility | `[ ]` | Resumable upload via YouTube Data API v3 |
+| `SocialAccount` model di DB | `[x]` | Simpan OAuth token per user per platform (encrypted) |
+| `ClipUpload` model di DB | `[x]` | Track status upload per clip per platform |
+| `/social/auth/{platform}/start` endpoint | `[x]` | Return OAuth URL, simpan state ke Redis |
+| `/social/auth/{platform}/callback` endpoint | `[x]` | Exchange code → simpan token |
+| `/social/accounts` endpoint | `[x]` | List/disconnect connected accounts |
+| `/social/upload` endpoint | `[x]` | Trigger upload clip ke platform pilihan |
+| YouTube uploader utility | `[x]` | Resumable upload via YouTube Data API v3 |
 | Instagram uploader utility | `[ ]` | 2-step publish via Meta Graph API |
 | TikTok uploader utility | `[ ]` | 2-step publish via Content Posting API v2 |
 
@@ -338,10 +322,10 @@ Urutan implementasi: **YouTube → Instagram → TikTok**
 
 | Fitur | Status | Keterangan |
 |---|---|---|
-| Settings page | `[ ]` | Connected Accounts — Connect/Disconnect per platform |
-| Upload section di ClipDetailModal | `[ ]` | Platform selector + edit metadata + status badge |
-| `social-api.ts` helper | `[ ]` | Client functions untuk semua social endpoints |
-| Settings link di navbar | `[ ]` | Akses ke Settings page |
+| Settings page | `[x]` | Connected Accounts — Connect/Disconnect per platform |
+| Upload section di ClipDetailModal | `[x]` | Platform selector + edit metadata + status badge |
+| `social-api.ts` helper | `[x]` | Client functions untuk semua social endpoints |
+| Settings link di navbar | `[x]` | Akses ke Settings page |
 
 ### OAuth Flow
 
