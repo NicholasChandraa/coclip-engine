@@ -7,6 +7,7 @@ Tables:
 """
 
 from datetime import datetime, timezone
+from uuid import uuid4
 from sqlalchemy import String, Float, Integer, Boolean, Text, DateTime, ForeignKey, Index, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Optional, List
@@ -89,6 +90,11 @@ class Clip(Base):
 
     # Relationship
     job: Mapped["Job"] = relationship(back_populates="clips")
+    uploads: Mapped[List["ClipUpload"]] = relationship(
+        primaryjoin="Clip.clip_id == ClipUpload.clip_id",
+        foreign_keys="[ClipUpload.clip_id]",
+        viewonly=True
+    )
 
     def to_dict(self) -> dict:
         return {
@@ -110,4 +116,28 @@ class Clip(Base):
             "has_subtitles": self.has_subtitles,
             "status": self.status,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "uploads": [{"platform": u.platform, "status": u.status, "url": u.platform_url} for u in self.uploads] if getattr(self, "uploads", None) else [],
         }
+
+
+class ClipUpload(Base):
+    """Upload record for a clip to a social media platform."""
+
+    __tablename__ = "clip_uploads"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    clip_id: Mapped[str] = mapped_column(String(255), ForeignKey("clips.clip_id", ondelete="CASCADE"))
+    user_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    platform: Mapped[str] = mapped_column(String(50), nullable=False)  # "youtube"
+    status: Mapped[str] = mapped_column(String(50), default="uploading")  # uploading|completed|failed
+    platform_video_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    platform_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    tags: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
+    privacy: Mapped[str] = mapped_column(String(20), default="private")  # public|unlisted|private
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)

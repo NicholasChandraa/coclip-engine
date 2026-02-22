@@ -5,7 +5,7 @@ from app.utils.logging import logger
 from app.tools.transcriber import transcriber
 from app.core.config import settings
 from app.core.database import init_db
-from app.api.routes import transcribe, jobs
+from app.api.routes import transcribe, jobs, social
 import uvicorn
 
 
@@ -40,6 +40,9 @@ app.include_router(
 )
 app.include_router(
     jobs.router, prefix=settings.API_V1_STR, tags=["Jobs"]
+)
+app.include_router(
+    social.router, prefix=settings.API_V1_STR, tags=["Social Upload"]
 )
 
 

@@ -259,9 +259,13 @@ Tunable constants (top of `speaker_detector.py`):
 - [x] **Job abort endpoint (cancel download + prevent ARQ retry)**
 - [x] **Hook generation (2nd Gemini call — hook text + caption per clip)**
 - [x] **TTS voiceover (Combined Piper & F5-TTS — id/en/zh, auto-select by WhisperX language)**
+- [x] **Next.js frontend (upload UI, clip preview, download, job history, dashboard)**
+- [x] **Authentication (Go auth-service — JWT + HttpOnly cookie + Redis session cache)**
+- [x] **Cloudflare Tunnel (persistent domain coclip.site — auth/engine/frontend subdomains)**
 - [ ] Thumbnail generation
-- [ ] Next.js frontend (upload UI, clip preview, download)
-- [ ] Authentication (langsung di FastAPI, JWT/session)
+- [ ] **Social media upload — YouTube** (OAuth2 + YouTube Data API v3)
+- [ ] **Social media upload — Instagram** (Meta Graph API Reels — butuh App Review)
+- [ ] **Social media upload — TikTok** (Content Posting API — butuh approval)
 
 ---
 
@@ -270,9 +274,9 @@ Tunable constants (top of `speaker_detector.py`):
 ### Frontend (Next.js)
 
 Prioritas implementasi:
-1. **Phase 1 — Basic** *(sekarang)*: Upload form + progress bar + clip gallery + download
-2. **Phase 2 — Manual Upload**: User review & select clips, lalu upload ke platform pilihan
-3. **Phase 3 — Auto-Pilot**: Upload otomatis dengan approval window sebelum publish
+1. **Phase 1 — Basic** ✅ *(selesai)*: Upload form + progress bar + clip gallery + download
+2. **Phase 2 — Manual Upload** *(next)*: User review & select clips, lalu upload ke platform pilihan
+3. **Phase 3 — Auto-Pilot** *(future)*: Upload otomatis dengan approval window sebelum publish
 
 ---
 
@@ -294,7 +298,7 @@ Upload video → Pilih Auto-Pilot → Cek akun connected?
 - Begitu pipeline selesai, semua clip langsung diupload tanpa review
 - Cocok untuk content creator yang workflow-nya sudah terpola
 
-#### Mode 2: Manual Review
+#### Mode 2: Manual Review *(planned)*
 ```
 Upload video → Pipeline → Clip gallery → User pilih clip → Edit metadata → Upload
 ```
@@ -308,9 +312,9 @@ Upload video → Pipeline → Clip gallery → User pilih clip → Edit metadata
 
 | Platform | API | Status | Catatan |
 |---|---|---|---|
-| **YouTube** | YouTube Data API v3 | Planned | Paling mudah, OAuth2 standar |
-| **Instagram** | Meta Graph API (Reels) | Planned | Butuh Business/Creator account + app review Meta |
-| **TikTok** | Content Posting API | Planned | Butuh app approval dari TikTok dulu |
+| **YouTube** | YouTube Data API v3 | Planned | Paling mudah, OAuth2 standar — implementasi pertama |
+| **Instagram** | Meta Graph API (Reels) | Planned | Butuh Business/Creator account + **App Review Meta** (~2-4 minggu) |
+| **TikTok** | Content Posting API | Planned | Butuh **app approval dari TikTok** untuk production access |
 
 Urutan implementasi: **YouTube → Instagram → TikTok**
 
@@ -318,26 +322,61 @@ Urutan implementasi: **YouTube → Instagram → TikTok**
 
 ### Backend Tambahan yang Dibutuhkan
 
-| Fitur | Keterangan |
-|---|---|
-| `upload_mode` field di Job | `auto` atau `manual` |
-| `scheduled_at` | Timestamp untuk auto-pilot delay |
-| Platform OAuth tokens | Simpan per user di PostgreSQL (encrypted) |
-| Upload worker (ARQ) | Job queue terpisah khusus upload, bukan pipeline |
-| Upload status tracking | Status per clip per platform (pending/uploading/done/failed) |
-| Notification system | Notif approval window untuk Mode 1 |
+| Fitur | Status | Keterangan |
+|---|---|---|
+| `SocialAccount` model di DB | `[ ]` | Simpan OAuth token per user per platform (encrypted) |
+| `ClipUpload` model di DB | `[ ]` | Track status upload per clip per platform |
+| `/social/auth/{platform}/start` endpoint | `[ ]` | Return OAuth URL, simpan state ke Redis |
+| `/social/auth/{platform}/callback` endpoint | `[ ]` | Exchange code → simpan token |
+| `/social/accounts` endpoint | `[ ]` | List/disconnect connected accounts |
+| `/social/upload` endpoint | `[ ]` | Trigger upload clip ke platform pilihan |
+| YouTube uploader utility | `[ ]` | Resumable upload via YouTube Data API v3 |
+| Instagram uploader utility | `[ ]` | 2-step publish via Meta Graph API |
+| TikTok uploader utility | `[ ]` | 2-step publish via Content Posting API v2 |
+
+### Frontend Tambahan yang Dibutuhkan
+
+| Fitur | Status | Keterangan |
+|---|---|---|
+| Settings page | `[ ]` | Connected Accounts — Connect/Disconnect per platform |
+| Upload section di ClipDetailModal | `[ ]` | Platform selector + edit metadata + status badge |
+| `social-api.ts` helper | `[ ]` | Client functions untuk semua social endpoints |
+| Settings link di navbar | `[ ]` | Akses ke Settings page |
+
+### OAuth Flow
+
+```
+Frontend  →  GET /social/auth/youtube/start (+ Bearer token)
+          ←  { url: "https://accounts.google.com/o/oauth2/auth?state=<random>" }
+Frontend  →  window.location.href = url          (redirect ke Google)
+Google    →  GET /social/auth/youtube/callback?code=..&state=..
+Engine       validates state dari Redis → exchange code → simpan token
+          →  redirect ke https://coclip.site/settings?connected=youtube
+```
 
 ---
 
-### Connected Accounts (OAuth Flow)
+### Prerequisite API Credentials
 
-```
-Settings page → "Connect Account" → OAuth redirect → Callback → Simpan token di DB
-```
+```env
+# YouTube (Google Cloud Console → Enable YouTube Data API v3 → OAuth Client ID)
+YOUTUBE_CLIENT_ID=
+YOUTUBE_CLIENT_SECRET=
+YOUTUBE_REDIRECT_URI=https://engine.coclip.site/api/v1/social/auth/youtube/callback
 
-- Token di-refresh otomatis sebelum kadaluarsa
-- User bisa disconnect kapan saja
-- Support multi-account per platform (opsional, future)
+# Instagram (Meta for Developers → App Review required)
+INSTAGRAM_APP_ID=
+INSTAGRAM_APP_SECRET=
+INSTAGRAM_REDIRECT_URI=https://engine.coclip.site/api/v1/social/auth/instagram/callback
+
+# TikTok (TikTok Developer → approval required)
+TIKTOK_CLIENT_KEY=
+TIKTOK_CLIENT_SECRET=
+TIKTOK_REDIRECT_URI=https://engine.coclip.site/api/v1/social/auth/tiktok/callback
+
+# Shared
+FRONTEND_URL=https://coclip.site
+```
 
 ---
 

@@ -34,6 +34,7 @@ dependencies = [
     "piper-tts>=1.4.1",
     "coqui-tts>=0.27.5",
     "pyjwt>=2.11.0",
+    "httpx>=0.28.1",
 ]
 
 [tool.uv]

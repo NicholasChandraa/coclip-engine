@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, desc
+from sqlalchemy.orm import selectinload
 from app.middleware.auth import CurrentUser, get_current_user
 from app.core.database import async_session
 from app.models import Job, Clip
@@ -26,6 +27,7 @@ class ClipResponse(BaseModel):
     file_path: str | None
     file_size: int | None
     created_at: str
+    uploads: List[dict] | None = None
 
     class Config:
         from_attributes = True
@@ -44,6 +46,7 @@ async def get_top_clips(
             # Join Job and Clip to filter by user_id and only get completed clips
             stmt = (
                 select(Clip)
+                .options(selectinload(Clip.uploads))
                 .join(Job, Clip.job_id == Job.id)
                 .where(
                     Job.user_id == current_user.user_id,
@@ -76,7 +79,8 @@ async def get_top_clips(
                         status=clip.status,
                         file_path=clip.file_path,
                         file_size=clip.file_size,
-                        created_at=str(clip.created_at)
+                        created_at=str(clip.created_at),
+                        uploads=[{"platform": u.platform, "status": u.status, "url": u.platform_url} for u in clip.uploads] if getattr(clip, "uploads", None) else []
                     )
                 )
 

@@ -71,6 +71,10 @@ class Settings(BaseModel):
     # TTS
     TTS_DATA_DIR: str = os.path.join(os.getcwd(), "model-tts")
 
+    # Auth-service (for social upload token retrieval)
+    AUTH_SERVICE_URL: str = os.getenv("AUTH_SERVICE_URL", "http://localhost:8005")
+    AUTH_SERVICE_TOKEN: str = os.getenv("AUTH_SERVICE_TOKEN", "")
+
 
 settings = Settings()
 

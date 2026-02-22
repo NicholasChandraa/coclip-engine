@@ -235,6 +235,7 @@ Your task is to analyze video transcripts and identify segments that are ENGAGIN
 3. **SETUP + PAYOFF**: Always include the setup (introduction) AND the payoff (conclusion).
 4. **IGNORE TIME LIMITS FOR QUALITY**: If a topic takes 2 minutes to resolve, the clip MUST be 2 minutes. DO NOT cut it short to fit an arbitrary time limit.
 5. **START EARLY, END LATE**: Start a few seconds before the topic begins and end a few seconds after it finishes to ensure natural transitions.
+6. **MATCH LANGUAGE**: The `title`, `reasoning`, and `suggested_caption` MUST be strictly written in the exact same language as the spoken text in the transcript (e.g., if the transcript is in Indonesian, output Indonesian).
 
 **Clip Quality Criteria:**
 1. **Context Completeness** (0-10): Does it tell a full story? (Setup -> Conflict -> Resolution)

@@ -465,7 +465,8 @@ async def list_jobs(
     from sqlalchemy import select
     from sqlalchemy.orm import selectinload
     from app.core.database import async_session
-    from app.models import Job
+    from app.models import Job, Clip
+    from app.utils.logging import logger
 
     try:
         async with async_session() as session:
@@ -479,7 +480,7 @@ async def list_jobs(
 
             stmt = (
                 select(Job)
-                .options(selectinload(Job.clips))
+                .options(selectinload(Job.clips).selectinload(Clip.uploads))
                 .where(Job.user_id == current_user.user_id)
                 .order_by(Job.created_at.desc())
                 .limit(limit)
@@ -493,6 +494,7 @@ async def list_jobs(
                 "jobs": [job.to_dict() for job in jobs],
             }
     except Exception as e:
+        logger.error(f"❌ Failed to fetch list of jobs: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
@@ -540,11 +542,12 @@ async def get_job_detail(
     from sqlalchemy import select
     from sqlalchemy.orm import selectinload
     from app.core.database import async_session
-    from app.models import Job
+    from app.models import Job, Clip
+    from app.utils.logging import logger
 
     try:
         async with async_session() as session:
-            stmt = select(Job).options(selectinload(Job.clips)).where(Job.id == job_id)
+            stmt = select(Job).options(selectinload(Job.clips).selectinload(Clip.uploads)).where(Job.id == job_id)
             result = await session.execute(stmt)
             job = result.scalar_one_or_none()
 
@@ -561,4 +564,5 @@ async def get_job_detail(
     except HTTPException:
         raise
     except Exception as e:
+        logger.error(f"❌ Failed to fetch job detail {job_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

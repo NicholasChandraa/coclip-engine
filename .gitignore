@@ -38,3 +38,6 @@ Thumbs.db
 model-asd/
 model-tts/
 models/
+
+
+.env
